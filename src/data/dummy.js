@@ -191,7 +191,7 @@ export const links = [
     title: 'Equipe',
     links: [
       {
-        name: 'clube',
+        name: 'elenco',
         icon: <FaPeopleGroup />,
       },
       {
