@@ -3,11 +3,12 @@ import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutline
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
 import { BiColorFill } from 'react-icons/bi';
-import { IoMdContacts } from 'react-icons/io';
+import { IoMdContacts, IoMdCloseCircle } from 'react-icons/io';
 import { RiContactsLine, RiStockLine } from 'react-icons/ri';
-import { MdOutlineSupervisorAccount, MdSpaceDashboard } from 'react-icons/md';
+import { MdOutlineSupervisorAccount, MdSpaceDashboard, MdAccountCircle } from 'react-icons/md';
 import { HiOutlineRefresh } from 'react-icons/hi';
-import { FaPeopleGroup, FaTrophy, FaCalendarDay } from "react-icons/fa6";
+import { FaPeopleGroup, FaTrophy, FaCalendarDay, FaCircleCheck,
+FaHandshakeSimple } from "react-icons/fa6";
 import { IoIosPeople } from "react-icons/io";
 import { TiTick } from 'react-icons/ti';
 import { GiLouvrePyramid } from 'react-icons/gi';
@@ -46,20 +47,15 @@ export const gridOrderStatus = (props) => (
 );
 
 export const kanbanGrid = [
-  { headerText: 'To Do',
+  { headerText: 'Para Fazer',
     keyField: 'Open',
     allowToggle: true },
 
-  { headerText: 'In Progress',
+  { headerText: 'Em Progresso',
     keyField: 'InProgress',
     allowToggle: true },
 
-  { headerText: 'Testing',
-    keyField: 'Testing',
-    allowToggle: true,
-    isExpanded: false },
-
-  { headerText: 'Done',
+  { headerText: 'Concluída',
     keyField: 'Close',
     allowToggle: true },
 ];
@@ -195,7 +191,7 @@ export const links = [
     title: 'Equipe',
     links: [
       {
-        name: 'elenco',
+        name: 'clube',
         icon: <FaPeopleGroup />,
       },
       {
@@ -212,7 +208,7 @@ export const links = [
     title: 'Administração',
     links: [
       {
-        name: 'calendário',
+        name: 'calendario',
         icon: <FaCalendarDay />,
       },
       {
@@ -222,101 +218,53 @@ export const links = [
       
     ],
   },
-];
 
-export const cartData = [
   {
-    image:
-      product5,
-    name: 'butterscotch ice-cream',
-    category: 'Milk product',
-    price: '$250',
-  },
-  {
-    image:
-      product6,
-    name: 'Supreme fresh tomato',
-    category: 'Vegetable Item',
-    price: '$450',
-  },
-  {
-    image:
-      product7,
-    name: 'Red color candy',
-    category: 'Food Item',
-    price: '$190',
+    title: 'Perfil',
+    links: [
+      {
+        name: 'perfil',
+        icon: <MdAccountCircle />,
+      },
+      
+    ],
   },
 ];
 
-export const chatData = [
-  {
-    image:
-      avatar2,
-    message: 'Roman Joined the Team!',
-    desc: 'Congratulate him',
-    time: '9:08 AM',
-  },
-  {
-    image:
-      avatar3,
-    message: 'New message received',
-    desc: 'Salma sent you new message',
-    time: '11:56 AM',
-  },
-  {
-    image:
-      avatar4,
-    message: 'New Payment received',
-    desc: 'Check your earnings',
-    time: '4:39 AM',
-  },
-  {
-    image:
-      avatar,
-    message: 'Jolly completed tasks',
-    desc: 'Assign her new tasks',
-    time: '1:12 AM',
-  },
-];
 
 export const earningData = [
   {
-    icon: <MdOutlineSupervisorAccount />,
-    amount: '39,354',
+    icon: <FaCircleCheck />,
+    amount: '15',
+    subtitle: 'Vitórias',
     percentage: '-4%',
     title: 'Customers',
-    iconColor: '#03C9D7',
-    iconBg: '#E5FAFB',
+    iconColor: '#52bf90',
+    iconBg: '#d9ead3', 
     pcColor: 'red-600',
   },
   {
-    icon: <BsBoxSeam />,
-    amount: '4,396',
+    icon: <FaHandshakeSimple />,
+    amount: '6',
     percentage: '+23%',
+    subtitle: 'Empates',
     title: 'Products',
     iconColor: 'rgb(255, 244, 229)',
     iconBg: 'rgb(254, 201, 15)',
     pcColor: 'green-600',
   },
   {
-    icon: <FiBarChart />,
-    amount: '423,39',
+    icon: <IoMdCloseCircle />,
+    amount: '6',
     percentage: '+38%',
+    subtitle: 'Derrotas',
     title: 'Sales',
     iconColor: 'rgb(228, 106, 118)',
     iconBg: 'rgb(255, 244, 229)',
 
     pcColor: 'green-600',
   },
-  {
-    icon: <HiOutlineRefresh />,
-    amount: '39,354',
-    percentage: '-12%',
-    title: 'Refunds',
-    iconColor: 'rgb(0, 194, 146)',
-    iconBg: 'rgb(235, 250, 242)',
-    pcColor: 'red-600',
-  },
+  
 ];
 
 export const recentTransactions = [
