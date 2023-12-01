@@ -5,7 +5,7 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
 import { Navbar, Footer, Sidebar, ThemeSettings } from './components';
 import { Calendario, Campeonatos, ComissaoTecnica, 
-    Elenco, Home, MeuPerfil, Tarefas } from './pages';
+    Elenco, Home, MeuPerfil, Tarefas, Login, Signup } from './pages';
 import './App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
@@ -56,7 +56,7 @@ const App = () => {
 
                     <Routes>
                         {/* Dashboard */}
-                        <Route path='/' element={<Home />} />
+                        <Route path='/' element={<Login/>} />
                         <Route path='/home' element={<Home/> } />
                         {/* Páginas */}
                         <Route path='/elenco' element={<Elenco/>} />

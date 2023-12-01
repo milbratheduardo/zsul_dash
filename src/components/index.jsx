@@ -8,3 +8,9 @@ export { default as Chat } from './Chat';
 export { default as Notification } from './Notification';
 export { default as UserProfile } from './UserProfile';
 export { default as Header } from './Header';
+export { default as LoginComponent } from './Login';
+export { default as SignupComponent } from './Signup';
+export { default as HeaderLogin } from './HeaderLogin';
+export { default as FormAction } from './FormAction';
+export { default as FormExtra } from './FormExtra';
+
