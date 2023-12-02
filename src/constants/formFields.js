@@ -53,14 +53,14 @@ const signupFields=[
         placeholder:"Senha"  
     },
     {
-        labelText:"Confirm Password",
+        labelText:"Confirme a Senha",
         labelFor:"confirm-password",
         id:"confirm-password",
         name:"confirm-password",
         type:"password",
         autoComplete:"confirm-password",
         isRequired:true,
-        placeholder:"Confirm Password"   
+        placeholder:"Confirme a Senha"   
     },
     {
         labelText:"Cidade",

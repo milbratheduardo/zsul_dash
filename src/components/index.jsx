@@ -11,6 +11,7 @@ export { default as Header } from './Header';
 export { default as LoginComponent } from './Login';
 export { default as SignupComponent } from './Signup';
 export { default as HeaderLogin } from './HeaderLogin';
+export { default as HeaderSignup } from './HeaderSignup';
 export { default as FormAction } from './FormAction';
 export { default as FormExtra } from './FormExtra';
 
