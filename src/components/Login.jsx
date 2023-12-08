@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { loginFields } from "../constants/formFields";
 import  Input from "./Input";
-import FormAction from './FormAction';
+import LoginAction from './LoginAction';
 import FormExtra from './FormExtra';
 
 const fields=loginFields;
@@ -46,7 +46,7 @@ const LoginComponent = () => {
             }
         </div>      
         <FormExtra />
-        <FormAction handleSubmit={handleSubmit} text='Login'/>
+        <LoginAction handleSubmit={handleSubmit} text='Login'/>
       </form>
   )
 }

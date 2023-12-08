@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { signupFields } from "../constants/formFields"
-import FormAction from "./FormAction";
+import LoginAction from "./LoginAction";
 import Input from "./Input";
 
 const fields=signupFields;
@@ -45,7 +45,7 @@ const SignupComponent = () => {
                 
             )
           }
-          <FormAction handleSubmit={handleSubmit} text="Cadastre-se" />
+          <LoginAction handleSubmit={handleSubmit} text="Cadastre-se" />
         </div>
 
          
