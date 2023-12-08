@@ -14,4 +14,6 @@ export { default as HeaderLogin } from './HeaderLogin';
 export { default as HeaderSignup } from './HeaderSignup';
 export { default as FormAction } from './FormAction';
 export { default as FormExtra } from './FormExtra';
+export { default as ModalAtleta } from './ModalAtleta';
+export { default as HeaderModal } from './HeaderModal';
 

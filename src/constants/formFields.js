@@ -84,4 +84,93 @@ const signupFields=[
     }
 ]
 
-export {loginFields,signupFields}
+const ModalAtletaFields = [
+    {
+        labelText:"Nome do Atleta",
+        labelFor:"nome",
+        id:"nome",
+        name:"nome",
+        type:"text",
+        autoComplete:"nome",
+        isRequired:true,
+        placeholder:"Nome do Atleta"   
+    },
+    {
+        labelText:"Data de Nascimento",
+        labelFor:"nascimento",
+        id:"nascimento",
+        name:"nascimento",
+        type:"text",
+        autoComplete:"nascimento",
+        isRequired:true,
+        placeholder:"Data de Nascimento"   
+    },
+    {
+        labelText:"Documento",
+        labelFor:"documento",
+        id:"documento",
+        name:"documento",
+        type:"text",
+        autoComplete:"documento",
+        isRequired:true,
+        placeholder:"RG/CPF"  
+    },
+    {
+        labelText:"Escola",
+        labelFor:"escola",
+        id:"escola",
+        name:"escola",
+        type:"text",
+        autoComplete:"escola",
+        isRequired:true,
+        placeholder:"Escola"  
+    },
+    {
+        labelText: "Categoria",
+        labelFor: "categoria",
+        id: "categoria",
+        name: "categoria",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "sub9", label: "Sub-9" },
+        { value: "sub11", label: "Sub-11" },
+        { value: "sub13", label: "Sub-13" },
+        { value: "sub15", label: "Sub-15" },
+        { value: "sub17", label: "Sub-17" },
+        ],
+        placeholder: "Categoria",
+    },
+    {
+        labelText:"RG Frente",
+        labelFor:"rgfrente",
+        id:"rgfrente",
+        name:"rgfrente",
+        type:"file",
+        autoComplete:"rgfrente",
+        isRequired:true,
+        placeholder:"Frente do RG"   
+    },
+    {
+        labelText:"RG Verso",
+        labelFor:"rgverso",
+        id:"rgverso",
+        name:"rgverso",
+        type:"file",
+        autoComplete:"rgverso",
+        isRequired:true,
+        placeholder:"Verso do RG" 
+    },
+    {
+        labelText:"Foto do Atleta",
+        labelFor:"foto",
+        id:"foto",
+        name:"foto",
+        type:"file",
+        autoComplete:"foto",
+        isRequired:true,
+        placeholder:"Foto do Atleta" 
+    }
+]
+
+export {loginFields,signupFields,ModalAtletaFields}

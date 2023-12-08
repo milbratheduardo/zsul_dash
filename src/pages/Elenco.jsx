@@ -1,10 +1,5 @@
-import React from 'react';
-import { GridComponent, ColumnsDirective, ColumnDirective, 
-Resize, Sort, ContextMenu, Filter, Page, ExcelExport, 
-PdfExport, Edit, Inject } from '@syncfusion/ej2-react-grids';
-
-import { ordersData, contextMenuItems, ordersGrid } from '../data/dummy';
-import { Header, Button } from '../components';
+import React, { Fragment, useState } from 'react';
+import { Header, Button, ModalAtleta, TabelaAtletas } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -13,6 +8,8 @@ import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 const Elenco = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
+  const [showModal, setShowModal] =   useState(false);
+
 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
@@ -48,6 +45,7 @@ const Elenco = () => {
           </div>
 
           {themeSettings && <ThemeSettings />}
+          <Fragment>
             <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Header category='Clube' title='Elenco' />
@@ -57,25 +55,19 @@ const Elenco = () => {
                   text='Adicionar Atleta'
                   borderRadius='10px'
                   size='md'
+                  onClick={() => {
+                    setShowModal(true);
+                  }}
                 />
               </div>
-              <GridComponent
-                id='gridcomp'
-                dataSource={ordersData}
-                allowPaging
-                allowSorting
-              >
-                <ColumnsDirective>
-                  {ordersGrid.map((item, index) => (
-                    <ColumnDirective key={index} {...item}/>
-                  ))}
-                </ColumnsDirective>
-                <Inject services={[
-                  Resize, Sort, ContextMenu, Filter,
-                  Page, ExcelExport, Edit, PdfExport
-                ]}/>
-              </GridComponent>
+              
+              <ModalAtleta isVisible={showModal} currentColor={currentColor}  onClose={() => {
+                setShowModal(false);
+                }}/>
+              
+              
             </div>
+            </Fragment>
           </div>
         </div>
       </div>
