@@ -173,4 +173,62 @@ const ModalAtletaFields = [
     }
 ]
 
-export {loginFields,signupFields,ModalAtletaFields}
+const ModalStaffFields = [
+    {
+        labelText:"Nome do Membro do Staff",
+        labelFor:"nome",
+        id:"nome",
+        name:"nome",
+        type:"text",
+        autoComplete:"nome",
+        isRequired:true,
+        placeholder:"Nome do Membro do Staff"   
+    },
+    {
+        labelText:"Data de Nascimento",
+        labelFor:"nascimento",
+        id:"nascimento",
+        name:"nascimento",
+        type:"text",
+        autoComplete:"nascimento",
+        isRequired:true,
+        placeholder:"Data de Nascimento"   
+    },
+    {
+        labelText:"Documento",
+        labelFor:"documento",
+        id:"documento",
+        name:"documento",
+        type:"text",
+        autoComplete:"documento",
+        isRequired:true,
+        placeholder:"RG/CPF"  
+    },
+    {
+        labelText: "Cargo",
+        labelFor: "cargo",
+        id: "cargo",
+        name: "cargo",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "tecnico", label: "Técnico" },
+        { value: "medico", label: "Médico" },
+        { value: "preparador fisico", label: "Preparador Físico" },
+        { value: "diretor", label: "Diretor" },
+        ],
+        placeholder: "Cargo",
+    },
+    {
+        labelText:"Foto do Membro do Staff",
+        labelFor:"foto",
+        id:"foto",
+        name:"foto",
+        type:"file",
+        autoComplete:"foto",
+        isRequired:true,
+        placeholder:"Foto do Membro do Staff" 
+    }
+]
+
+export {loginFields,signupFields,ModalAtletaFields,ModalStaffFields}

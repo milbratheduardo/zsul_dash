@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective,
 Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 
-import { employeesData, employeesGrid } from '../data/dummy';
-import { Header } from '../components';
+import { Header, Button, ModalStaff} from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -13,6 +12,20 @@ import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 const ComissaoTecnica = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
+  
+  const [showModal, setShowModal] =   useState(false);
+
+  const staff = [
+      { nome: 'Staff 1', documento: '123456789', cargo: 'Técnico' },
+      { nome: 'Staff 2', documento: '987654321', cargo: 'Diretor' },
+  ];
+  
+  const staffGrid = [
+      { field: 'nome', headerText: 'Staff', width: '150', textAlign: 'Center' },
+      { field: 'documento', headerText: 'Documento', width: '150', textAlign: 'Center' },
+      { field: 'cargo', headerText: 'Cargo', width: '150', textAlign: 'Center' },
+  ];
+
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -47,24 +60,44 @@ const ComissaoTecnica = () => {
           </div>
 
           {themeSettings && <ThemeSettings />}
-            <div className='m-2 md:m-10 p-2 md:p-10
-            bg-white rounded-3xl'>
-              <Header category='Clube' title='Comissão Técnica' />
+
+          <ModalStaff isVisible={showModal} currentColor={currentColor}  onClose={() => {
+              setShowModal(false);
+          }}/>
+          {!showModal && (
+            <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Header category='Clube' title='Comissão Técnica' />
+                <Button 
+                  color='white'
+                  bgColor={currentColor}
+                  text='Adicionar Staff'
+                  borderRadius='10px'
+                  size='md'
+                  onClick={() => {
+                    setShowModal(true);
+                  }}
+                />
+              </div>          
+              
+
               <GridComponent
-                dataSource={employeesData}
+                dataSource={staff}
                 allowPaging
                 allowSorting
                 toolbar={['Search']}
                 width='auto'
               >
                 <ColumnsDirective>
-                  {employeesGrid.map((item, index) => (
+                  {staffGrid.map((item, index) => (
                     <ColumnDirective key={index} {...item}/>
                   ))}
                 </ColumnsDirective>
                 <Inject services={[Page, Search, Toolbar]}/>
-              </GridComponent>
+              </GridComponent>           
+              
             </div>
+          )}
           </div>
         </div>
       </div>
