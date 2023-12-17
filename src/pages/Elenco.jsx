@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective,
   Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
-import { Header, Button, ModalAtleta } from '../components';
+import { Header, Button, ModalAtleta, ModalAtletasOpcoes,  } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -11,6 +11,15 @@ const Elenco = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
   const [showModal, setShowModal] =   useState(false);
+  const [showAtletasOpcoes, setShowAtletasOpcoes] = useState(false);
+  const [selectedAtleta, setSelectedAtleta] = useState(null);
+  
+  const handleAtletaClick = (nome, documento) => {
+    setSelectedAtleta({ nome, documento });
+    setShowAtletasOpcoes(true);
+  };
+  
+
 
   const atletas = [
     { nome: 'Atleta 1', documento: '123456789', categoria: 'Sub-9' },
@@ -18,7 +27,10 @@ const Elenco = () => {
   ];
 
   const atletasGrid = [
-    { field: 'nome', headerText: 'Atleta', width: '150', textAlign: 'Center' },
+    { field: 'nome', headerText: 'Atleta', width: '150', textAlign: 'Center', 
+      template: ({nome, documento}) => (
+      <a href="#" onClick={() => handleAtletaClick(nome, documento)}>{nome}</a>
+    )},
     { field: 'documento', headerText: 'Documento', width: '150', textAlign: 'Center' },
     { field: 'categoria', headerText: 'Categoria', width: '150', textAlign: 'Center' },
   ];
@@ -58,11 +70,23 @@ const Elenco = () => {
           </div>
 
           {themeSettings && <ThemeSettings />}
-          <ModalAtleta isVisible={showModal} currentColor={currentColor}  onClose={() => {
+
+          <ModalAtleta 
+            isVisible={showModal} 
+            currentColor={currentColor}  
+            onClose={() => {
               setShowModal(false);
           }}/>
+          <ModalAtletasOpcoes 
+            isVisible={showAtletasOpcoes} 
+            atleta={selectedAtleta}
+            atletaNome={selectedAtleta ? selectedAtleta.nome : ''}
+            onClose={() => {
+              setShowAtletasOpcoes(false);
+            }} 
+          />
           
-          {!showModal && (
+          {!showModal && !showAtletasOpcoes && (
             <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Header category='Clube' title='Elenco' />
@@ -76,7 +100,9 @@ const Elenco = () => {
                     setShowModal(true);
                   }}
                 />
-              </div>            
+              </div>             
+             
+       
               
 
               <GridComponent

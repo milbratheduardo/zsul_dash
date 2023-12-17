@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective,
 Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 
-import { Header, Button, ModalStaff} from '../components';
+import { Header, Button, ModalStaff, ModalStaffOpcoes} from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -14,6 +14,13 @@ const ComissaoTecnica = () => {
     currentColor, currentMode } = useStateContext();
   
   const [showModal, setShowModal] =   useState(false);
+  const [showStaffOpcoes, setShowStaffOpcoes] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  
+  const handleStaffClick = (nome, documento) => {
+    setSelectedStaff({ nome, documento });
+    setShowStaffOpcoes(true);
+  };
 
   const staff = [
       { nome: 'Staff 1', documento: '123456789', cargo: 'Técnico' },
@@ -21,7 +28,10 @@ const ComissaoTecnica = () => {
   ];
   
   const staffGrid = [
-      { field: 'nome', headerText: 'Staff', width: '150', textAlign: 'Center' },
+      { field: 'nome', headerText: 'Staff', width: '150', textAlign: 'Center', 
+        template: ({nome, documento}) => (
+        <a href="#" onClick={() => handleStaffClick(nome, documento)}>{nome}</a>
+      )},
       { field: 'documento', headerText: 'Documento', width: '150', textAlign: 'Center' },
       { field: 'cargo', headerText: 'Cargo', width: '150', textAlign: 'Center' },
   ];
@@ -61,10 +71,22 @@ const ComissaoTecnica = () => {
 
           {themeSettings && <ThemeSettings />}
 
-          <ModalStaff isVisible={showModal} currentColor={currentColor}  onClose={() => {
+          <ModalStaff 
+            isVisible={showModal} 
+            currentColor={currentColor}  
+            onClose={() => {
               setShowModal(false);
           }}/>
-          {!showModal && (
+
+          <ModalStaffOpcoes 
+            isVisible={showStaffOpcoes} 
+            atleta={selectedStaff}
+            staffNome={selectedStaff ? selectedStaff.nome : ''}
+            onClose={() => {
+              setShowStaffOpcoes(false);
+            }} 
+          />
+          {!showModal && !showStaffOpcoes && (
             <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Header category='Clube' title='Comissão Técnica' />
