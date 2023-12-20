@@ -41,13 +41,19 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome }) => {
               <form className='mt-4 space-y-4'>    
                 
                 <div className='flex flex-wrap justify-center gap-2'>
-                  <button className='bg-blue-500 text-white py-2 px-4 rounded w-full sm:w-1/2'>Gerar Carteirinha</button>
-                  <button className='bg-green-500 text-white py-2 px-4 rounded w-full sm:w-1/2'>Solicitar Transferência</button>
+                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
+                    backgroundColor: '#1A97F5'}}>Gerar Carteirinha</button>
+                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
+                    backgroundColor: '#03C9D7'}}>Solicitar Transferência</button>
                   <div className='w-full' aria-hidden='true'></div>
-                  <button className='bg-red-500 text-white py-2 px-4 rounded w-full sm:w-1/2'>Demitir Atleta</button>
-                  <button className='bg-yellow-500 text-white py-2 px-4 rounded w-full sm:w-1/2'>Inscrever em Campeonato</button>
+                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
+                    backgroundColor: '#FF5C8E'}}>Demitir Atleta</button>
+                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
+                    backgroundColor: '#7352FF'}}>Inscrever em Campeonato</button>
                   <div className='w-full' aria-hidden='true'></div>
-                  <button className='bg-purple-500 text-white py-2 px-4 rounded w-full sm:w-1/2'>Estatísticas</button>
+                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
+                    backgroundColor: '#FB9678'}}>Estatísticas</button>
+                  <div className='w-full' aria-hidden='true'></div>
                 </div>    
                 
               </form>
