@@ -231,4 +231,86 @@ const ModalStaffFields = [
     }
 ]
 
-export {loginFields,signupFields,ModalAtletaFields,ModalStaffFields}
+const ModalCompeticaoFields = [
+    {
+        labelText:"Nome da Competição",
+        labelFor:"nome",
+        id:"nome",
+        name:"nome",
+        type:"text",
+        autoComplete:"nome",
+        isRequired:true,
+        placeholder:"Nome da Competição"   
+    },
+    {
+        labelText:"Data de Início",
+        labelFor:"inicio",
+        id:"inicio",
+        name:"inicio",
+        type:"text",
+        autoComplete:"inicio",
+        isRequired:true,
+        placeholder:"Data de Início"   
+    },
+    {
+        labelText: "Categoria",
+        labelFor: "categoria",
+        id: "categoria",
+        name: "categoria",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "sub9", label: "Sub-9" },
+        { value: "sub11", label: "Sub-11" },
+        { value: "sub13", label: "Sub-13" },
+        { value: "sub15", label: "Sub-15" },
+        { value: "sub17", label: "Sub-17" },
+        ],
+        placeholder: "Categoria",
+    },
+    {
+        labelText: "Tipo",
+        labelFor: "tipo",
+        id: "tipo",
+        name: "tipo",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "Grupos + Eliminacao", label: "Grupos + Eliminação" },
+        { value: "Eliminacao", label: "Eliminação" }
+        ],
+        placeholder: "Tipo da Competição",
+    },
+    {
+        labelText:"Cidade da Competição",
+        labelFor:"cidade",
+        id:"cidade",
+        name:"cidade",
+        type:"text",
+        autoComplete:"cidade",
+        isRequired:true,
+        placeholder:"Cidade da Competição" 
+    },
+    {
+        labelText:"Número de Participantes",
+        labelFor:"numeroparticipantes",
+        id:"numeroparticipantes",
+        name:"numeroparticipantes",
+        type:"number",
+        autoComplete:"numeroparticipantes",
+        isRequired:true,
+        placeholder:"Número de Participantes" 
+    },
+    {
+        labelText:"Logo da Competição",
+        labelFor:"logo",
+        id:"logo",
+        name:"logo",
+        type:"file",
+        autoComplete:"logo",
+        isRequired:true,
+        placeholder:"Logo da Competição" 
+    }
+]
+
+export {loginFields,signupFields,ModalAtletaFields,ModalStaffFields, ModalCompeticaoFields}

@@ -1,20 +1,16 @@
-import React from 'react';
-import { GridComponent, ColumnsDirective, ColumnDirective, 
-Page, Selection, Inject, Edit, Toolbar, 
-Sort, Filter } from '@syncfusion/ej2-react-grids/src';
-
-import { customersData, customersGrid } from '../data/dummy';
-import { Header } from '../components';
+import React, {useState} from 'react';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
+import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button, CardCompetition, ModalCompeticao} from '../components';
 
 
 
 const Campeonatos = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
+  
+  const [showModal, setShowModal] =   useState(false);
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -49,25 +45,40 @@ const Campeonatos = () => {
           </div>
 
           {themeSettings && <ThemeSettings />}
+
+            <ModalCompeticao
+              isVisible={showModal} 
+              currentColor={currentColor}  
+              onClose={() => {
+                setShowModal(false);
+            }}/>
             <div className='m-2 md:m-10 p-2 md:p-10
             bg-white rounded-3xl'>
-              <Header category='Clube' title='Campeonatos' />
-              <GridComponent
-                dataSource={customersData}
-                allowPaging
-                allowSorting
-                toolbar={['Delete']}
-                editSettings={{allowDeleting: true, allowEditing: true}}
-                width='auto'
-              >
-                <ColumnsDirective>
-                  {customersGrid.map((item, index) => (
-                    <ColumnDirective key={index} {...item}/>
-                  ))}
-                </ColumnsDirective>
-                <Inject services={[Page, Toolbar, Selection, Edit,
-                Sort, Filter]}/>
-              </GridComponent>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Header category='Clube' title='Campeonatos' />
+                  <Button 
+                      color='white'
+                      bgColor={currentColor}
+                      text='Criar Campeonato'
+                      borderRadius='10px'
+                      size='md'
+                      onClick={() => {
+                        setShowModal(true);
+                      }}
+                    />
+               </div> 
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <CardCompetition
+                    image="url_da_imagem.jpg"
+                    title="ZSUL de Verão"
+                    category="Sub-15"
+                    type="Grupos + Mata Mata"
+                    participants="16"
+                    vacancies="3"
+                    date="15/01/2024"
+                    city="Rio Grande"
+                  />
+              </div>  
             </div>
           </div>
         </div>
