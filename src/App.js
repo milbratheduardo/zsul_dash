@@ -3,10 +3,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Calendario, Campeonatos, ComissaoTecnica, 
     Elenco, Home, MeuPerfil, Tarefas, Login, Signup } from './pages';
 import './App.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {  
     return (
         <BrowserRouter>
+         <ToastContainer position="top-center" autoClose={5000} hideProgressBar />
             <Routes>
               {/* Dashboard */}
               <Route path='/' element={<Login/>} />
