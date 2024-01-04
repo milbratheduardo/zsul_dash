@@ -40,7 +40,7 @@ const SignupComponent = () => {
         toast.success('Conta criada com sucesso!', {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate('/login') 
+          onClose: () => navigate('/') 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 
@@ -56,7 +56,20 @@ const SignupComponent = () => {
 
     return(
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-        {errorMessage && <div className="error-message">{errorMessage}</div>}
+        {errorMessage && 
+          <div 
+            style={{
+              backgroundColor: 'red', 
+              color: 'white',         
+              padding: '10px',       
+              borderRadius: '5px',    
+              textAlign: 'center',    
+              marginBottom: '10px'    
+            }}
+          >
+            {errorMessage}
+          </div>
+        }
         <div className="">
         {
           fields.map(field=>

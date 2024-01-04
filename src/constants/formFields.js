@@ -2,7 +2,7 @@ const loginFields=[
     {
         labelText:"Email",
         labelFor:"email",
-        id:"email-address",
+        id:"email",
         name:"email",
         type:"email",
         autoComplete:"email",
@@ -12,8 +12,8 @@ const loginFields=[
     {
         labelText:"Senha",
         labelFor:"senha",
-        id:"senha",
-        name:"senha",
+        id:"password",
+        name:"password",
         type:"password",
         autoComplete:"current-password",
         isRequired:true,
@@ -25,8 +25,8 @@ const signupFields=[
     {
         labelText:"Nome",
         labelFor:"nome",
-        id:"nome",
-        name:"nome",
+        id:"teamName",
+        name:"teamName",
         type:"text",
         autoComplete:"nome",
         isRequired:true,
@@ -35,7 +35,7 @@ const signupFields=[
     {
         labelText:"Email",
         labelFor:"email",
-        id:"email-address",
+        id:"email",
         name:"email",
         type:"email",
         autoComplete:"email",
@@ -44,8 +44,8 @@ const signupFields=[
     },
     {
         labelText:"Senha",
-        labelFor:"senha",
-        id:"senha",
+        labelFor:"password",
+        id:"password",
         name:"senha",
         type:"password",
         autoComplete:"current-password",
@@ -54,8 +54,8 @@ const signupFields=[
     },
     {
         labelText:"Confirme a Senha",
-        labelFor:"confirm-password",
-        id:"confirm-password",
+        labelFor:"confirmPassword",
+        id:"confirmPassword",
         name:"confirm-password",
         type:"password",
         autoComplete:"confirm-password",
@@ -65,7 +65,7 @@ const signupFields=[
     {
         labelText:"Cidade",
         labelFor:"cidade",
-        id:"cidade",
+        id:"city",
         name:"cidade",
         type:"text",
         autoComplete:"cidade",
@@ -75,7 +75,7 @@ const signupFields=[
     {
         labelText:"Estado",
         labelFor:"estado",
-        id:"estado",
+        id:"state",
         name:"estado",
         type:"text",
         autoComplete:"estado",

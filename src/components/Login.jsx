@@ -3,6 +3,7 @@ import { loginFields } from "../constants/formFields";
 import  Input from "./Input";
 import LoginAction from './LoginAction';
 import FormExtra from './FormExtra';
+import { useNavigate } from 'react-router-dom';
 
 const fields=loginFields;
 let fieldsState = {};
@@ -10,6 +11,8 @@ fields.forEach(field=>fieldsState[field.id]='');
 
 const LoginComponent = () => {
   const [loginState,setLoginState]=useState(fieldsState);
+  const navigate = useNavigate();
+
 
   const handleChange=(e)=>{
       setLoginState({...loginState,[e.target.id]:e.target.value})
@@ -20,9 +23,36 @@ const LoginComponent = () => {
     authenticateUser();
   }
 
-  const authenticateUser = () =>{
-
-  }
+  const authenticateUser = async () => {
+    try {
+      const loginData = {
+        email: loginState.email,
+        password: loginState.password,
+      };
+  
+      const loginDataJson = JSON.stringify(loginData);
+      const url = "http://localhost:3000/users/login";
+      console.log(loginState)
+  
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: loginDataJson
+      })
+      
+      .then(response => response.json())
+      .then(data => {
+        console.log(`Data: ${JSON.stringify(data)}`);      
+      })
+      .catch((error) => {
+        console.error(`Fetch error: ${error}`);      
+      });
+    } catch (error) {
+      console.error(`Authentication error: ${error}`);
+    }
+  };
 
   return (
     <form className="mt-8 space-y-6">
