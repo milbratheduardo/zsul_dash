@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
@@ -6,7 +6,34 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
 const MeuPerfil = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
+  const [userInfo, setUserInfo] = useState({});
+  const user = JSON.parse(localStorage.getItem('user')) || {};
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userId = user.data.id;
+      try {
+        const response = await fetch(`http://localhost:3000/users/${userId}`);
+       
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data);
+          console.log(data);
+        } else {
+          console.error('Erro ao buscar dados do usuário');
+        }
+      } catch (error) {
+        console.error('Erro na solicitação:', error);
+      }
+    };
+
+    if (user.data.id) {
+      fetchUserInfo();
+    }
+  }, [user.data.id]); 
+
+
+  
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -66,45 +93,21 @@ const MeuPerfil = () => {
                       <img alt="Perfil" src="https://via.placeholder.com/150" className="shadow-xl rounded-full h-auto align-middle border-none max-w-150-px" />
                     </div>
                     </div>
-                    <div class="w-full px-4 text-center mt-20">
-                      <div class="flex justify-center py-4 lg:pt-4 pt-8">
-                        <div class="mr-4 p-3 text-center">
-                          <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                            22
-                          </span>
-                          <span class="text-sm text-blueGray-400">Atletas</span>
-                        </div>
-                        <div class="mr-4 p-3 text-center">
-                          <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                            10
-                          </span>
-                          <span class="text-sm text-blueGray-400">Staff</span>
-                        </div>
-                        <div class="lg:mr-4 p-3 text-center">
-                          <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                            89
-                          </span>
-                          <span class="text-sm text-blueGray-400">Campeonatos</span>
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                  <div class="text-center mt-12">
-                    <h3 class="text-xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                      Porto da Vila
+                  <div className="text-center mt-12">
+                    <h3 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
+                    {userInfo.data.teamName || 'Carregando...'}
                     </h3>
-                    <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                      <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
-                      Rio Grande, RS
+                    <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                      {userInfo.data.city || 'Carregando...'}
                     </div>
-                    <div class="mb-2 text-blueGray-600 mt-10">
-                      <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
-                      teste@teste.com
+                    <div className="mb-2 text-blueGray-600 mt-10">
+                      {userInfo.data.email || 'Carregando...'}
                     </div>
                   </div>
-                  <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
-                    <div class="flex flex-wrap justify-center">
-                      <div class="w-full lg:w-9/12 px-4">
+                  <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
+                    <div className="flex flex-wrap justify-center">
+                      <div className="w-full lg:w-9/12 px-4">
                       </div>
                     </div>
                   </div>

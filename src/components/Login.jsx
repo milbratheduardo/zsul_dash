@@ -34,6 +34,7 @@ const LoginComponent = () => {
       const data = await response.json();
       if (response.ok) {
         console.log('Login successful:', data);
+        localStorage.setItem('user', JSON.stringify(data));
         navigate('/home'); 
       } else {
         setErrorMessage(data.message || 'Erro no login');
@@ -51,7 +52,20 @@ const LoginComponent = () => {
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && 
+          <div 
+            style={{
+              backgroundColor: 'red', 
+              color: 'white',         
+              padding: '10px',       
+              borderRadius: '5px',    
+              textAlign: 'center',    
+              marginBottom: '10px'    
+            }}
+          >
+            {errorMessage}
+          </div>
+        }
       <div className="-space-y-px">
         {fields.map(field => (
           <Input

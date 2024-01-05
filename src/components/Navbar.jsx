@@ -24,6 +24,7 @@ const Navbar = () => {
   const { activeMenu, setActiveMenu, isClicked, 
   setIsClicked, handleClick, screenSize, 
   setScreenSize, currentColor } = useStateContext();
+  const user = JSON.parse(localStorage.getItem('user')) || {};
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
@@ -65,7 +66,7 @@ const Navbar = () => {
             />
             <p>
               <span className='text-gray-400 font-bold ml-1 text-14'>
-                Porto da Vila
+                {user.data.teamName}
               </span>
             </p>
             <MdKeyboardArrowDown className='text-gray-400 text-14' />
