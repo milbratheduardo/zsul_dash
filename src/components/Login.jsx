@@ -34,7 +34,7 @@ const LoginComponent = () => {
       const data = await response.json();
       if (response.ok) {
         console.log('Login successful:', data);
-        navigate('/home'); // Altere para a rota desejada após o login
+        navigate('/home'); 
       } else {
         setErrorMessage(data.message || 'Erro no login');
       }
