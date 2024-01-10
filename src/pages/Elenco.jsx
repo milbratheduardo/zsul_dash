@@ -13,6 +13,10 @@ const Elenco = () => {
   const [showModal, setShowModal] =   useState(false);
   const [showAtletasOpcoes, setShowAtletasOpcoes] = useState(false);
   const [selectedAtleta, setSelectedAtleta] = useState(null);
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const teamId = user.data.id || null;
+
+
   
   const handleAtletaClick = (nome, documento) => {
     setSelectedAtleta({ nome, documento });
@@ -70,10 +74,11 @@ const Elenco = () => {
           </div>
 
           {themeSettings && <ThemeSettings />}
-
+          
           <ModalAtleta 
             isVisible={showModal} 
-            currentColor={currentColor}  
+            currentColor={currentColor} 
+            teamId = {teamId} 
             onClose={() => {
               setShowModal(false);
           }}/>

@@ -88,8 +88,8 @@ const ModalAtletaFields = [
     {
         labelText:"Nome do Atleta",
         labelFor:"nome",
-        id:"nome",
-        name:"nome",
+        id:"name",
+        name:"name",
         type:"text",
         autoComplete:"nome",
         isRequired:true,
@@ -98,8 +98,8 @@ const ModalAtletaFields = [
     {
         labelText:"Data de Nascimento",
         labelFor:"nascimento",
-        id:"nascimento",
-        name:"nascimento",
+        id:"dateOfBirth",
+        name:"dateOfBirth",
         type:"text",
         autoComplete:"nascimento",
         isRequired:true,
@@ -108,8 +108,8 @@ const ModalAtletaFields = [
     {
         labelText:"Documento",
         labelFor:"documento",
-        id:"documento",
-        name:"documento",
+        id:"documentNumber",
+        name:"documentNumber",
         type:"text",
         autoComplete:"documento",
         isRequired:true,
@@ -118,8 +118,8 @@ const ModalAtletaFields = [
     {
         labelText:"Escola",
         labelFor:"escola",
-        id:"escola",
-        name:"escola",
+        id:"school",
+        name:"school",
         type:"text",
         autoComplete:"escola",
         isRequired:true,
@@ -128,8 +128,8 @@ const ModalAtletaFields = [
     {
         labelText: "Categoria",
         labelFor: "categoria",
-        id: "categoria",
-        name: "categoria",
+        id: "category",
+        name: "category",
         type: "dropdown",
         isRequired: true,
         options: [
@@ -144,31 +144,31 @@ const ModalAtletaFields = [
     {
         labelText:"RG Frente",
         labelFor:"rgfrente",
-        id:"rgfrente",
-        name:"rgfrente",
+        id:"RGFrente",
+        name:"RGFrente",
         type:"file",
         autoComplete:"rgfrente",
-        isRequired:true,
+        isRequired:false,
         placeholder:"Frente do RG"   
     },
     {
         labelText:"RG Verso",
         labelFor:"rgverso",
-        id:"rgverso",
-        name:"rgverso",
+        id:"RGVerso",
+        name:"RGVerso",
         type:"file",
         autoComplete:"rgverso",
-        isRequired:true,
+        isRequired:false,
         placeholder:"Verso do RG" 
     },
     {
         labelText:"Foto do Atleta",
         labelFor:"foto",
-        id:"foto",
-        name:"foto",
+        id:"fotoAtleta",
+        name:"fotoAtleta",
         type:"file",
         autoComplete:"foto",
-        isRequired:true,
+        isRequired:false,
         placeholder:"Foto do Atleta" 
     }
 ]
