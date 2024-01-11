@@ -177,8 +177,8 @@ const ModalStaffFields = [
     {
         labelText:"Nome do Membro do Staff",
         labelFor:"nome",
-        id:"nome",
-        name:"nome",
+        id:"name",
+        name:"name",
         type:"text",
         autoComplete:"nome",
         isRequired:true,
@@ -187,8 +187,8 @@ const ModalStaffFields = [
     {
         labelText:"Data de Nascimento",
         labelFor:"nascimento",
-        id:"nascimento",
-        name:"nascimento",
+        id:"dateOfBirth",
+        name:"dateOfBirth",
         type:"text",
         autoComplete:"nascimento",
         isRequired:true,
@@ -197,8 +197,8 @@ const ModalStaffFields = [
     {
         labelText:"Documento",
         labelFor:"documento",
-        id:"documento",
-        name:"documento",
+        id:"documentNumber",
+        name:"documentNumber",
         type:"text",
         autoComplete:"documento",
         isRequired:true,
@@ -222,8 +222,8 @@ const ModalStaffFields = [
     {
         labelText:"Foto do Membro do Staff",
         labelFor:"foto",
-        id:"foto",
-        name:"foto",
+        id:"fotoStaff",
+        name:"fotoStaff",
         type:"file",
         autoComplete:"foto",
         isRequired:true,

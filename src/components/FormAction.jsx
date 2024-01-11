@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FormAction = ({ handleSubmit, type = 'Button', action = 'submit', text, currentColor }) => {
+const FormAction = ({type = 'Button', action = 'submit', text, currentColor }) => {
   const buttonStyle = {
     backgroundColor: currentColor,
     hoverBackgroundColor: `${currentColor}-700`,
@@ -10,9 +10,8 @@ const FormAction = ({ handleSubmit, type = 'Button', action = 'submit', text, cu
     <div>
       {type === 'Button' ? (
         <button
-          type={action}
+          type="submit"
           className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-${currentColor}-600 hover:bg-${buttonStyle.hoverBackgroundColor} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 mt-10`}
-          onSubmit={handleSubmit}
           style={{ backgroundColor: buttonStyle.backgroundColor }}
         >
           {text}

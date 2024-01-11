@@ -3,27 +3,63 @@ import { ModalStaffFields } from '../constants/formFields';
 import Input from './Input';
 import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const fields = ModalStaffFields;
 let fieldsState = {};
 fields.forEach((field) => (fieldsState[field.id] = ''));
 
-const ModalStaff = ({ isVisible, onClose, currentColor }) => {
+const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
   if (!isVisible) return null;
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
   };
 
-  const handleChange = (e) => {
-    setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
-  };
-
+  const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+    adcStaff();
   };
+
+  const adcStaff = async () => {
+    const payload = {
+      ...modalFieldsState,
+      teamId,
+    }
+    try {
+      const response = await fetch('http://localhost:3000/staff/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await response.json();
+      if (data.status === 200) {
+        toast.success('Membro do Staff com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => navigate('/staff') 
+        });
+      } else if (data.status === 400 || data.status === 500) {
+        setErrorMessage(data.msg); 
+      } else {
+        console.log('Error:', data.msg);
+      }
+  
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    }
+  }
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -33,7 +69,21 @@ const ModalStaff = ({ isVisible, onClose, currentColor }) => {
         </button>
         <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
           <HeaderModal title='Cadastre novo Membro do Staff' heading='Preencha todos os dados' />
-          <form className='mt-4 space-y-4'>
+          <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
+            {errorMessage && 
+                <div 
+                  style={{
+                    backgroundColor: 'red', 
+                    color: 'white',         
+                    padding: '10px',       
+                    borderRadius: '5px',    
+                    textAlign: 'center',    
+                    marginBottom: '10px'    
+                  }}
+                >
+                  {errorMessage}
+                </div>
+              }
             <div className='-space-y-px'>
               {fields.map((field, index) => (
                 <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
@@ -77,7 +127,7 @@ const ModalStaff = ({ isVisible, onClose, currentColor }) => {
                 </div>
               ))}
             </div>
-            <FormAction handleSubmit={handleSubmit} currentColor={currentColor} text='Cadastrar' />
+            <FormAction currentColor={currentColor} text='Cadastrar' />
           </form>
         </div>
       </div>

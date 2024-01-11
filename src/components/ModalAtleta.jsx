@@ -3,6 +3,8 @@ import { ModalAtletaFields } from '../constants/formFields';
 import Input from './Input';
 import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const fields = ModalAtletaFields;
 let fieldsState = {};
@@ -13,6 +15,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
@@ -22,7 +25,6 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
   const handleSubmit=(e)=>{
     e.preventDefault();
-    console.log('Data:',setModalFieldsState)
     adcAtleta()
   }
 
@@ -41,12 +43,11 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
       });
       
       const data = await response.json();
-      console.log('Atleta Cadastrado:', data);
       if (data.status === 200) {
         toast.success('Atleta Cadastrado com sucesso!', {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate() 
+          onClose: () => navigate('/elenco') 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 
@@ -68,7 +69,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
         </button>
         <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
           <HeaderModal title='Cadastre novo Atleta' heading='Preencha todos os dados' />
-          <form className='mt-4 space-y-4'>
+          <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
               {errorMessage && 
               <div 
                 style={{
@@ -125,7 +126,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
                   )}
                 </div>
               ))}
-              <FormAction handleSubmit={handleSubmit} currentColor={currentColor} text='Cadastrar' />
+              <FormAction currentColor={currentColor} text='Cadastrar' />
             </div>
             
           </form>

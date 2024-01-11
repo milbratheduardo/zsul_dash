@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective,
   Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { Header, Button, ModalAtleta, ModalAtletasOpcoes,  } from '../components';
@@ -15,6 +15,7 @@ const Elenco = () => {
   const [selectedAtleta, setSelectedAtleta] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id || null;
+  const [atletas, setAtletas] = useState([]);
 
 
   
@@ -22,21 +23,34 @@ const Elenco = () => {
     setSelectedAtleta({ nome, documento });
     setShowAtletasOpcoes(true);
   };
+
+  useEffect(() => {
+    const fetchAtletas = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/elenco/team/${teamId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setAtletas(data.data);
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    if (teamId) {
+      fetchAtletas();
+    }
+  }, [teamId]);
   
 
-
-  const atletas = [
-    { nome: 'Atleta 1', documento: '123456789', categoria: 'Sub-9' },
-    { nome: 'Atleta 2', documento: '987654321', categoria: 'Sub-11' },
-  ];
-
   const atletasGrid = [
-    { field: 'nome', headerText: 'Atleta', width: '150', textAlign: 'Center', 
-      template: ({nome, documento}) => (
-      <a href="#" onClick={() => handleAtletaClick(nome, documento)}>{nome}</a>
+    { field: 'name', headerText: 'Atleta', width: '150', textAlign: 'Center', 
+      template: ({name, CPF}) => (
+      <a href="#" onClick={() => handleAtletaClick(name, CPF)}>{name}</a>
     )},
-    { field: 'documento', headerText: 'Documento', width: '150', textAlign: 'Center' },
-    { field: 'categoria', headerText: 'Categoria', width: '150', textAlign: 'Center' },
+    { field: 'CPF', headerText: 'Documento', width: '150', textAlign: 'Center' },
+    { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
   ];
 
 

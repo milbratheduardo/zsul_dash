@@ -16,6 +16,8 @@ const ComissaoTecnica = () => {
   const [showModal, setShowModal] =   useState(false);
   const [showStaffOpcoes, setShowStaffOpcoes] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const teamId = user.data.id || null;
   
   const handleStaffClick = (nome, documento) => {
     setSelectedStaff({ nome, documento });
@@ -73,6 +75,7 @@ const ComissaoTecnica = () => {
 
           <ModalStaff 
             isVisible={showModal} 
+            teamId={teamId}
             currentColor={currentColor}  
             onClose={() => {
               setShowModal(false);
