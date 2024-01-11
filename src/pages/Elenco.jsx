@@ -19,8 +19,8 @@ const Elenco = () => {
 
 
   
-  const handleAtletaClick = (nome, documento) => {
-    setSelectedAtleta({ nome, documento });
+  const handleAtletaClick = (name, CPF) => {
+    setSelectedAtleta({ name, CPF });
     setShowAtletasOpcoes(true);
   };
 
@@ -99,7 +99,7 @@ const Elenco = () => {
           <ModalAtletasOpcoes 
             isVisible={showAtletasOpcoes} 
             atleta={selectedAtleta}
-            atletaNome={selectedAtleta ? selectedAtleta.nome : ''}
+            atletaNome={selectedAtleta ? selectedAtleta.name : ''}
             onClose={() => {
               setShowAtletasOpcoes(false);
             }} 

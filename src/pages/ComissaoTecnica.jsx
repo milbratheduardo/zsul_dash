@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective,
 Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 
@@ -18,23 +18,38 @@ const ComissaoTecnica = () => {
   const [selectedStaff, setSelectedStaff] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id || null;
+  const [staff, setStaff] = useState([]);
   
-  const handleStaffClick = (nome, documento) => {
-    setSelectedStaff({ nome, documento });
+  const handleStaffClick = (name, CPF) => {
+    setSelectedStaff({ name, CPF });
     setShowStaffOpcoes(true);
   };
 
-  const staff = [
-      { nome: 'Staff 1', documento: '123456789', cargo: 'Técnico' },
-      { nome: 'Staff 2', documento: '987654321', cargo: 'Diretor' },
-  ];
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/staff/team/${teamId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setStaff(data.data);
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    if (teamId) {
+      fetchStaff();
+    }
+  }, [teamId]);
   
   const staffGrid = [
-      { field: 'nome', headerText: 'Staff', width: '150', textAlign: 'Center', 
-        template: ({nome, documento}) => (
-        <a href="#" onClick={() => handleStaffClick(nome, documento)}>{nome}</a>
+      { field: 'name', headerText: 'Staff', width: '150', textAlign: 'Center', 
+        template: ({name, CPF}) => (
+        <a href="#" onClick={() => handleStaffClick(name, CPF)}>{name}</a>
       )},
-      { field: 'documento', headerText: 'Documento', width: '150', textAlign: 'Center' },
+      { field: 'CPF', headerText: 'Documento', width: '150', textAlign: 'Center' },
       { field: 'cargo', headerText: 'Cargo', width: '150', textAlign: 'Center' },
   ];
 
@@ -84,7 +99,7 @@ const ComissaoTecnica = () => {
           <ModalStaffOpcoes 
             isVisible={showStaffOpcoes} 
             atleta={selectedStaff}
-            staffNome={selectedStaff ? selectedStaff.nome : ''}
+            staffNome={selectedStaff ? selectedStaff.name : ''}
             onClose={() => {
               setShowStaffOpcoes(false);
             }} 

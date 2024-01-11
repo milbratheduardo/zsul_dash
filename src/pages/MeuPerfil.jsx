@@ -7,6 +7,8 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 const MeuPerfil = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
   const [userInfo, setUserInfo] = useState({});
+  const [userAtletas, setUserAtletas] = useState([]);
+  const [userStaff, setUserStaff] = useState([]);
   const user = JSON.parse(localStorage.getItem('user')) || {};
 
   useEffect(() => {
@@ -32,7 +34,54 @@ const MeuPerfil = () => {
     }
   }, [user.data.id]); 
 
-  
+
+  useEffect(() => {
+    const fetchUserAtletas = async () => {
+      const userId = user.data.id;
+      try {
+        const responseAtletas = await fetch(`http://localhost:3000/elenco/team/${userId}`);
+
+        if (responseAtletas.ok) {
+          const dataAtletas = await responseAtletas.json();
+          setUserAtletas(dataAtletas);
+        } else {
+          console.error('Erro ao buscar atletas do usuário');
+        }
+      } catch (error) {
+        console.error('Erro na solicitação:', error);
+      }
+    };
+
+    if (user.data.id) {
+      fetchUserAtletas();
+    }
+  }, [user.data.id]);
+
+ 
+
+  useEffect(() => {
+    const fetchUserStaff = async () => {
+      const userId = user.data.id;
+      try {
+        const responseStaff = await fetch(`http://localhost:3000/staff/team/${userId}`);
+        console.log('Staff: ', responseStaff);
+        if (responseStaff.ok) {
+          const dataStaff = await responseStaff.json();
+          
+          setUserStaff(dataStaff);
+        } else {
+          console.error('Erro ao buscar staff do usuário');
+        }
+      } catch (error) {
+        console.error('Erro na solicitação:', error);
+      }
+    };
+
+    if (user.data.id) {
+      fetchUserStaff();
+    }
+  }, [user.data.id]);
+ 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -106,9 +155,26 @@ const MeuPerfil = () => {
                   </div>
                   <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
                     <div className="flex flex-wrap justify-center">
-                      <div className="w-full lg:w-9/12 px-4">
+                      <div className="w-full lg:w-9/12 px-4 flex justify-around">
+                        <div>
+                          <h4 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700">
+                            Atletas
+                          </h4>
+                          <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400">
+                            {userAtletas.data?.length ? userAtletas.data?.length : 'Carregando...'}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h4 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700">
+                            Staff
+                          </h4>
+                          <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 ">
+                            {userStaff.data?.length ? userStaff.data?.length : 'Carregando...'}
+                          </div>
                       </div>
                     </div>
+                  </div>
                   </div>
                 </div>
               </div>

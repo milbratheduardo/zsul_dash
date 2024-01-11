@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import { Button } from '../components';
 import { earningData } from '../data/dummy';
 import { useStateContext } from '../contexts/ContextProvider';
@@ -9,6 +9,33 @@ import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 const Home = () => {  
     const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
+    const user = JSON.parse(localStorage.getItem('user')) || {};
+    const [userAtletas, setUserAtletas] = useState([]);
+
+
+    useEffect(() => {
+      const fetchUserAtletas = async () => {
+        const userId = user.data.id;
+        try {
+          const responseAtletas = await fetch(`http://localhost:3000/elenco/team/${userId}`);
+  
+          if (responseAtletas.ok) {
+            const dataAtletas = await responseAtletas.json();
+            setUserAtletas(dataAtletas);
+          } else {
+            console.error('Erro ao buscar atletas do usuário');
+          }
+        } catch (error) {
+          console.error('Erro na solicitação:', error);
+        }
+      };
+  
+      if (user.data.id) {
+        fetchUserAtletas();
+      }
+    }, [user.data.id]);
+
+
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -50,7 +77,7 @@ const Home = () => {
                 <div className='flex justify-between items-center'>
                   <div>
                     <p className='font-bold text-gray-400'>Número de Atletas</p>
-                    <p className='text-2xl'>50</p>
+                    <p className='text-2xl'>{userAtletas.data?.length ? userAtletas.data?.length : 'Carregando...'}</p>
                   </div>
                 </div>
                 <div className='mt-6'>
