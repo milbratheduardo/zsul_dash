@@ -231,6 +231,19 @@ const ModalStaffFields = [
     }
 ]
 
+const ModalPerfilFields = [
+    {
+        labelText:"Logo da Equipe",
+        labelFor:"logo",
+        id:"logo",
+        name:"logo",
+        type:"file",
+        autoComplete:"logo",
+        isRequired:true,
+        placeholder:"Logo da Equipe" 
+    }
+]
+
 const ModalCompeticaoFields = [
     {
         labelText:"Nome da Competição",
@@ -313,4 +326,5 @@ const ModalCompeticaoFields = [
     }
 ]
 
-export {loginFields,signupFields,ModalAtletaFields,ModalStaffFields, ModalCompeticaoFields}
+export {loginFields,signupFields,ModalAtletaFields,
+    ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields}

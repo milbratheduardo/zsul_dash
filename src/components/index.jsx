@@ -22,4 +22,5 @@ export { default as ModalAtletasOpcoes } from './ModalAtletasOpcoes';
 export { default as ModalStaffOpcoes } from './ModalStaffOpcoes';
 export { default as CardCompetition } from './CardCompetition';
 export { default as ModalCompeticao } from './ModalCompeticao';
+export { default as ModalPerfil } from './ModalPerfil';
 

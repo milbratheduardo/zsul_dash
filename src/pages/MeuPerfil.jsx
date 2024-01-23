@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button } from '../components';
+import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button, ModalPerfil } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -7,9 +7,17 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 const MeuPerfil = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
   const [userInfo, setUserInfo] = useState({});
+  const [showModal, setShowModal] =   useState(false);
   const [userAtletas, setUserAtletas] = useState([]);
   const [userStaff, setUserStaff] = useState([]);
   const user = JSON.parse(localStorage.getItem('user')) || {};
+  const userId = user.data.id || null;
+  const getFilenameFromPath = (path) => {
+    return path.split('\\').pop(); 
+  };
+  
+  const imageUrl = userInfo.data?.picture ? `http://localhost:3000/uploads/${getFilenameFromPath(userInfo.data.picture)}` : "https://via.placeholder.com/150";
+  
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -20,7 +28,7 @@ const MeuPerfil = () => {
         if (response.ok) {
           const data = await response.json();
           setUserInfo(data);
-          console.log(data);
+          console.log('Dados: ', data);
         } else {
           console.error('Erro ao buscar dados do usuário');
         }
@@ -118,6 +126,14 @@ const MeuPerfil = () => {
 
           {themeSettings && <ThemeSettings />}
 
+          <ModalPerfil
+            isVisible={showModal} 
+            currentColor={currentColor} 
+            userId = {userId} 
+            onClose={() => {
+              setShowModal(false);
+          }}/>
+
           <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Header category='Perfil' title='Meu Perfil' />
@@ -128,17 +144,17 @@ const MeuPerfil = () => {
                   borderRadius='10px'
                   size='md'
                   onClick={() => {
-                    
+                    setShowModal(true);
                   }}
                 />
             </div>
-            <div className="w-full lg:w-4/12 px-4 mx-auto">
+            <div className="w-full lg:w-4/12 px-4 mx-auto z-10">
               <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
                 <div className="px-6">
                   <div className="flex flex-wrap justify-center text-center">
                     <div className="w-full px-4 flex justify-center">
                     <div className="relative">
-                      <img alt="Perfil" src="https://via.placeholder.com/150" className="shadow-xl rounded-full h-auto align-middle border-none max-w-150-px" />
+                      <img alt="Perfil" src={imageUrl}  className="shadow-xl rounded-full h-auto align-middle border-none max-w-600-px object-cover" />
                     </div>
                     </div>
                   </div>
