@@ -23,9 +23,37 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
 
-  const handleSubmit=(e)=>{
+  const handleSubmit= async (e)=>{
     e.preventDefault();
-    adcAtleta()
+
+    await adcAtleta();
+
+    await enviarImagem('RGFrente');
+    await enviarImagem('RGVerso');
+    await enviarImagem('fotoAtleta');
+  }
+
+  const enviarImagem = async (imageField) => {
+    const formData = new FormData();
+    formData.append('userId', teamId); 
+    formData.append('userType', 'elenco');
+    formData.append('imageField', modalFieldsState[imageField]);
+  
+    try {
+      const response = await fetch('http://localhost:3000/elenco/', {
+        method: 'POST',
+        body: formData
+      });
+  
+      const data = await response.json();
+      if (data.status === 200) {
+        console.log(imageField + ' enviado com sucesso');
+      } else {
+        console.error('Erro ao enviar ' + imageField, data.msg);
+      }
+    } catch (error) {
+      console.error('There was a problem with the fetch operation for ' + imageField, error);
+    }
   }
 
   const adcAtleta = async () => {

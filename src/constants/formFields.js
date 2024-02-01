@@ -258,8 +258,8 @@ const ModalCompeticaoFields = [
     {
         labelText:"Data de Início",
         labelFor:"inicio",
-        id:"inicio",
-        name:"inicio",
+        id:"dataInicio",
+        name:"dataInicio",
         type:"text",
         autoComplete:"inicio",
         isRequired:true,
@@ -307,12 +307,22 @@ const ModalCompeticaoFields = [
     {
         labelText:"Número de Participantes",
         labelFor:"numeroparticipantes",
-        id:"numeroparticipantes",
-        name:"numeroparticipantes",
+        id:"participantes",
+        name:"participantes",
         type:"number",
         autoComplete:"numeroparticipantes",
         isRequired:true,
         placeholder:"Número de Participantes" 
+    },
+    {
+        labelText:"Quantidade de Grupos",
+        labelFor:"numerogrupos",
+        id:"quantidadeGrupos",
+        name:"quantidadeGrupos",
+        type:"number",
+        autoComplete:"numerogrupos",
+        isRequired:true,
+        placeholder:"Quantidade de Grupos" 
     },
     {
         labelText:"Logo da Competição",

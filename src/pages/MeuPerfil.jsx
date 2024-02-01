@@ -12,12 +12,37 @@ const MeuPerfil = () => {
   const [userStaff, setUserStaff] = useState([]);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const userId = user.data.id || null;
-  const getFilenameFromPath = (path) => {
-    return path.split('\\').pop(); 
-  };
+  const [imageSrc, setImageSrc] = useState('');
+  console.log('userId: ', userId)
   
-  const imageUrl = userInfo.data?.picture ? `http://localhost:3000/uploads/${getFilenameFromPath(userInfo.data.picture)}` : "https://via.placeholder.com/150";
-  
+  useEffect(() => {
+    const imageData = {
+      userId: userId,
+      userType: "user",
+      imageField: "picture"
+    };
+
+    const apiUrl = 'http://localhost:3000/image/blob';
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(imageData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Resposta da API:', data);
+      if (data.data !== '' && data.data !== null) {
+        setImageSrc(data.data);
+        console.log(`: ${data.data}`);
+      }
+    })
+    .catch((error) => {
+      console.error(`Fetch error: ${error}`);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -154,7 +179,7 @@ const MeuPerfil = () => {
                   <div className="flex flex-wrap justify-center text-center">
                     <div className="w-full px-4 flex justify-center">
                     <div className="relative">
-                      <img alt="Perfil" src={imageUrl}  className="shadow-xl rounded-full h-auto align-middle border-none max-w-600-px object-cover" />
+                    <img alt="Perfil" src={imageSrc}  className="h-90 w-90 rounded-full object-cover object-center"  />
                     </div>
                     </div>
                   </div>

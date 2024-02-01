@@ -10,15 +10,43 @@ import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 const Elenco = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
-  const [showModal, setShowModal] =   useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [showAtletasOpcoes, setShowAtletasOpcoes] = useState(false);
   const [selectedAtleta, setSelectedAtleta] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id || null;
   const [atletas, setAtletas] = useState([]);
 
+  const fetchImageForAtleta = async (userId) => {
+    const imageData = {
+      userId: userId,
+      userType: "elenco",
+      imageField: "fotoAtleta"
+    };
 
-  
+    const apiUrl = 'http://localhost:3000/image/blob';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(imageData)
+      });
+
+      const data = await response.json();
+      if (data.data !== '' && data.data !== null) {
+        const updatedAtletas = atletas.map(atleta => 
+          atleta.userId === userId ? { ...atleta, fotoAtleta: data.data } : atleta
+        );
+        setAtletas(updatedAtletas);
+      }
+    } catch (error) {
+      console.error(`Fetch error: ${error}`);
+    }
+  };
+
   const handleAtletaClick = (name, CPF) => {
     setSelectedAtleta({ name, CPF });
     setShowAtletasOpcoes(true);
@@ -33,6 +61,10 @@ const Elenco = () => {
         }
         const data = await response.json();
         setAtletas(data.data);
+        console.log('Atletas: ', atletas)
+        data.data.forEach(atleta => {
+          fetchImageForAtleta(atleta.userId);
+        });
       } catch (error) {
         console.error('Fetch error:', error);
       }
@@ -42,13 +74,23 @@ const Elenco = () => {
       fetchAtletas();
     }
   }, [teamId]);
-  
 
   const atletasGrid = [
+    {
+      headerText: 'Foto',
+      template: ({ fotoAtleta }) => (
+        <div className='text-center'>
+          <img src={fotoAtleta} alt="Foto Atleta" style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+        </div>
+      ),
+      textAlign: 'Center',
+      width: '100'
+    },
     { field: 'name', headerText: 'Atleta', width: '150', textAlign: 'Center', 
-      template: ({name, CPF}) => (
-      <a href="#" onClick={() => handleAtletaClick(name, CPF)}>{name}</a>
-    )},
+      template: ({ name, CPF }) => (
+        <a href="#" onClick={() => handleAtletaClick(name, CPF)}>{name}</a>
+      )
+    },
     { field: 'CPF', headerText: 'Documento', width: '150', textAlign: 'Center' },
     { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
   ];

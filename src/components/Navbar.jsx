@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-
-import avatar from '../data/avatar.jpg';
 import { UserProfile } from '.';
 import { useStateContext } from '../contexts/ContextProvider';
 
@@ -25,6 +23,37 @@ const Navbar = () => {
   setIsClicked, handleClick, screenSize, 
   setScreenSize, currentColor } = useStateContext();
   const user = JSON.parse(localStorage.getItem('user')) || {};
+  const userId = user.data.id || null;
+  const [imageSrc, setImageSrc] = useState('');
+
+  useEffect(() => {
+    const imageData = {
+      userId: userId,
+      userType: "user",
+      imageField: "picture"
+    };
+
+    const apiUrl = 'http://localhost:3000/image/blob';
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(imageData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Resposta da API:', data);
+      if (data.data !== '' && data.data !== null) {
+        setImageSrc(data.data);
+        console.log(`: ${data.data}`);
+      }
+    })
+    .catch((error) => {
+      console.error(`Fetch error: ${error}`);
+    });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
@@ -61,8 +90,8 @@ const Navbar = () => {
           p-1 hover:bg-light-gray rounded-lg' 
           onClick={() => handleClick('userProfile')}>
             <img 
-              className='rounded-full w-8 h-8'
-              src={avatar}
+              className='rounded-full w-12 h-12'
+              src={imageSrc}
             />
             <p>
               <span className='text-gray-400 font-bold ml-1 text-14'>
