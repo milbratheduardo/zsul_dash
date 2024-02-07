@@ -3,6 +3,8 @@ import { ModalCompeticaoFields } from '../constants/formFields';
 import Input from './Input';
 import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const fields = ModalCompeticaoFields;
 let fieldsState = {};
@@ -12,6 +14,8 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
   if (!isVisible) return null;
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
+  const [errorMessage, setErrorMessage] = useState("")
+  const navigate = useNavigate();
 
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
@@ -21,9 +25,52 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
     setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    const formData = new FormData();
+    formData.append('name', modalFieldsState['nome']);
+    formData.append('categoria', modalFieldsState['categoria']);
+    formData.append('tipo', modalFieldsState['tipo']);
+    formData.append('participantes', modalFieldsState['participantes']);
+    formData.append('quantidadeGrupos', modalFieldsState['quantidadeGrupos']);
+    formData.append('dataInicio', modalFieldsState['dataInicio']);
+    formData.append('cidade', modalFieldsState['cidade']);
+    formData.append('vagas', '16');
+  
+    const fileField = document.querySelector("input[type='file']");
+    if (fileField && fileField.files[0]) {
+      formData.append('file', fileField.files[0]);
+    }
+
+    for (let [key, value] of formData.entries()) { 
+      console.log(key, value);
+    }
+    
+  
+    try {
+      const response = await fetch('http://localhost:3000/campeonatos/', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      const data = await response.json();
+      if (data.status === 200) {
+        toast.success('Campeonato Cadastrado com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => navigate('/campeonatos') 
+        });
+        console.log('Dados: ', data);
+      } else {
+        setErrorMessage(data.msg)
+        console.error('Erro ao cadastrar campeonato ' + errorMessage);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -33,7 +80,21 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
         </button>
         <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
           <HeaderModal title='Cadastre nova Competição' heading='Preencha todos os dados' />
-          <form className='mt-4 space-y-4'>
+          <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
+          {errorMessage && 
+              <div 
+                style={{
+                  backgroundColor: 'red', 
+                  color: 'white',         
+                  padding: '10px',       
+                  borderRadius: '5px',    
+                  textAlign: 'center',    
+                  marginBottom: '10px'    
+                }}
+              >
+                {errorMessage}
+              </div>
+            }
             <div className='-space-y-px'>
               {fields.map((field, index) => (
                 <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
@@ -77,7 +138,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
                 </div>
               ))}
             </div>
-            <FormAction handleSubmit={handleSubmit} currentColor={currentColor} text='Cadastrar' />
+            <FormAction currentColor={currentColor} text='Cadastrar' />
           </form>
         </div>
       </div>

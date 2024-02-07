@@ -7,3 +7,4 @@ export { default as MeuPerfil } from './MeuPerfil';
 export { default as Tarefas } from './Tarefas';
 export { default as Login} from './Login';
 export { default as Signup } from './Signup';
+export { default as CampeonatoDetalhes } from './CampeonatoDetalhes';

@@ -17,35 +17,7 @@ const Elenco = () => {
   const teamId = user.data.id || null;
   const [atletas, setAtletas] = useState([]);
 
-  const fetchImageForAtleta = async (userId) => {
-    const imageData = {
-      userId: userId,
-      userType: "elenco",
-      imageField: "fotoAtleta"
-    };
-
-    const apiUrl = 'http://localhost:3000/image/blob';
-
-    try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(imageData)
-      });
-
-      const data = await response.json();
-      if (data.data !== '' && data.data !== null) {
-        const updatedAtletas = atletas.map(atleta => 
-          atleta.userId === userId ? { ...atleta, fotoAtleta: data.data } : atleta
-        );
-        setAtletas(updatedAtletas);
-      }
-    } catch (error) {
-      console.error(`Fetch error: ${error}`);
-    }
-  };
+  
 
   const handleAtletaClick = (name, CPF) => {
     setSelectedAtleta({ name, CPF });
@@ -61,7 +33,7 @@ const Elenco = () => {
         }
         const data = await response.json();
         setAtletas(data.data);
-        console.log('Atletas: ', atletas)
+        console.log('Atletas: ', data)
         data.data.forEach(atleta => {
           fetchImageForAtleta(atleta.userId);
         });

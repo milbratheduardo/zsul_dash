@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -11,6 +11,23 @@ const Campeonatos = () => {
     currentColor, currentMode } = useStateContext();
   
   const [showModal, setShowModal] =   useState(false);
+  const [campeonatos, setCampeonatos] = useState([]);
+
+  useEffect(() => {
+    const fetchCampeonatos = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/campeonatos/');
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setCampeonatos(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchCampeonatos();
+  }, []);
+
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -68,17 +85,22 @@ const Campeonatos = () => {
                     />
                </div> 
                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <CardCompetition
-                    image="url_da_imagem.jpg"
-                    title="ZSUL de Verão"
-                    category="Sub-15"
-                    type="Grupos + Mata Mata"
-                    participants="16"
-                    vacancies="3"
-                    date="15/01/2024"
-                    city="Rio Grande"
-                  />
-              </div>  
+                  {campeonatos.map((campeonato) => (
+                    <CardCompetition
+                      key={campeonato._id} 
+                      image={campeonato.pictureBase64} 
+                      title={campeonato.name}
+                      category={campeonato.categoria}
+                      type={campeonato.tipo}
+                      participants={campeonato.participantes}
+                      vacancies={campeonato.vagas}
+                      date={campeonato.dataInicio}
+                      city={campeonato.cidade}
+                      currentColor={currentColor}
+                      id={campeonato._id}
+                    />
+                  ))}
+                </div>
             </div>
           </div>
         </div>
