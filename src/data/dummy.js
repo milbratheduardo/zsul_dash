@@ -2,7 +2,7 @@ import React from 'react';
 import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock } from 'react-icons/ai';
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
-import { BiColorFill } from 'react-icons/bi';
+import { BiColorFill, BiTransfer } from 'react-icons/bi';
 import { IoMdContacts, IoMdCloseCircle } from 'react-icons/io';
 import { RiContactsLine, RiStockLine } from 'react-icons/ri';
 import { MdOutlineSupervisorAccount, MdSpaceDashboard, MdAccountCircle } from 'react-icons/md';
@@ -11,7 +11,7 @@ import { FaPeopleGroup, FaTrophy, FaCalendarDay, FaCircleCheck,
 FaHandshakeSimple } from "react-icons/fa6";
 import { IoIosPeople } from "react-icons/io";
 import { TiTick } from 'react-icons/ti';
-import { GiLouvrePyramid } from 'react-icons/gi';
+import { GiSoccerField} from 'react-icons/gi';
 import { GrLocation } from 'react-icons/gr';
 import avatar from './avatar.jpg';
 import avatar2 from './avatar2.jpg';
@@ -212,7 +212,7 @@ export const links = [
         icon: <FaCalendarDay />,
       },
       {
-        name: 'tarefas',
+        name: 'Sumulas',
         icon: <BsKanban />,
       },
       
@@ -225,6 +225,21 @@ export const links = [
       {
         name: 'perfil',
         icon: <MdAccountCircle />,
+      },
+      
+    ],
+  },
+
+  {
+    title: 'Administrador',
+    links: [
+      {
+        name: 'Transferencias',
+        icon: <BiTransfer />,
+      },
+      {
+        name: 'Clubes',
+        icon: <GiSoccerField />,
       },
       
     ],

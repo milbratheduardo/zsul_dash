@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Calendario, Campeonatos, ComissaoTecnica, 
-    Elenco, Home, MeuPerfil, Tarefas, Login, Signup, CampeonatoDetalhes } from './pages';
+    Elenco, Home, MeuPerfil, Sumulas, Login, Signup, CampeonatoDetalhes, Transferencias, Clubes } from './pages';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,9 +22,12 @@ const App = () => {
               <Route path="/campeonatos/:id" element={<CampeonatoDetalhes />} />
               {/* Administração */}
               <Route path='/calendario' element={<Calendario />} />
-              <Route path='/tarefas' element={<Tarefas />} />
+              <Route path='/sumulas' element={<Sumulas />} />
               {/* Meu Perfil */}
               <Route path='/perfil' element={<MeuPerfil />} />
+              {/* Administrador */}
+              <Route path='/transferencias' element={<Transferencias />} />
+              <Route path='/clubes' element={<Clubes />} />
           </Routes>
                
         </BrowserRouter>
