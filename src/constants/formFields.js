@@ -80,7 +80,8 @@ const signupFields=[
         type:"text",
         autoComplete:"estado",
         isRequired:true,
-        placeholder:"Estado" 
+        placeholder:"Estado",
+        mask: "99"  
     }
 ]
 
@@ -103,7 +104,8 @@ const ModalAtletaFields = [
         type:"text",
         autoComplete:"nascimento",
         isRequired:true,
-        placeholder:"Data de Nascimento"   
+        placeholder:"Data de Nascimento",
+        mask: "99/99/9999" 
     },
     {
         labelText:"Documento",
@@ -113,7 +115,8 @@ const ModalAtletaFields = [
         type:"text",
         autoComplete:"documento",
         isRequired:true,
-        placeholder:"RG/CPF"  
+        placeholder:"CPF",  
+        mask: "999.999.999-99"
     },
     {
         labelText:"Escola",
@@ -192,7 +195,8 @@ const ModalStaffFields = [
         type:"text",
         autoComplete:"nascimento",
         isRequired:true,
-        placeholder:"Data de Nascimento"   
+        placeholder:"Data de Nascimento",
+        mask: "99/99/9999"    
     },
     {
         labelText:"Documento",
@@ -202,7 +206,8 @@ const ModalStaffFields = [
         type:"text",
         autoComplete:"documento",
         isRequired:true,
-        placeholder:"RG/CPF"  
+        placeholder:"CPF",
+        mask: "999.999.999-99"   
     },
     {
         labelText: "Cargo",
@@ -263,7 +268,8 @@ const ModalCompeticaoFields = [
         type:"text",
         autoComplete:"inicio",
         isRequired:true,
-        placeholder:"Data de Início"   
+        placeholder:"Data de Início",
+        mask: "99/99/9999"    
     },
     {
         labelText: "Categoria",

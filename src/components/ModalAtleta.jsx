@@ -149,6 +149,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
                         type={field.type}
                         isRequired={field.isRequired}
                         placeholder={field.placeholder}
+                        mask={field.mask}
                       />
                     </div>
                   )}

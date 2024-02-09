@@ -132,6 +132,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
                         type={field.type}
                         isRequired={field.isRequired}
                         placeholder={field.placeholder}
+                        mask={field.mask}
                       />
                     </div>
                   )}

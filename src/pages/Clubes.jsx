@@ -11,7 +11,6 @@ const Clubes = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedClube, setSelectedClube] = useState(null);
     const [showClubesOpcoes, setShowClubesOpcoes] = useState(false);
-    const [modalClube, setModalClube] = useState(null);
   
     useEffect(() => {
       const fetchClubes = async () => {
@@ -19,8 +18,8 @@ const Clubes = () => {
         try {
           const response = await fetch('http://localhost:3000/users/');
           const data = await response.json();
-          console.log('Clubes: ', data);
           setClubes(data.data);
+          console.log('Clubes: ', clubes);
         } catch (error) {
           console.error("Erro ao buscar clubes:", error);
         } 
@@ -28,17 +27,36 @@ const Clubes = () => {
   
       fetchClubes();
     }, []);
+
+    useEffect(() => {
+      console.log('Clubes atualizados:', clubes);
+    }, [clubes]);
+    
   
-    const handleClubeClick = (_id) => {
-      const clubeEncontrado = clubes.find(clube => clube._id === _id);
-      if (clubeEncontrado) {
-        console.log('Clube escolhido:', clubeEncontrado);
-        setSelectedClube(clubeEncontrado);
-        setShowClubesOpcoes(true);
-      } else {
-        console.error('Clube não encontrado para o ID:', _id);
+    const handleClubeClick = async (_id) => {
+      console.log("Id Click: ", _id);
+      setIsLoading(true);
+    
+      try {
+        const response = await fetch('http://localhost:3000/users/');
+        const data = await response.json();
+        const clubesAtualizados = data.data;
+    
+        const clubeEncontrado = clubesAtualizados.find(clube => clube._id === _id);
+        if (clubeEncontrado) {
+          console.log('Clube escolhido:', clubeEncontrado);
+          setSelectedClube(clubeEncontrado);
+          setShowClubesOpcoes(true);
+        } else {
+          console.error('Clube não encontrado para o ID:', _id);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar clubes:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
+    
 
 
 
@@ -102,12 +120,15 @@ const Clubes = () => {
 
           
           <ModalClubeOpcoes 
-                isVisible={showClubesOpcoes}
-                teamId={selectedClube?._id} 
-                clube={selectedClube} 
-                clubeNome={selectedClube?.teamName} 
-                onClose={() => setShowClubesOpcoes(false)} 
-            />
+            isVisible={showClubesOpcoes}
+            teamId={selectedClube?._id}
+            picture={selectedClube?.pictureBase64}
+            clubeNome={selectedClube?.teamName}
+            mail = {selectedClube?.email}
+            onClose={() => {
+              setShowClubesOpcoes(false); 
+            }}
+          />
 
             {!showClubesOpcoes && (
             <div className='m-2 md:m-10 mt-24 p-2 

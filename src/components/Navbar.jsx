@@ -57,13 +57,9 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
-
     window.addEventListener('resize', handleResize);
-
     handleResize();
-
-    return () => window.removeEventListener(
-      'resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -74,37 +70,29 @@ const Navbar = () => {
     }
   }, [screenSize]);
 
-
   return (
     <div className='flex justify-between p-2 md:mx-6 relative'>
       <NavButton 
         title='Menu'
-        customFunc={() => setActiveMenu(
-        (prevActiveMenu) => !prevActiveMenu)} 
+        customFunc={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)} 
         color={currentColor}
         icon={<AiOutlineMenu />} 
-        />
-        <TooltipComponent 
-        content='Profile' position='BottomCenter'>
-          <div className='flex items-center gap-2 cursor-pointer
-          p-1 hover:bg-light-gray rounded-lg' 
-          onClick={() => handleClick('userProfile')}>
-            <img 
-              className='rounded-full w-12 h-12'
-              src={imageSrc}
-            />
+      />
+      {screenSize > 900 && (
+        <TooltipComponent content='Profile' position='BottomCenter'>
+          <div className='flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg' onClick={() => handleClick('userProfile')}>
+            <img className='rounded-full w-12 h-12' src={imageSrc} alt='Profile'/>
             <p>
-              <span className='text-gray-400 font-bold ml-1 text-14'>
-                {user.data.teamName}
-              </span>
+              <span className='text-gray-400 font-bold ml-1 text-14'>{user.data.teamName}</span>
             </p>
             <MdKeyboardArrowDown className='text-gray-400 text-14' />
           </div>
         </TooltipComponent>
+      )}
 
-        {isClicked.userProfile && <UserProfile />}
+      {isClicked.userProfile && screenSize > 900 && <UserProfile />}
     </div>
   )
 }
 
-export default Navbar
+export default Navbar;
