@@ -114,6 +114,7 @@ const Elenco = () => {
             isVisible={showAtletasOpcoes} 
             atleta={selectedAtleta}
             atletaNome={selectedAtleta ? selectedAtleta.name : ''}
+            currentColor={currentColor}
             onClose={() => {
               setShowAtletasOpcoes(false);
             }} 

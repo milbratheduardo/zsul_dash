@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import HeaderModal from './HeaderModal';
+import chroma from 'chroma-js';
 
 
-const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome }) => {
+const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor }) => {
     if (!isVisible) return null;
+
+    const startColor2 = chroma(currentColor).brighten(1).css();
+    const startColor = chroma(currentColor).brighten(1.5).css(); 
+    const endColor = chroma(currentColor).darken(1).css();
+    const endColor2 = chroma(currentColor).darken(2).css();
 
     const handleClose = (e) => {
         if (e.target.id === 'wrapper') onClose();
@@ -42,17 +48,17 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome }) => {
                 
                 <div className='flex flex-wrap justify-center gap-2'>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#1A97F5'}}>Gerar Carteirinha</button>
+                    backgroundColor: startColor}}>Gerar Carteirinha</button>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#03C9D7'}}>Solicitar Transferência</button>
+                    backgroundColor: startColor2}}>Solicitar Transferência</button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#FF5C8E'}}>Demitir Atleta</button>
+                    backgroundColor: currentColor}}>Demitir Atleta</button>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#7352FF'}}>Inscrever em Campeonato</button>
+                    backgroundColor: endColor}}>Inscrever em Campeonato</button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#FB9678'}}>Estatísticas</button>
+                    backgroundColor: endColor2}}>Estatísticas</button>
                   <div className='w-full' aria-hidden='true'></div>
                 </div>    
                 

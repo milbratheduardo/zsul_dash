@@ -100,6 +100,7 @@ const ComissaoTecnica = () => {
             isVisible={showStaffOpcoes} 
             atleta={selectedStaff}
             staffNome={selectedStaff ? selectedStaff.name : ''}
+            currentColor={currentColor}
             onClose={() => {
               setShowStaffOpcoes(false);
             }} 

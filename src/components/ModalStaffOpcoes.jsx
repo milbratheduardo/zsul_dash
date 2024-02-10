@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import HeaderModal from './HeaderModal';
+import chroma from 'chroma-js';
 
 
-const ModalStaffOpcoes = ({ isVisible, onClose, staffNome }) => {
+const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
     if (!isVisible) return null;
+
+    const startColor = chroma(currentColor).brighten(1).css();
+    const endColor = chroma(currentColor).darken(1).css();
+    
+
 
     const handleClose = (e) => {
         if (e.target.id === 'wrapper') onClose();
@@ -42,13 +48,13 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome }) => {
                 
                 <div className='flex flex-wrap justify-center gap-2'>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#1A97F5'}}>Gerar Carteirinha</button>
+                    backgroundColor: startColor}}>Gerar Carteirinha</button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#03C9D7'}}>Solicitar Transferência</button>
+                    backgroundColor: currentColor}}>Solicitar Transferência</button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#FF5C8E'}}>Demitir Staff</button>
+                    backgroundColor: endColor}}>Demitir Staff</button>
                   <div className='w-full' aria-hidden='true'></div>  
                 </div>    
                 
