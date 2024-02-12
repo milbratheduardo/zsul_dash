@@ -36,7 +36,9 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
     formData.append('quantidadeGrupos', modalFieldsState['quantidadeGrupos']);
     formData.append('dataInicio', modalFieldsState['dataInicio']);
     formData.append('cidade', modalFieldsState['cidade']);
-    formData.append('vagas', '16');
+    formData.append('tipoGrupo', modalFieldsState['tipoGrupo']);
+    formData.append('tipoMataMata', modalFieldsState['tipoMataMata']);
+    formData.append('vagas', modalFieldsState['participantes']);
   
     const fileField = document.querySelector("input[type='file']");
     if (fileField && fileField.files[0]) {
@@ -105,7 +107,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
                         name={field.name}
                         value={modalFieldsState[field.id]}
                         onChange={handleChange}
-                        className='mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                        className='mt-3 p-2 block w-full border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
                       >
                         <option value='' disabled>
                           {field.placeholder}

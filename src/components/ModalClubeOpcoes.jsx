@@ -1,32 +1,149 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeaderModal from './HeaderModal';
+import FormAction from './FormAction';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 
 const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
     if (!isVisible) return null;
+    const [imageSrc, setImageSrc] = useState('');
+    const [userInfo, setUserInfo] = useState({});
+    const [userAtletas, setUserAtletas] = useState([]);
+    const [userStaff, setUserStaff] = useState([]);
+    const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
     const handleClose = (e) => {
         if (e.target.id === 'wrapper') onClose();
       };
+
+    useEffect(() => {
+       const imageData = {
+         userId: teamId,
+         userType: "user",
+         imageField: "picture"
+      };
     
-    const funcao1 = {
+       const apiUrl = 'http://localhost:3000/image/blob';
+    
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(imageData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Resposta da API:', data);
+          if (data.data !== '' && data.data !== null) {
+            setImageSrc(data.data);
+          }
+        })
+        .catch((error) => {
+          console.error(`Fetch error: ${error}`);
+        });
+      }, []);  
 
-      };
+      useEffect(() => {
+        const fetchUserInfo = async () => {
+          const userId = teamId;
+          try {
+            const response = await fetch(`http://localhost:3000/users/${userId}`);
+           
+            if (response.ok) {
+              const data = await response.json();
+              setUserInfo(data);
+              console.log('Dados: ', data);
+            } else {
+              console.error('Erro ao buscar dados do usuário');
+            }
+          } catch (error) {
+            console.error('Erro na solicitação:', error);
+          }
+        };
+    
+        if (teamId) {
+          fetchUserInfo();
+        }
+      }, [teamId]);
 
-    const funcao2 = {
+      useEffect(() => {
+        const fetchUserAtletas = async () => {
+          const userId = teamId;
+          try {
+            const responseAtletas = await fetch(`http://localhost:3000/elenco/team/${userId}`);
+    
+            if (responseAtletas.ok) {
+              const dataAtletas = await responseAtletas.json();
+              setUserAtletas(dataAtletas);
+              console.log('userAtletas: ', userAtletas);
+            } else {
+              console.error('Erro ao buscar atletas do usuário');
+            }
+          } catch (error) {
+            console.error('Erro na solicitação:', error);
+          }
+        };
+    
+        if (teamId) {
+          fetchUserAtletas();
+        }
+      }, [teamId]);
+      
 
-      };
 
-    const funcao3 = {
+      useEffect(() => {
+        const fetchUserStaff = async () => {
+          const userId = teamId;
+          try {
+            const responseStaff = await fetch(`http://localhost:3000/staff/team/${userId}`);
+            console.log('Staff: ', responseStaff);
+            if (responseStaff.ok) {
+              const dataStaff = await responseStaff.json();
+              
+              setUserStaff(dataStaff);
+            } else {
+              console.error('Erro ao buscar staff do usuário');
+            }
+          } catch (error) {
+            console.error('Erro na solicitação:', error);
+          }
+        };
+    
+        if (teamId) {
+          fetchUserStaff();
+        }
+      }, [teamId]);
 
-      };
 
-    const funcao4 = {
+      const handleSubmit= async (e)=>{
+        e.preventDefault();
 
-      };
+        try{
+          const response = await fetch(`http://localhost:3000/users/${teamId}`, {
+          method: 'DELETE',
+        }); 
 
-    const funcao5 = {
+        const data = await response.json();
+        if (data.status === 200) {
+          toast.success('Equipe Deletada com Sucesso!', {
+            position: "top-center",
+            autoClose: 5000,
+            onClose: () => navigate('/Clubes') 
+          });
+        } else if (data.status === 400 || data.status === 500) {
+          setErrorMessage(data.msg); 
+        } else {
+          console.log('Error:', data.msg);
+        }
 
-      };
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+          setErrorMessage("Houve um problema ao conectar com o servidor.");
+        }   
+        
+      }
 
 
     return (
@@ -36,24 +153,60 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
               X
             </button>
             <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
-              <HeaderModal title={`Opções para ${clubeNome} e ${teamId}`} heading='Escolha uma ação' />
-              <form className='mt-4 space-y-4'>    
-                
-                <div className='flex flex-wrap justify-center gap-2'>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#1A97F5'}}>Gerar Carteirinha</button>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#03C9D7'}}>Solicitar Transferência</button>
-                  <div className='w-full' aria-hidden='true'></div>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#FF5C8E'}}>Demitir Atleta</button>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#7352FF'}}>Inscrever em Campeonato</button>
-                  <div className='w-full' aria-hidden='true'></div>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: '#FB9678'}}>Estatísticas</button>
-                  <div className='w-full' aria-hidden='true'></div>
-                </div>    
+              <HeaderModal title={`Informações sobre ${clubeNome}`} heading='' />
+              <form className='mt-4 space-y-4' onSubmit={handleSubmit}>    
+              {errorMessage && 
+              <div 
+                style={{
+                  backgroundColor: 'red', 
+                  color: 'white',         
+                  padding: '10px',       
+                  borderRadius: '5px',    
+                  textAlign: 'center',    
+                  marginBottom: '10px'    
+                }}
+              >
+                {errorMessage}
+              </div>
+            }
+              <div className="flex flex-col items-center justify-center gap-2">
+                <img alt="Perfil" src={imageSrc}  className="h-20 w-20 rounded-full object-cover object-center"  />
+                <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
+                  Email da Equipe
+                </h3>
+                <div className="text-blueGray-600">
+                  {userInfo.data?.email || 'Carregando...'}
+                </div>
+                <div className='w-full' aria-hidden='true'></div>
+                <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
+                  Cidade
+                </h3>
+                <div className="text-blueGray-600">
+                  {userInfo.data?.city || 'Carregando...'}
+                </div>
+                <div className='w-full' aria-hidden='true'></div>
+                <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
+                  Estado
+                </h3>
+                <div className="text-blueGray-600">
+                  {userInfo.data?.state || 'Carregando...'}
+                </div>
+                <div className='w-full' aria-hidden='true'></div>
+                <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
+                  Quantidade de Atletas
+                </h3>
+                <div className="text-blueGray-600">
+                  {userAtletas.data?.length || 'Carregando...'}
+                </div>
+                <div className='w-full' aria-hidden='true'></div>
+                <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
+                  Quantidade de Membros da Comissão Técnica
+                </h3>
+                <div className="text-blueGray-600">
+                  {userStaff.data?.length || 'Carregando...'}
+                </div>
+                <FormAction currentColor='red' text='Deletar Equipe' />
+              </div>    
                 
               </form>
             </div>

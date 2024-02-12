@@ -301,6 +301,32 @@ const ModalCompeticaoFields = [
         placeholder: "Tipo da Competição",
     },
     {
+        labelText: "Tipo Fase de Grupos",
+        labelFor: "tipoGrupo",
+        id: "tipoGrupo",
+        name: "tipoGrupo",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "Ida + Volta", label: "Ida + Volta" },
+        { value: "Apenas Ida", label: "Apenas Ida" }
+        ],
+        placeholder: "Tipo Fase de Grupos",
+    },
+    {
+        labelText: "Tipo Fase de Eliminação",
+        labelFor: "tipoMataMata",
+        id: "tipoMataMata",
+        name: "tipoMataMata",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "Ida + Volta", label: "Ida + Volta" },
+        { value: "Apenas Ida", label: "Apenas Ida" }
+        ],
+        placeholder: "Tipo Fase de Eliminação",
+    },
+    {
         labelText:"Cidade da Competição",
         labelFor:"cidade",
         id:"cidade",

@@ -1,17 +1,50 @@
-import React from 'react';
-import { KanbanComponent, ColumnsDirective, ColumnDirective } from '@syncfusion/ej2-react-kanban';
-
-import { kanbanData, kanbanGrid } from '../data/dummy';
-import { Header } from '../components';
+import React, { useState, useEffect } from 'react';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
+import { Header, Navbar, Footer, Sidebar, ThemeSettings,CardSumulas,} from '../components';
 
 
 const Sumulas = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
+  const [campeonatos, setCampeonatos] = useState([]);
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const teamId = user.data.id;
+
+  useEffect(() => {
+    const fetchCampeonatosInscritos = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/inscricoes/user/${teamId}`);
+        const data = await response.json();
+        console.log('Campeonatos Inscritos: ', data);
+
+        const campeonatoIds = data.data.map(item => item.campeonatoId);
+        console.log('Campeonato IDs: ', campeonatoIds);
+
+      const campeonatoDetailsPromises = campeonatoIds.map(_id =>
+        fetch(`http://localhost:3000/campeonatos/${_id}`)
+        .then(response => response.json())
+      );
+
+      
+      
+        const campeonatosDetails = await Promise.all(campeonatoDetailsPromises);
+        const validCampeonatos = campeonatosDetails.filter(detail => detail.data != null);
+        console.log('Campeonatos válidos: ', validCampeonatos);
+
+        setCampeonatos(validCampeonatos.map(detail => detail.data));
+       
+
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchCampeonatosInscritos();
+  }, []);
+  
+
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -46,28 +79,33 @@ const Sumulas = () => {
           </div>
 
           {themeSettings && <ThemeSettings />}
-            <div className='m-2 md:m-10 mt-24 p-2 
-            md:p-10 bg-white rounded-3xl'>
-              <Header category="Administração" title="Súmulas"/>
-              <KanbanComponent
-                id='kanban'
-                dataSource={kanbanData}
-                cardSettings={{ contentField: 'Summary', 
-                headerField: 'Id'}}
-                keyField='Status'
-              >
-                <ColumnsDirective>
-                  {kanbanGrid.map((item, index) => 
-                  <ColumnDirective 
-                    key={index}
-                    {...item}
-                  />)}
-                </ColumnsDirective>
-              </KanbanComponent>
-              </div>
+
+            <div className='m-2 md:m-10 p-2 md:p-10
+            bg-white rounded-3xl'>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Header category='Clube' title='Campeonatos Inscritos' />
+               </div> 
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {campeonatos?.map((campeonato) => (
+                    <CardSumulas
+                      key={campeonato?._id} 
+                      image={campeonato?.pictureBase64} 
+                      title={campeonato?.name}
+                      category={campeonato?.categoria}
+                      type={campeonato?.tipo}
+                      participants={campeonato?.participantes}
+                      vacancies={campeonato?.vagas}
+                      date={campeonato?.dataInicio}
+                      city={campeonato?.cidade}
+                      currentColor={currentColor}
+                      id={campeonato?._id}
+                    />
+                  ))}
+                </div>
             </div>
           </div>
         </div>
+      </div>
   )
 }
 

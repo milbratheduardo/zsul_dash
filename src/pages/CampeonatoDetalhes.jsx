@@ -1,58 +1,183 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Inject } from '@syncfusion/ej2-react-grids';
-import { Header, Button, Sidebar, Navbar } from '../components';
+import { Header, Button, Sidebar, Navbar, ThemeSettings } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
+import { FiSettings } from 'react-icons/fi';
+import { TooltipComponent } from '@syncfusion/ej2-react-popups';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 
 const CampeonatoDetalhes = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
+  const { id } = useParams();
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const teamId = user.data.id;
+  const [errorMessage, setErrorMessage] = useState("");
+  const [campeonato, setCampeonato] = useState([]);
+  const navigate = useNavigate();
 
-  const classificacaoData = [
-    { posicao: 1, time: 'Internacional', pontos: 10, jogos: 5, vitorias: 3, empates: 1, derrotas: 1, gp: 7, gc: 2, sg: 5, ultimosJogos: ['v', 'v', 'e', 'd', 'v'] },
-    // ...outros dados...
-  ];
+  const inscreverTime = async () => {
+    const payload = {
+      userId: teamId, 
+      campeonatoId: id 
+    };
+  
+    try {
+      const response = await fetch('http://localhost:3000/inscricoes/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await response.json();
+      if (data.status === 200) {
+        toast.success('Equipe Inscrita com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => navigate('/sumulas') 
+        });
+      } else if (data.status === 400 || data.status === 500) {
+        setErrorMessage(data.msg); 
+      } else {
+        console.log('Error:', data.msg);
+      }
+  
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    }
+  }  
 
-  const jogosData = [
-    { rodada: '5ª Rodada', data: 'Hoje - 16:30', casa: 'Internacional', visitante: 'Grêmio', resultado: '2 x 0' },
-    // ...outros dados...
-  ];
+  const deletarCampeonato = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/campeonatos/${id}`, {
+        method: 'DELETE',
+      });
+      
+      const data = await response.json();
+      if (data.status === 200) {
+        toast.success('Campeonato Deletado com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => navigate('/campeonatos') 
+        });
+      } else if (data.status === 400 || data.status === 500) {
+        setErrorMessage(data.msg); 
+      } else {
+        console.log('Error:', data.msg);
+      }
+  
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    }
+  }  
+  
 
-  const classificacaoColumns = [
-    { field: 'posicao', headerText: 'Posição', width: '100', textAlign: 'Center' },
-    // ...outras colunas...
-  ];
+  useEffect(() => {
+    const fetchCampeonato = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/campeonatos/${id}`);
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setCampeonato(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
 
-  const jogosColumns = [
-    { field: 'rodada', headerText: 'Rodada', width: '120', textAlign: 'Center' },
-    // ...outras colunas...
-  ];
+    fetchCampeonato();
+  }, []);
 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
-        {activeMenu && (
-          <div className='w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white z-10'>
+        <div className='fixed right-4 bottom-4' style={{ zIndex: '1000' }}>
+          <TooltipComponent content="Opções" position='Top'>
+            <button
+              type='button'
+              className='text-3xl p-3 hover:drop-shadow-xl hover:bg-light-gray text-white'
+              style={{ background: currentColor, borderRadius: '50%' }}
+              onClick={() => setThemeSettings(true)}
+            >
+              <FiSettings />
+            </button>
+          </TooltipComponent>
+        </div>
+
+        {activeMenu ? (
+          <div className='w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white'>
+            <Sidebar />
+          </div>
+        ) : (
+          <div className='w-0 dark:bg-secondary-dark-bg'>
             <Sidebar />
           </div>
         )}
-        <div className={`flex-1 dark:bg-main-dark-bg bg-main-bg min-h-screen ${activeMenu ? 'md:ml-72' : ''}`}>
-          <div className='fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full z-10'>
+
+        <div
+          className={`dark:bg-main-dark-bg bg-main-bg min-h-screen w-full ${activeMenu ? 'md:ml-72' : 'flex-2'}`}
+        >
+          <div className='fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full'>
             <Navbar />
           </div>
 
-          {themeSettings && <div className='fixed z-20'><ThemeSettings /></div>}
+          {themeSettings && <ThemeSettings />}
 
           <div className='m-2 md:m-10 mt-16 p-2 md:p-10 bg-white rounded-3xl'>
-            <Header category='Clube' title='Campeonato Pequeno Gigante' />
-            <Button 
-              color='white'
-              bgColor={currentColor}
-              text='Editar Campeonato'
-              borderRadius='10px'
-              size='md'
-              className='my-4'
-            />
-
-            
+            <div className='flex flex-wrap md:flex-nowrap justify-between items-center'>
+                <Header category='Clube' title={campeonato.name} />
+                {errorMessage && 
+                  <div 
+                    style={{
+                      backgroundColor: 'red', 
+                      color: 'white',         
+                      padding: '10px',       
+                      borderRadius: '5px',    
+                      textAlign: 'center',    
+                      marginBottom: '10px'    
+                    }}
+                  >
+                    {errorMessage}
+                  </div>
+                }
+                <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 sm:mt-0'>
+                    <Button 
+                        color='white'
+                        bgColor={currentColor}
+                        text='Editar Campeonato'
+                        borderRadius='10px'
+                        size='sm'
+                        onClick={() => {
+                            setShowModal(true);
+                        }}
+                    />
+                    <Button 
+                        color='white'
+                        bgColor='red'
+                        text='Deletar Campeonato'
+                        borderRadius='10px'
+                        size='sm'
+                        onClick={() => {
+                            deletarCampeonato();
+                        }}
+                    />
+                    <Button 
+                        color='white'
+                        bgColor='green'
+                        text='Inscrever-se'
+                        borderRadius='10px'
+                        size='sm'
+                        onClick={() => {
+                            inscreverTime();
+                        }}
+                    />
+                </div>
+            </div>
           </div>
         </div>
       </div>
