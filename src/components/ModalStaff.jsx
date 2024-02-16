@@ -23,23 +23,28 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    adcStaff();
-  };
-
-  const adcStaff = async () => {
-    const payload = {
-      ...modalFieldsState,
-      teamId,
+    const formData = new FormData();
+    formData.append('teamId', teamId);
+    formData.append('name', modalFieldsState['name']);
+    formData.append('dateOfBirth', modalFieldsState['dateOfBirth']);
+    formData.append('documentNumber', modalFieldsState['documentNumber']);
+    formData.append('cargo', modalFieldsState['cargo']);
+  
+    const fileField = document.querySelector("input[type='file']");
+    if (fileField && fileField.files[0]) {
+      formData.append('file', fileField.files[0]);
     }
+
+    for (let [key, value] of formData.entries()) { 
+      console.log('Data: ',key, value);
+    }
+
     try {
       const response = await fetch('http://localhost:3000/staff/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
+        body: formData,
       });
       
       const data = await response.json();
@@ -59,7 +64,7 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
       console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
-  }
+  };
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
