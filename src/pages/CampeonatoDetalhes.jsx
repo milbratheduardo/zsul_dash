@@ -7,6 +7,7 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import chroma from 'chroma-js';
 
 
 const CampeonatoDetalhes = () => {
@@ -17,6 +18,7 @@ const CampeonatoDetalhes = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [campeonato, setCampeonato] = useState([]);
   const navigate = useNavigate();
+  const endColor = chroma(currentColor).darken(1).css();
 
   const inscreverTime = async () => {
     const payload = {
@@ -51,6 +53,40 @@ const CampeonatoDetalhes = () => {
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   }  
+
+  const adicionarGrupo = async () => {
+    const payload = {
+      userId: teamId, 
+      campeonatoId: id 
+    };
+  
+    try {
+      const response = await fetch('http://localhost:3000/inscricoes/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await response.json();
+      if (data.status === 200) {
+        toast.success('Equipe Inscrita com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => navigate('/sumulas') 
+        });
+      } else if (data.status === 400 || data.status === 500) {
+        setErrorMessage(data.msg); 
+      } else {
+        console.log('Error:', data.msg);
+      }
+  
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    }
+  }
 
   const deletarCampeonato = async () => {
     try {
@@ -146,16 +182,27 @@ const CampeonatoDetalhes = () => {
                   </div>
                 }
                 <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 sm:mt-0'>
-                    <Button 
+                      <Button 
                         color='white'
                         bgColor={currentColor}
-                        text='Editar Campeonato'
+                        text='Adicionar Grupo'
                         borderRadius='10px'
                         size='sm'
                         onClick={() => {
-                            setShowModal(true);
+                            adicionarGrupo();
                         }}
                     />
+                    <Button 
+                        color='white'
+                        bgColor={endColor}
+                        text='Adicionar Jogo'
+                        borderRadius='10px'
+                        size='sm'
+                        onClick={() => {
+                            adicionarJogo();
+                        }}
+                    />
+                    
                     <Button 
                         color='white'
                         bgColor='red'

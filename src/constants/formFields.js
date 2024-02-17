@@ -116,7 +116,7 @@ const ModalAtletaFields = [
         autoComplete:"documento",
         isRequired:true,
         placeholder:"CPF",  
-        mask: "999.999.999-99"
+        //mask: "999.999.999-99"
     },
     {
         labelText:"Escola",
@@ -207,7 +207,7 @@ const ModalStaffFields = [
         autoComplete:"documento",
         isRequired:true,
         placeholder:"CPF",
-        mask: "999.999.999-99"   
+        //mask: "999.999.999-99"   
     },
     {
         labelText: "Cargo",

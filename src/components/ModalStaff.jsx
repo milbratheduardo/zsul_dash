@@ -12,7 +12,6 @@ fields.forEach((field) => (fieldsState[field.id] = ''));
 
 const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
   if (!isVisible) return null;
-
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -46,10 +45,10 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
         method: 'POST',
         body: formData,
       });
-      
-      const data = await response.json();
+  
+      const data = await response.json();      
       if (data.status === 200) {
-        toast.success('Membro do Staff com sucesso!', {
+        toast.success('Membro do Staff Cadastrado com sucesso!', {
           position: "top-center",
           autoClose: 5000,
           onClose: () => navigate('/staff') 

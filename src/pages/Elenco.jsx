@@ -19,8 +19,8 @@ const Elenco = () => {
 
   
 
-  const handleAtletaClick = (name, CPF) => {
-    setSelectedAtleta({ name, CPF });
+  const handleAtletaClick = (name) => {
+    setSelectedAtleta({ name });
     setShowAtletasOpcoes(true);
   };
 
@@ -47,6 +47,13 @@ const Elenco = () => {
     }
   }, [teamId]);
 
+  const formatCPF = (cpf) => {
+    if (typeof cpf === 'string') {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+    return cpf || ''; 
+  };
+
   const atletasGrid = [
     {
       headerText: 'Foto',
@@ -59,11 +66,17 @@ const Elenco = () => {
       width: '100'
     },
     { field: 'name', headerText: 'Atleta', width: '150', textAlign: 'Center', 
-      template: ({ name, CPF }) => (
-        <a href="#" onClick={() => handleAtletaClick(name, CPF)}>{name}</a>
+      template: ({ name }) => (
+        <a href="#" onClick={() => handleAtletaClick(name)}>{name}</a>
       )
     },
-    { field: 'CPF', headerText: 'Documento', width: '150', textAlign: 'Center' },
+    {
+      field: 'CPF',
+      headerText: 'Documento',
+      width: '150',
+      textAlign: 'Center',
+      template: (props) => <span>{formatCPF(props.CPF)}</span>,
+    },
     { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
   ];
 

@@ -20,8 +20,8 @@ const ComissaoTecnica = () => {
   const teamId = user.data.id || null;
   const [staff, setStaff] = useState([]);
   
-  const handleStaffClick = (name, CPF) => {
-    setSelectedStaff({ name, CPF });
+  const handleStaffClick = (name) => {
+    setSelectedStaff({ name });
     setShowStaffOpcoes(true);
   };
 
@@ -43,13 +43,27 @@ const ComissaoTecnica = () => {
       fetchStaff();
     }
   }, [teamId]);
+
+  const formatCPF = (cpf) => {
+    if (typeof cpf === 'string') {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+    return cpf || ''; 
+  };
+  
   
   const staffGrid = [
       { field: 'name', headerText: 'Staff', width: '150', textAlign: 'Center', 
-        template: ({name, CPF}) => (
-        <a href="#" onClick={() => handleStaffClick(name, CPF)}>{name}</a>
+        template: ({name}) => (
+        <a href="#" onClick={() => handleStaffClick(name)}>{name}</a>
       )},
-      { field: 'CPF', headerText: 'Documento', width: '150', textAlign: 'Center' },
+      {
+        field: 'CPF',
+        headerText: 'Documento',
+        width: '150',
+        textAlign: 'Center',
+        template: (props) => <span>{formatCPF(props.CPF)}</span>,
+      },
       { field: 'cargo', headerText: 'Cargo', width: '150', textAlign: 'Center' },
   ];
 

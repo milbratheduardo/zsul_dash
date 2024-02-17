@@ -5,12 +5,78 @@ import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+
 
 const Home = () => {  
     const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
     const user = JSON.parse(localStorage.getItem('user')) || {};
     const [userAtletas, setUserAtletas] = useState([]);
+    const [userInfo, setUserInfo] = useState({});
+
+    useEffect(() => {
+      const fetchUserInfo = async () => {
+        const userId = user.data.id;
+        try {
+          const response = await fetch(`http://localhost:3000/users/${userId}`);
+         
+          if (response.ok) {
+            const data = await response.json();
+            setUserInfo(data);
+          } else {
+            console.error('Erro ao buscar dados do usuário');
+          }
+        } catch (error) {
+          console.error('Erro na solicitação:', error);
+        }
+      };
+  
+      if (user.data.id) {
+        fetchUserInfo();
+      }
+    }, [user.data.id]); 
+
+    const generatePDF = () => {
+      const doc = new jsPDF();
+    
+      // Assuming userInfo and userAtletas are accessible here
+      const logo = userInfo.data?.pictureBase64; // Base64 string of the logo
+      doc.addImage(logo, 'PNG', 10, 0, 50, 50); // Adjust positioning and size as needed
+    
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const teamName = userInfo.data.teamName;
+      const teamNameWidth = doc.getStringUnitWidth(teamName) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+      const teamNameXPosition = (pageWidth / 2) - 15;
+    
+      doc.setFontSize(26);
+      doc.text(teamName, teamNameXPosition, 30); // Adjust Y position as needed
+    
+      // Center "Atletas" above the table
+      doc.setFontSize(18);
+      const atletasTitle = "Atletas";
+      const atletasTitleWidth = doc.getStringUnitWidth(atletasTitle) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+      const atletasTitleXPosition = (pageWidth / 2) - (atletasTitleWidth / 2);
+      doc.text(atletasTitle, atletasTitleXPosition, 45); // Adjust Y position as needed
+    
+      // Define the table columns
+      const tableColumn = ["Nome", "Documento", "Categoria"]; // Add more columns as needed
+      // Define the table rows
+      const tableRows = userAtletas.data?.map(atleta => [
+        atleta.name, // Adjust according to your data structure
+        atleta.CPF, // Adjust according to your data structure
+        atleta.category// Add more fields as needed
+      ]);
+    
+      // Add the table to the PDF
+      doc.autoTable(tableColumn, tableRows, { startY: 50 }); // Adjust positioning as needed
+    
+      // Open the PDF in a new browser tab
+      doc.output('dataurlnewwindow');
+    };
+    
+    
 
 
     useEffect(() => {
@@ -81,7 +147,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className='mt-6'>
-                  <Button color='white' bgColor={currentColor} text='Download' borderRadius='10px' size='md' />
+                  <Button color='white' bgColor={currentColor} onClick={generatePDF} text='Download' borderRadius='10px' size='md' />
                 </div>
               </div>
 
