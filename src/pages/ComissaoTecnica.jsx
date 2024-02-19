@@ -53,6 +53,15 @@ const ComissaoTecnica = () => {
   
   
   const staffGrid = [
+
+    {
+      field: 'fotoStaffBase64', headerText: 'Imagem', width: '150', textAlign: 'Center',
+      template: (rowData) => (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <img src={rowData.fotoStaffBase64} alt={rowData.name} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+          </div>
+      )
+    },
       { field: 'name', headerText: 'Staff', width: '150', textAlign: 'Center', 
         template: ({name}) => (
         <a href="#" onClick={() => handleStaffClick(name)}>{name}</a>
@@ -65,6 +74,8 @@ const ComissaoTecnica = () => {
         template: (props) => <span>{formatCPF(props.CPF)}</span>,
       },
       { field: 'cargo', headerText: 'Cargo', width: '150', textAlign: 'Center' },
+
+
   ];
 
   return (
@@ -142,14 +153,14 @@ const ComissaoTecnica = () => {
                 allowSorting
                 toolbar={['Search']}
                 width='auto'
-              >
+            >
                 <ColumnsDirective>
-                  {staffGrid.map((item, index) => (
-                    <ColumnDirective key={index} {...item}/>
-                  ))}
+                    {staffGrid.map((item, index) => (
+                        <ColumnDirective key={index} {...item}/>
+                    ))}
                 </ColumnsDirective>
                 <Inject services={[Page, Search, Toolbar]}/>
-              </GridComponent>           
+            </GridComponent>         
               
             </div>
           )}
