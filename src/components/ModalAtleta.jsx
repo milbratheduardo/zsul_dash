@@ -71,12 +71,17 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
       });
       
       const data = await response.json();
-      if (data.status === 200) {
-        toast.success('Atleta Cadastrado com sucesso!', {
-          position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate('/elenco') 
-        });
+      console.log('Resposta completa:', data); // Imprime toda a resposta para diagnóstico
+  
+if (data.status === 200) {
+  // Ajuste para acessar o ID do atleta corretamente
+  console.log('ID do Atleta Criado:', data.msg._id); // Acessa o ID do atleta dentro de 'msg'
+
+  toast.success('Atleta Cadastrado com sucesso!', {
+    position: "top-center",
+    autoClose: 5000,
+    onClose: () => navigate('/elenco') 
+  });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 
       } else {
@@ -88,6 +93,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   }
+  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
