@@ -249,6 +249,19 @@ const ModalPerfilFields = [
     }
 ]
 
+const ModalGrupoFields = [
+    {
+        labelText:"Nome do Grupo",
+        labelFor:"nome",
+        id:"name",
+        name:"name",
+        type:"text",
+        autoComplete:"nome",
+        isRequired:true,
+        placeholder:"Nome do Grupo"   
+    },
+]
+
 const ModalCompeticaoFields = [
     {
         labelText:"Nome da Competição",
@@ -369,4 +382,5 @@ const ModalCompeticaoFields = [
 ]
 
 export {loginFields,signupFields,ModalAtletaFields,
-    ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields}
+    ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
+    ModalGrupoFields}

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Inject } from '@syncfusion/ej2-react-grids';
-import { Header, Button, Sidebar, Navbar, ThemeSettings } from '../components';
+import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -8,17 +8,52 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import chroma from 'chroma-js';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 
 
 const CampeonatoDetalhes = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
   const { id } = useParams();
+  const [groups, setGroups] = useState([]);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id;
   const [errorMessage, setErrorMessage] = useState("");
   const [campeonato, setCampeonato] = useState([]);
+  const [showModalGrupo, setShowModalGrupo] = useState(false);
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
+
+  const gridColumns = [
+    { field: 'P', headerText: 'P', width: '25' },
+    { field: 'name', headerText: 'Nome', width: '100' },
+    { field: 'J', headerText: 'J', width: '25' },
+    { field: 'V', headerText: 'V', width: '25' },
+    { field: 'E', headerText: 'E', width: '25' },
+    { field: 'D', headerText: 'D', width: '25' },
+    { field: 'GF', headerText: 'GF', width: '25' },
+    { field: 'SG', headerText: 'SG', width: '25' },
+    { field: 'Pts', headerText: 'Pts', width: '25' },
+  ];
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/grupos/campeonato/${id}`);
+        const data = await response.json();
+        if (data.status === 200 && data.data) {
+          setGroups(data.data);
+        } else {
+          toast.error('Failed to fetch groups');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('An error occurred while fetching groups');
+      }
+    };
+
+    fetchGroups();
+  }, [id]);
 
   const inscreverTime = async () => {
     const payload = {
@@ -164,6 +199,15 @@ const CampeonatoDetalhes = () => {
 
           {themeSettings && <ThemeSettings />}
 
+          <ModalGrupo
+            isVisible={showModalGrupo} 
+            currentColor={currentColor} 
+            campeonatoId = {id} 
+            onClose={() => {
+              setShowModalGrupo(false);
+          }}/>
+
+          {!showModalGrupo && (
           <div className='m-2 md:m-10 mt-16 p-2 md:p-10 bg-white rounded-3xl'>
             <div className='flex flex-wrap md:flex-nowrap justify-between items-center'>
                 <Header category='Clube' title={campeonato.name} />
@@ -189,7 +233,7 @@ const CampeonatoDetalhes = () => {
                         borderRadius='10px'
                         size='sm'
                         onClick={() => {
-                            adicionarGrupo();
+                            setShowModalGrupo(true);
                         }}
                     />
                     <Button 
@@ -224,8 +268,33 @@ const CampeonatoDetalhes = () => {
                         }}
                     />
                 </div>
+              </div>
+              <div>        
+                <Swiper
+                  spaceBetween={25}
+                  slidesPerView={1}
+                  onSlideChange={() => console.log('slide change')}
+                  onSwiper={(swiper) => console.log(swiper)}
+                >
+                  {groups.map((group, index) => (
+                    <SwiperSlide key={index}>                      
+                        <h2>{group.name}</h2>
+                        <div>
+                        <GridComponent dataSource={group.teams}>
+                          <ColumnsDirective>
+                            {gridColumns.map((col, idx) => (
+                              <ColumnDirective key={idx} {...col} />
+                            ))}
+                          </ColumnsDirective>
+                          <Inject services={[Page]} />
+                        </GridComponent>
+                        </div>                      
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
             </div>
           </div>
+          )}
         </div>
       </div>
     </div>
