@@ -26,26 +26,26 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const userId = await adcAtleta(); // Tentativa de cadastro do atleta
+    const userId = await adcAtleta(); 
     if (userId) {
-      // Envio das imagens em sequência
+   
       await enviarImagem('RGFrente');
       await enviarImagem('RGVerso');
       await enviarImagem('fotoAtleta');
   
-      // Remove o userId do localStorage apenas após o envio da última imagem
+   
       localStorage.removeItem('fotoAtleta');
     }
   }
 
   const enviarImagem = async (imageField) => {
-    const userId = localStorage.getItem('fotoAtleta'); // Pega o ID do atleta do localStorage
+    const userId = localStorage.getItem('fotoAtleta'); 
     if (!userId) {
       console.error('UserID não encontrado no localStorage.');
       return;
     }
   
-    const file = document.getElementById(imageField).files[0]; // Pega o arquivo diretamente do input
+    const file = document.getElementById(imageField).files[0];
     if (!file) {
       console.error('Nenhum arquivo selecionado para o campo:', imageField);
       return;
@@ -55,7 +55,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
     formData.append('userId', userId);
     formData.append('userType', 'elenco');
     formData.append('imageField', imageField);
-    formData.append('file', file); // Adiciona o arquivo ao FormData
+    formData.append('file', file); 
   
     try {
       const response = await fetch('http://localhost:3000/image', {
@@ -95,16 +95,16 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
           autoClose: 5000,
           onClose: () => navigate('/elenco')
         });
-        localStorage.setItem('fotoAtleta', data.msg._id); // Salva o ID do atleta no localStorage
-        return data.msg._id; // Retorna o ID do atleta criado
+        localStorage.setItem('fotoAtleta', data.msg._id);
+        return data.msg._id; 
       } else {
         setErrorMessage(data.message);
-        return null; // Retorna null em caso de falha
+        return null; 
       }
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
-      return null; // Retorna null em caso de erro
+      return null; 
     }
   }
 
