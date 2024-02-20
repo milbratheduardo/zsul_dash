@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Inject } from '@syncfusion/ej2-react-grids';
-import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo } from '../components';
+import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo, ModalTimeGrupo } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -21,6 +21,9 @@ const CampeonatoDetalhes = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [campeonato, setCampeonato] = useState([]);
   const [showModalGrupo, setShowModalGrupo] = useState(false);
+  const [showModalTimeGrupo, setShowModalTimeGrupo] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState('');
+
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
 
@@ -88,40 +91,7 @@ const CampeonatoDetalhes = () => {
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   }  
-
-  const adicionarGrupo = async () => {
-    const payload = {
-      userId: teamId, 
-      campeonatoId: id 
-    };
   
-    try {
-      const response = await fetch('http://localhost:3000/inscricoes/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      const data = await response.json();
-      if (data.status === 200) {
-        toast.success('Equipe Inscrita com sucesso!', {
-          position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate('/sumulas') 
-        });
-      } else if (data.status === 400 || data.status === 500) {
-        setErrorMessage(data.msg); 
-      } else {
-        console.log('Error:', data.msg);
-      }
-  
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-      setErrorMessage("Houve um problema ao conectar com o servidor.");
-    }
-  }
 
   const deletarCampeonato = async () => {
     try {
@@ -207,7 +177,17 @@ const CampeonatoDetalhes = () => {
               setShowModalGrupo(false);
           }}/>
 
-          {!showModalGrupo && (
+          <ModalTimeGrupo
+            isVisible={showModalTimeGrupo} 
+            currentColor={currentColor} 
+            grupoId ={selectedGroupId}
+            campeonatoId = {id} 
+            onClose={() => {
+              setShowModalTimeGrupo(false);
+              setSelectedGroupId('');
+          }}/>
+
+          {!showModalGrupo && !showModalTimeGrupo && (
           <div className='m-2 md:m-10 mt-16 p-2 md:p-10 bg-white rounded-3xl'>
             <div className='flex flex-wrap md:flex-nowrap justify-between items-center'>
                 <Header category='Clube' title={campeonato.name} />
@@ -278,7 +258,7 @@ const CampeonatoDetalhes = () => {
                 >
                   {groups.map((group, index) => (
                     <SwiperSlide key={index}>                      
-                        <h2>{group.name}</h2>
+                        <h2 style={{textAlign:'center', marginBottom:'10px', fontWeight:'bold'}}>{group.name}</h2>
                         <div>
                         <GridComponent dataSource={group.teams}>
                           <ColumnsDirective>
@@ -288,6 +268,19 @@ const CampeonatoDetalhes = () => {
                           </ColumnsDirective>
                           <Inject services={[Page]} />
                         </GridComponent>
+                        </div>
+                        <div style={{marginTop:'10px',marginBottom:'10px'}}>
+                        <Button 
+                            color={currentColor}
+                            bgColor='white'
+                            text='Cadastrar Equipe neste Grupo'
+                            borderRadius='10px'
+                            size='sm'
+                            onClick={() => {
+                                setSelectedGroupId(group._id);
+                                setShowModalTimeGrupo(true);
+                            }}
+                        />
                         </div>                      
                     </SwiperSlide>
                   ))}

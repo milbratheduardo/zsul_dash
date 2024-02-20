@@ -16,7 +16,7 @@ const Elenco = () => {
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id || null;
   const [atletas, setAtletas] = useState([]);
-
+  console.log('id', teamId)
   
 
   const handleAtletaClick = (name) => {
@@ -57,9 +57,9 @@ const Elenco = () => {
   const atletasGrid = [
     {
       headerText: 'Foto',
-      template: ({ fotoAtleta }) => (
+      template: ({ fotoAtletaBase64 }) => (
         <div className='text-center'>
-          <img src={fotoAtleta} alt="Foto Atleta" style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+          <img src={fotoAtletaBase64} alt="Foto Atleta" style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
         </div>
       ),
       textAlign: 'Center',
