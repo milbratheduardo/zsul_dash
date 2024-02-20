@@ -48,10 +48,7 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
                 
                 <div className='flex flex-wrap justify-center gap-2'>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: startColor}}>Gerar Carteirinha</button>
-                  <div className='w-full' aria-hidden='true'></div>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: currentColor}}>Solicitar Transferência</button>
+                    backgroundColor: currentColor}}>Gerar Carteirinha</button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
                     backgroundColor: endColor}}>Demitir Staff</button>

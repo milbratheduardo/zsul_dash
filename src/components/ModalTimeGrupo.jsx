@@ -86,7 +86,7 @@ const ModalTimeGrupo = ({ isVisible, onClose, currentColor, campeonatoId, grupoI
       grupoId,
     }
     try {
-      const response = await fetch('https://localhost:3000/grupos/team', {
+      const response = await fetch('http://localhost:3000/grupos/team', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
