@@ -23,36 +23,54 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
 
-  const handleSubmit= async (e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    await adcAtleta();
-
-    await enviarImagem('RGFrente');
-    await enviarImagem('RGVerso');
-    await enviarImagem('fotoAtleta');
+  
+    const userId = await adcAtleta(); // Tentativa de cadastro do atleta
+    if (userId) {
+      // Envio das imagens em sequência
+      await enviarImagem('RGFrente');
+      await enviarImagem('RGVerso');
+      await enviarImagem('fotoAtleta');
+  
+      // Remove o userId do localStorage apenas após o envio da última imagem
+      localStorage.removeItem('fotoAtleta');
+    }
   }
 
   const enviarImagem = async (imageField) => {
+    const userId = localStorage.getItem('fotoAtleta'); // Pega o ID do atleta do localStorage
+    if (!userId) {
+      console.error('UserID não encontrado no localStorage.');
+      return;
+    }
+  
+    const file = document.getElementById(imageField).files[0]; // Pega o arquivo diretamente do input
+    if (!file) {
+      console.error('Nenhum arquivo selecionado para o campo:', imageField);
+      return;
+    }
+  
     const formData = new FormData();
-    formData.append('userId', teamId); 
+    formData.append('userId', userId);
     formData.append('userType', 'elenco');
-    formData.append('imageField', modalFieldsState[imageField]);
+    formData.append('imageField', imageField);
+    formData.append('file', file); // Adiciona o arquivo ao FormData
   
     try {
-      const response = await fetch('http://localhost:3000/elenco/', {
+      const response = await fetch('http://localhost:3000/image', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
   
-      const data = await response.json();
-      if (data.status === 200) {
-        console.log(imageField + ' enviado com sucesso');
+      if (response.ok) {
+        console.log(`${imageField} enviado com sucesso`);
       } else {
-        console.error('Erro ao enviar ' + imageField, data.msg);
+        const data = await response.json();
+        console.error(`Erro ao enviar ${imageField}`, data.message);
       }
     } catch (error) {
-      console.error('There was a problem with the fetch operation for ' + imageField, error);
+      console.error(`Erro ao enviar ${imageField}`, error);
     }
   }
 
@@ -69,31 +87,26 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
         },
         body: JSON.stringify(payload)
       });
-      
-      const data = await response.json();
-      console.log('Resposta completa:', data); // Imprime toda a resposta para diagnóstico
-  
-if (data.status === 200) {
-  // Ajuste para acessar o ID do atleta corretamente
-  console.log('ID do Atleta Criado:', data.msg._id); // Acessa o ID do atleta dentro de 'msg'
 
-  toast.success('Atleta Cadastrado com sucesso!', {
-    position: "top-center",
-    autoClose: 5000,
-    onClose: () => navigate('/elenco') 
-  });
-      } else if (data.status === 400 || data.status === 500) {
-        setErrorMessage(data.msg); 
+      const data = await response.json();
+      if (response.ok) {
+        toast.success('Atleta Cadastrado com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => navigate('/elenco')
+        });
+        localStorage.setItem('fotoAtleta', data.msg._id); // Salva o ID do atleta no localStorage
+        return data.msg._id; // Retorna o ID do atleta criado
       } else {
-        console.log('Error:', data.msg);
+        setErrorMessage(data.message);
+        return null; // Retorna null em caso de falha
       }
-  
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
+      return null; // Retorna null em caso de erro
     }
   }
-  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
