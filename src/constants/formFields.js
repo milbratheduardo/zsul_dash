@@ -381,6 +381,59 @@ const ModalCompeticaoFields = [
     }
 ]
 
+const ModalAdicionarJogoFields = [
+    {
+        labelText:"Data",
+        labelFor:"",
+        id:"data",
+        name:"data",
+        type:"text",
+        autoComplete:"data",
+        isRequired:true,
+        placeholder:"Data da Partida",
+        mask: "99/99/9999"    
+    },
+    {
+        labelText: "Tipo",
+        labelFor: "tipo",
+        id: "tipo",
+        name: "tipo",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "Grupos", label: "Grupos" },
+        { value: "Eliminacao", label: "Eliminação" }
+        ],
+        placeholder: "Tipo da Partida",
+    },
+    {
+        labelText: "Hora",
+        labelFor: "hora",
+        id: "hora",
+        name: "hora",
+        type:"text",
+        autoComplete:"hora",
+        isRequired:true,
+        placeholder:"Hora da Partida",
+        mask: "99:99"
+    },
+    {
+        labelText: "Local",
+        labelFor: "local",
+        id: "local",
+        name: "local",
+        type:"text",
+        autoComplete:"local",
+        isRequired:true,
+        placeholder:"Local da Partida",
+    }
+    
+    
+    
+   
+    
+]
+
 export {loginFields,signupFields,ModalAtletaFields,
     ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
-    ModalGrupoFields}
+    ModalGrupoFields, ModalAdicionarJogoFields}

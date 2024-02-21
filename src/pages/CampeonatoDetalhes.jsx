@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Inject } from '@syncfusion/ej2-react-grids';
-import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo, ModalTimeGrupo } from '../components';
+import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo, ModalTimeGrupo, ModalAdicionarJogo } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -16,20 +16,25 @@ const CampeonatoDetalhes = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
   const { id } = useParams();
   const [groups, setGroups] = useState([]);
+  const [groupsTime, setGroupsTime] = useState([]);
+  const [timeGroups, setTimeGroups] = useState([]);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id;
   const [errorMessage, setErrorMessage] = useState("");
   const [campeonato, setCampeonato] = useState([]);
   const [showModalGrupo, setShowModalGrupo] = useState(false);
   const [showModalTimeGrupo, setShowModalTimeGrupo] = useState(false);
+  const [showModalAdicionarJogo, setShowModalAdicionarJogo] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState('');
 
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
 
+  
+
   const gridColumns = [
     { field: 'P', headerText: 'P', width: '25' },
-    { field: 'name', headerText: 'Nome', width: '100' },
+    { field: 'teamName', headerText: 'Nome', width: '100' },
     { field: 'J', headerText: 'J', width: '25' },
     { field: 'V', headerText: 'V', width: '25' },
     { field: 'E', headerText: 'E', width: '25' },
@@ -37,6 +42,13 @@ const CampeonatoDetalhes = () => {
     { field: 'GF', headerText: 'GF', width: '25' },
     { field: 'SG', headerText: 'SG', width: '25' },
     { field: 'Pts', headerText: 'Pts', width: '25' },
+    {
+      headerText: 'Deletar',
+      template: ({ teamId }) => <ActionButtonTemplate teamId={teamId} />,
+      textAlign: 'Center',
+      width: '120'
+    }
+    
   ];
 
   useEffect(() => {
@@ -46,6 +58,7 @@ const CampeonatoDetalhes = () => {
         const data = await response.json();
         if (data.status === 200 && data.data) {
           setGroups(data.data);
+          setSelectedGroupId(data.data[0]?._id);
         } else {
           toast.error('Failed to fetch groups');
         }
@@ -57,6 +70,26 @@ const CampeonatoDetalhes = () => {
 
     fetchGroups();
   }, [id]);
+
+  useEffect(() => {
+    const fetchTimeGroups = async () => {
+      if (!selectedGroupId) return;
+      try {
+        const response = await fetch(`http://localhost:3000/grupos/team/grupo/${selectedGroupId}`);
+        const data = await response.json();
+        if (data.status === 200 && data.data) {
+          setTimeGroups(data.data);
+        } else {
+          toast.error('Failed to fetch groups');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('An error occurred while fetching groups');
+      }
+    };
+
+    fetchTimeGroups();
+  }, [selectedGroupId]);
 
   const inscreverTime = async () => {
     const payload = {
@@ -91,6 +124,71 @@ const CampeonatoDetalhes = () => {
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   }  
+  
+
+  const ActionButtonTemplate = (teamId) => (
+    <Button
+      color='white'
+      bgColor='red'
+      text='Deletar Equipe'
+      borderRadius='10px'
+      size='sm'
+      onClick={() => deletarTimeGrupo(teamId)}
+      >
+    </Button>
+  );
+  
+  const deletarTimeGrupo = async (teamId) => {
+    try {
+      const teamIdFetch = teamId.teamId;
+      const groupResponse =  await fetch(`http://localhost:3000/grupos/team/${teamIdFetch}`);
+      const groupData = await groupResponse.json();
+      console.log('teamID: ', groupData)
+      
+      if (groupData.status === 200 && groupData.data) {
+        console.log("Group data fetched successfully:", groupData.data);
+        const grupoId = groupData.data[0].grupoId; 
+  
+        
+        const payload = {
+          teamId: teamIdFetch, 
+          grupoId: grupoId, 
+        };
+  
+        console.log("Payload for deletion:", payload);
+  
+       
+        const deleteResponse = await fetch(`http://localhost:3000/grupos/grupo`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload)
+        });
+  
+        const deleteData = await deleteResponse.json();
+        if (deleteData.status === 200) {
+          toast.success('Equipe Deletada com sucesso!', {
+            position: "top-center",
+            autoClose: 5000,
+            onClose: () => navigate(`/campeonatos/${id}`)
+          });
+        } else {
+          
+          console.error('Error during deletion:', deleteData.msg);
+          setErrorMessage(deleteData.msg);
+          toast.error(deleteData.msg);
+        }
+      } else {
+        
+        console.error('Failed to fetch group data:', groupData.msg);
+        toast.error('Failed to fetch group data');
+      }
+    } catch (error) {
+      console.error('Error fetching group data or deleting team:', error);
+      toast.error('An error occurred while processing your request');
+    }
+  };
   
 
   const deletarCampeonato = async () => {
@@ -133,6 +231,7 @@ const CampeonatoDetalhes = () => {
 
     fetchCampeonato();
   }, []);
+
 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
@@ -187,7 +286,17 @@ const CampeonatoDetalhes = () => {
               setSelectedGroupId('');
           }}/>
 
-          {!showModalGrupo && !showModalTimeGrupo && (
+          <ModalAdicionarJogo
+            isVisible={showModalAdicionarJogo} 
+            currentColor={currentColor} 
+            grupoId ={selectedGroupId}
+            campeonatoId = {id} 
+            onClose={() => {
+              setShowModalAdicionarJogo(false);
+              setSelectedGroupId('');
+          }}/>
+
+          {!showModalGrupo && !showModalTimeGrupo && !showModalAdicionarJogo && (
           <div className='m-2 md:m-10 mt-16 p-2 md:p-10 bg-white rounded-3xl'>
             <div className='flex flex-wrap md:flex-nowrap justify-between items-center'>
                 <Header category='Clube' title={campeonato.name} />
@@ -223,7 +332,7 @@ const CampeonatoDetalhes = () => {
                         borderRadius='10px'
                         size='sm'
                         onClick={() => {
-                            adicionarJogo();
+                            setShowModalAdicionarJogo(true);
                         }}
                     />
                     
@@ -253,14 +362,19 @@ const CampeonatoDetalhes = () => {
                 <Swiper
                   spaceBetween={25}
                   slidesPerView={1}
-                  onSlideChange={() => console.log('slide change')}
+                  onSlideChange={(swiper) => {
+                    const currentGroup = groups[swiper.activeIndex];
+                    if (currentGroup) {
+                      setSelectedGroupId(currentGroup._id);
+                    }
+                  }}
                   onSwiper={(swiper) => console.log(swiper)}
                 >
                   {groups.map((group, index) => (
                     <SwiperSlide key={index}>                      
-                        <h2 style={{textAlign:'center', marginBottom:'10px', fontWeight:'bold'}}>{group.name}</h2>
+                        <h2 style={{textAlign:'center', marginBottom:'10px', marginTop:'10px', fontWeight:'bold'}}>{group.name}</h2>
                         <div>
-                        <GridComponent dataSource={group.teams}>
+                        <GridComponent dataSource={timeGroups}>
                           <ColumnsDirective>
                             {gridColumns.map((col, idx) => (
                               <ColumnDirective key={idx} {...col} />
@@ -285,6 +399,9 @@ const CampeonatoDetalhes = () => {
                     </SwiperSlide>
                   ))}
                 </Swiper>
+            </div>
+            <div style={{textAlign:'center', marginTop:'30px', fontWeight:'bold', fontSize:'26px'}}>
+              <h1>Jogos do {campeonato.name}</h1>
             </div>
           </div>
           )}

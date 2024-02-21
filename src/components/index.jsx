@@ -27,4 +27,5 @@ export { default as CardCompetition } from './CardCompetition';
 export { default as CardSumulas } from './CardSumulas';
 export { default as ModalCompeticao } from './ModalCompeticao';
 export { default as ModalPerfil } from './ModalPerfil';
+export { default as ModalAdicionarJogo } from './ModalAdicionarJogo';
 
