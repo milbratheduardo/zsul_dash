@@ -17,11 +17,32 @@ const Elenco = () => {
   const teamId = user.data.id || null;
   const [atletas, setAtletas] = useState([]);
   console.log('id', teamId)
-  
+  const [selectedAtletaData, setSelectedAtletaData] = useState({
+    name: '',
+    dateOfBirth: '',
+    fotoAtletaBase64: '',
+    CPF: '',
+  });
 
-  const handleAtletaClick = (name) => {
-    setSelectedAtleta({ name });
+  const handleAtletaClick = (atleta) => {
+    // Assegura que os dados do atleta estão sendo corretamente acessados
+    console.log('Dados do Atleta:', atleta); // Confirma os dados no console
+    const atletaDados = {
+      Nome: atleta.name,
+      DataDeNascimento: atleta.dateOfBirth,
+      FotoBase64: atleta.fotoAtletaBase64,
+      CPF: atleta.CPF,
+    };
+    // Atualiza o estado com os dados específicos do atleta selecionado
+    setSelectedAtletaData({
+      name: atleta.name,
+      dateOfBirth: atleta.dateOfBirth,
+      fotoAtletaBase64: atleta.fotoAtletaBase64,
+      CPF: atleta.CPF,
+    });
+    setSelectedAtleta(atleta); // Continua a armazenar o atleta selecionado no estado
     setShowAtletasOpcoes(true);
+    console.log(atletaDados)
   };
 
   useEffect(() => {
@@ -65,9 +86,13 @@ const Elenco = () => {
       textAlign: 'Center',
       width: '100'
     },
-    { field: 'name', headerText: 'Atleta', width: '150', textAlign: 'Center', 
-      template: ({ name }) => (
-        <a href="#" onClick={() => handleAtletaClick(name)}>{name}</a>
+    {
+      field: 'name', headerText: 'Atleta', width: '150', textAlign: 'Center', 
+      template: (atleta) => ( // Aqui, "atleta" representa o objeto completo do atleta na linha atual
+        <a href="#" onClick={(e) => {
+          e.preventDefault(); // Prevenir o comportamento padrão do link
+          handleAtletaClick(atleta); // Passando o objeto atleta completo
+        }}>{atleta.name}</a>
       )
     },
     {
