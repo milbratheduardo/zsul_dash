@@ -25,6 +25,7 @@ export { default as ModalClubeOpcoes } from './ModalClubeOpcoes';
 export { default as ModalStaffOpcoes } from './ModalStaffOpcoes';
 export { default as CardCompetition } from './CardCompetition';
 export { default as CardSumulas } from './CardSumulas';
+export { default as CardJogos } from './CardJogos';
 export { default as ModalCompeticao } from './ModalCompeticao';
 export { default as ModalPerfil } from './ModalPerfil';
 export { default as ModalAdicionarJogo } from './ModalAdicionarJogo';

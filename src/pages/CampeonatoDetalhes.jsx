@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Inject } from '@syncfusion/ej2-react-grids';
-import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo, ModalTimeGrupo, ModalAdicionarJogo } from '../components';
+import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo, ModalTimeGrupo, 
+  ModalAdicionarJogo, CardJogos } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -26,6 +27,7 @@ const CampeonatoDetalhes = () => {
   const [showModalTimeGrupo, setShowModalTimeGrupo] = useState(false);
   const [showModalAdicionarJogo, setShowModalAdicionarJogo] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState('');
+  const [jogos, setJogos] = useState([]);
 
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
@@ -215,6 +217,21 @@ const CampeonatoDetalhes = () => {
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   }  
+
+  useEffect(() => {
+    const fetchJogos = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/jogos/campeonato/${id}`);
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setJogos(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchJogos();
+  }, []);
   
 
   useEffect(() => {
@@ -403,6 +420,22 @@ const CampeonatoDetalhes = () => {
             <div style={{textAlign:'center', marginTop:'30px', fontWeight:'bold', fontSize:'26px'}}>
               <h1>Jogos do {campeonato.name}</h1>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {jogos.map((jogo) => (
+                    <CardJogos
+                      key={jogo._id} 
+                      campeonatoId={jogo.campeonatoId} 
+                      userIdCasa={jogo.userIdCasa}
+                      userIdFora={jogo.userIdFora}
+                      tipo={jogo.tipo}
+                      grupoId={jogo.grupoId}
+                      data={jogo.data}
+                      local={jogo.local}
+                      hora={jogo.hora}
+                      currentColor={currentColor}
+                    />
+                  ))}
+                </div>
           </div>
           )}
         </div>

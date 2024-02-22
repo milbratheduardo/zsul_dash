@@ -7,7 +7,7 @@ const CardCompetition = ({
 }) => {
   const navigate = useNavigate();
   
-  const handleViewDetails = () => { // Não é necessário passar o 'id' aqui, pois ele já está disponível no escopo da função
+  const handleViewDetails = () => { 
     navigate(`/campeonatos/${id}`);
   };
 
@@ -31,7 +31,7 @@ const CardCompetition = ({
         <p className="text-gray-700 text-base">
           Data de Início: {date}
         </p>
-        <p className="text-gray-700 text-base mb-4"> {/* Aqui foi adicionado o espaçamento mb-4 */}
+        <p className="text-gray-700 text-base mb-4"> 
           Cidade: {city}
         </p>
         <Button 
@@ -40,7 +40,7 @@ const CardCompetition = ({
           text='Ver Detalhes'
           borderRadius='10px'
           size='sm'
-          onClick={handleViewDetails} // Chamada da função simplificada
+          onClick={handleViewDetails} 
         />
       </div>
     </div>
