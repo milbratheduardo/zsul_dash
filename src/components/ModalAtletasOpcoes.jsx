@@ -3,7 +3,7 @@ import HeaderModal from './HeaderModal';
 import chroma from 'chroma-js';
 import jsPDF from 'jspdf';
 import Logo from '../img/Logo_exemplo.png';
-
+import ModalInscricaoCampeonato from './ModalInscricaoCampeonato';
 
 const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atleta }) => {
     if (!isVisible) return null;
@@ -12,7 +12,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
     const startColor = chroma(currentColor).brighten(1.5).css(); 
     const endColor = chroma(currentColor).darken(1).css();
     const endColor2 = chroma(currentColor).darken(2).css();
-
+    const [isModalInscricaoOpen, setIsModalInscricaoOpen] = useState(false);
     const handleClose = (e) => {
         if (e.target.id === 'wrapper') onClose();
       };
@@ -36,7 +36,10 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
     const funcao5 = {
 
       };
-
+      const handleInscricaoClick = (event) => {
+        event.preventDefault(); // Isso previne o comportamento padrão do evento, que é a submissão do formulário
+        setIsModalInscricaoOpen(true);
+      };
       const gerarCarteirinhaPDF = () => {
         const { name, dateOfBirth, fotoAtletaBase64, CPF } = atleta;
       
@@ -101,14 +104,22 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
                     backgroundColor: currentColor}}>Demitir Atleta</button>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: endColor}}>Inscrever em Campeonato</button>
+                  <button
+                    className='text-white py-2 px-4 rounded w-full sm:w-1/2'
+                    style={{ backgroundColor: endColor }}
+                    onClick={(event) => handleInscricaoClick(event)} 
+                  >
+                    Inscrever em Campeonato
+                  </button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
                     backgroundColor: endColor2}}>Estatísticas</button>
                   <div className='w-full' aria-hidden='true'></div>
                 </div>    
-                
+                <ModalInscricaoCampeonato
+            isVisible={isModalInscricaoOpen}
+            onClose={() => setIsModalInscricaoOpen(false)} // Função para fechar o ModalInscricaoCampeonato
+          />
               </form>
             </div>
           </div>

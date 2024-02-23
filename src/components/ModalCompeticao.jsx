@@ -27,11 +27,11 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+ 
     const formData = new FormData();
     formData.append('name', modalFieldsState['nome']);
     formData.append('categoria', modalFieldsState['categoria']);
-    formData.append('tipo', modalFieldsState['tipo']);
+    formData.append('tipoCompeticao', modalFieldsState['tipoCompeticao']);
     formData.append('participantes', modalFieldsState['participantes']);
     formData.append('quantidadeGrupos', modalFieldsState['quantidadeGrupos']);
     formData.append('dataInicio', modalFieldsState['dataInicio']);

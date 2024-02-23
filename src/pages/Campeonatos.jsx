@@ -91,7 +91,7 @@ const Campeonatos = () => {
                       image={campeonato.pictureBase64} 
                       title={campeonato.name}
                       category={campeonato.categoria}
-                      type={campeonato.tipo}
+                      type={campeonato.tipoCompeticao}
                       participants={campeonato.participantes}
                       vacancies={campeonato.vagas}
                       date={campeonato.dataInicio}
