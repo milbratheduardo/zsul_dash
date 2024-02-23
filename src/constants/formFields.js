@@ -303,7 +303,7 @@ const ModalCompeticaoFields = [
     {
         labelText: "Tipo",
         labelFor: "tipo",
-        id: "tipo",
+        id: "tipoCompeticao",
         name: "tipo",
         type: "dropdown",
         isRequired: true,
