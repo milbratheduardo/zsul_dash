@@ -122,6 +122,7 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor }) => {
                 vacancies={campeonato.vagas}
                 date={campeonato.dataInicio}
                 city={campeonato.cidade}
+                showViewDetailsButton={false}
                 currentColor={currentColor}
                 showInscribeButton={true} 
     onInscribeClick={() => handleInscribe(campeonato._id)}

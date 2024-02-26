@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components';
 
 const CardCompetition = ({
-  image, title, type, participants, vacancies, city, category, date, currentColor, id, onInscribeClick, showInscribeButton
+  image, title, type, participants, vacancies, city, category, date, currentColor, id, onInscribeClick, showInscribeButton, showViewDetailsButton
 }) => {
   const navigate = useNavigate();
   
@@ -34,6 +34,7 @@ const CardCompetition = ({
         <p className="text-gray-700 text-base mb-4"> 
           Cidade: {city}
         </p>
+        {showViewDetailsButton && (
         <Button 
           color='white'
           bgColor={currentColor}
@@ -42,6 +43,7 @@ const CardCompetition = ({
           size='sm'
           onClick={handleViewDetails} 
         />
+        )}
          {showInscribeButton && (
         <button
           onClick={onInscribeClick}
