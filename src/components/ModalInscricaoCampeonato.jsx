@@ -1,36 +1,87 @@
 import React, { useState, useEffect } from 'react';
-import CardCompetition from './CardCompetition'; // Ajuste o caminho do import conforme necessário
+import CardCompetition from './CardCompetition'; 
 
 const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor }) => {
   const [campeonatos, setCampeonatos] = useState([]);
 
-  // Iniciando o fetch dos campeonatos quando o modal se torna visível
   useEffect(() => {
-    const fetchCampeonatos = async () => {
+    const fetchCampeonatosInscritos = async () => {
+      const user = JSON.parse(localStorage.getItem('user')) || {};
+      const teamId = user.data.id; 
+      console.log('teamId:', teamId);
       try {
-        const response = await fetch('http://localhost:3000/campeonatos/');
+        const response = await fetch(`http://localhost:3000/inscricoes/user/${teamId}`);
         const data = await response.json();
-        setCampeonatos(data.data);
+
+        const campeonatoIds = data.data.map(item => item.campeonatoId);
+
+        const campeonatoDetailsPromises = campeonatoIds.map(_id =>
+          fetch(`http://localhost:3000/campeonatos/${_id}`)
+          .then(response => response.json())
+        );
+
+        const campeonatosDetails = await Promise.all(campeonatoDetailsPromises);
+        const validCampeonatos = campeonatosDetails.filter(detail => detail.data != null);
+
+        setCampeonatos(validCampeonatos.map(detail => detail.data));
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
       }
     };
 
     if (isVisible) {
-      fetchCampeonatos();
+      fetchCampeonatosInscritos();
     }
   }, [isVisible]);
 
-  // Se o modal não estiver visível, não renderiza nada
   if (!isVisible) return null;
 
-  // Função para fechar o modal ao clicar fora
   const handleCloseClickOutside = (event) => {
     if (event.target.id === 'modalInscricaoWrapper') {
       onClose();
     }
   };
+  const handleInscribe = async (campeonatoId) => {
+    localStorage.setItem('selectedCampeonatoId', campeonatoId);
 
+    alert(`Campeonato ${campeonatoId} inscrito com sucesso!`);
+  
+  
+    const selectedCampeonatoId = localStorage.getItem('selectedCampeonatoId');
+    const selectedTeamId = localStorage.getItem('selectedTeamId');
+    const selectedAtletaId = localStorage.getItem('selectedAtletaId');
+  
+    const requestBody = {
+      campeonatoId: selectedCampeonatoId,
+      userId: selectedTeamId,
+      elencoId: selectedAtletaId,
+    };
+  
+    try {
+
+      const response = await fetch('http://localhost:3000/sumula/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+  
+      if (response.ok) {
+   
+        const responseData = await response.json();
+        console.log('Resposta da requisição:', responseData);
+
+      } else {
+   
+        console.error('Erro na requisição:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Erro ao fazer requisição:', error);
+    }
+  
+    onClose(); 
+  };
   return (
     <div
       id='modalInscricaoWrapper'
@@ -72,6 +123,8 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor }) => {
                 date={campeonato.dataInicio}
                 city={campeonato.cidade}
                 currentColor={currentColor}
+                showInscribeButton={true} 
+    onInscribeClick={() => handleInscribe(campeonato._id)}
               />
             ))}
           </div>
@@ -82,3 +135,4 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor }) => {
 };
 
 export default ModalInscricaoCampeonato;
+``

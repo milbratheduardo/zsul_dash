@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { GridComponent, ColumnsDirective, ColumnDirective,
   Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { Header, Button, ModalAtleta, ModalAtletasOpcoes,  } from '../components';
@@ -32,17 +32,19 @@ const Elenco = () => {
       DataDeNascimento: atleta.dateOfBirth,
       FotoBase64: atleta.fotoAtletaBase64,
       CPF: atleta.CPF,
+      Id:atleta._id
     };
-    // Atualiza o estado com os dados específicos do atleta selecionado
     setSelectedAtletaData({
       name: atleta.name,
       dateOfBirth: atleta.dateOfBirth,
       fotoAtletaBase64: atleta.fotoAtletaBase64,
       CPF: atleta.CPF,
     });
-    setSelectedAtleta(atleta); // Continua a armazenar o atleta selecionado no estado
+    setSelectedAtleta(atleta);
     setShowAtletasOpcoes(true);
     console.log(atletaDados)
+    localStorage.setItem('selectedAtletaId', atleta._id);
+    localStorage.setItem('selectedTeamId', teamId); 
   };
 
   useEffect(() => {
