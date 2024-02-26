@@ -98,6 +98,7 @@ const Campeonatos = () => {
                       city={campeonato.cidade}
                       currentColor={currentColor}
                       id={campeonato._id}
+                      showViewDetailsButton={true}
                     />
                   ))}
                 </div>
