@@ -155,6 +155,7 @@ const Elenco = () => {
             atleta={selectedAtleta}
             atletaNome={selectedAtleta ? selectedAtleta.name : ''}
             currentColor={currentColor}
+            teamId = {teamId}
             onClose={() => {
               setShowAtletasOpcoes(false);
             }} 

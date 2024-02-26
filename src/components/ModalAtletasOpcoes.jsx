@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeaderModal from './HeaderModal';
 import chroma from 'chroma-js';
 import jsPDF from 'jspdf';
 import Logo from '../img/Logo_exemplo.png';
 import ModalInscricaoCampeonato from './ModalInscricaoCampeonato';
 
-const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atleta }) => {
+const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atleta, teamId }) => {
     if (!isVisible) return null;
 
     const startColor2 = chroma(currentColor).brighten(1).css();
@@ -13,35 +13,40 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
     const endColor = chroma(currentColor).darken(1).css();
     const endColor2 = chroma(currentColor).darken(2).css();
     const [isModalInscricaoOpen, setIsModalInscricaoOpen] = useState(false);
+    const [timeInfo, setTimeInfo] = useState({});
     const handleClose = (e) => {
         if (e.target.id === 'wrapper') onClose();
       };
-    
-    const funcao1 = {
 
-      };
-
-    const funcao2 = {
-
-      };
-
-    const funcao3 = {
-
-      };
-
-    const funcao4 = {
-
-      };
-
-    const funcao5 = {
-
-      };
       const handleInscricaoClick = (event) => {
         event.preventDefault(); // Isso previne o comportamento padrão do evento, que é a submissão do formulário
         setIsModalInscricaoOpen(true);
       };
+
+      useEffect(() => {
+        const fetchTimeInfo = async () => {
+          try {
+            const response = await fetch(`http://localhost:3000/users/${teamId}`);
+           
+            if (response.ok) {
+              const data = await response.json();
+              setTimeInfo(data);
+            } else {
+              console.error('Erro ao buscar dados do usuário');
+            }
+          } catch (error) {
+            console.error('Erro na solicitação:', error);
+          }
+        };
+    
+        if (teamId) {
+          fetchTimeInfo();
+        }
+      }, [teamId]);
+
+      console.log('time Info: ', timeInfo)
       const gerarCarteirinhaPDF = () => {
-        const { name, dateOfBirth, fotoAtletaBase64, CPF } = atleta;
+        const { name, dateOfBirth, fotoAtletaBase64, CPF} = atleta; 
       
         if (!name || !dateOfBirth || !fotoAtletaBase64 || !CPF) {
           console.error('Dados incompletos do atleta para gerar a carteirinha.');
@@ -55,7 +60,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         });
       
         // Cores da carteirinha
-        const backgroundColor = '#4CAF50'; 
+        const backgroundColor = '#D3D3D3'; 
       
         // Fundo da carteirinha
         doc.setFillColor(backgroundColor);
@@ -70,12 +75,14 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         
        
         doc.addImage(Logo, 'PNG', logoX, logoY, 20, 20); 
-        doc.setTextColor(255, 255, 255); 
+        doc.setTextColor(0, 0, 0); 
         const textX = logoxx; 
         const textYStart = 28; 
         doc.setFontSize(10);
-        doc.text(`Nome: ${name}`, textX, textYStart);
-        doc.text(`CPF: ${CPF}`, textX, textYStart + 5);
+        doc.text('ZSUL Esportes', 10, 15);
+        doc.text(`Nome: ${name}`, textX, textYStart - 5);
+        doc.text(`CPF: ${CPF}`, textX, textYStart);
+        doc.text(`Clube: ${timeInfo.data.teamName}`, textX, textYStart + 5);
         doc.text(`Data de Nasc.: ${dateOfBirth}`, textX, textYStart + 10);
 
         doc.save(`Carteirinha-${name}.pdf`);
