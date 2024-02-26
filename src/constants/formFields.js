@@ -81,7 +81,8 @@ const signupFields=[
         autoComplete:"estado",
         isRequired:true,
         placeholder:"Estado",
-        mask: "99"  
+       
+      
     }
 ]
 

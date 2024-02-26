@@ -40,10 +40,18 @@ const Home = () => {
 
     const generatePDF = () => {
       const doc = new jsPDF();
-    
+      if (!userAtletas.data || userAtletas.data.length === 0) {
+        alert("Não há atletas cadastrados para gerar o PDF.");
+        return; // Interrompe a execução do método
+      }
       // Assuming userInfo and userAtletas are accessible here
       const logo = userInfo.data?.pictureBase64; // Base64 string of the logo
-      doc.addImage(logo, 'PNG', 10, 0, 50, 50); // Adjust positioning and size as needed
+      if (logo) {
+        doc.addImage(logo, 'PNG', 10, 0, 50, 50);
+      } else {
+        console.error("A imagem base64 está null.");
+        // Você pode adicionar lógica adicional aqui para lidar com a falta da imagem.
+      }// Adjust positioning and size as needed
     
       const pageWidth = doc.internal.pageSize.getWidth();
       const teamName = userInfo.data.teamName;
