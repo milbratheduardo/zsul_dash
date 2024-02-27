@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ModalEditarJogo } from '../components';
 import chroma from 'chroma-js';
 
-const CardCompetition = ({
+const CardCompetition = ({ 
   campeonatoId, userIdCasa, userIdFora, tipo, grupoId, data, local, hora, currentColor,jogoId
 }) => {
   const navigate = useNavigate();
@@ -142,7 +142,7 @@ const CardCompetition = ({
 
   return (
 
-    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white text-center mt-10">
+    <div style={{ zIndex: 1, position: 'relative' }} className="max-w-sm rounded overflow-hidden shadow-lg bg-white text-center mt-10">
       <div className="flex flex-col items-center py-4">
 
           <ModalEditarJogo
