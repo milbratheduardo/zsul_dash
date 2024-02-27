@@ -10,3 +10,4 @@ export { default as Signup } from './Signup';
 export { default as CampeonatoDetalhes } from './CampeonatoDetalhes';
 export { default as Transferencias } from './Transferencias';
 export { default as Clubes } from './Clubes';
+export { default as SumulasDetalhes } from './SumulasDetalhes';

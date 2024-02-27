@@ -433,6 +433,7 @@ const CampeonatoDetalhes = () => {
                       local={jogo.local}
                       hora={jogo.hora}
                       currentColor={currentColor}
+                      jogoId={jogo._id}
                     />
                   ))}
                 </div>

@@ -8,7 +8,7 @@ const CardSumulas = ({
   const navigate = useNavigate();
   
   const handleViewDetails = () => { // Não é necessário passar o 'id' aqui, pois ele já está disponível no escopo da função
-    navigate(`/campeonatos/${id}`);
+    navigate(`/sumulas/${id}`);
   };
 
   return (

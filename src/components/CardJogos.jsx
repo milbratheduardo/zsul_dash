@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../components';
+import { Button, ModalEditarJogo } from '../components';
 import chroma from 'chroma-js';
 
 const CardCompetition = ({
-  campeonatoId, userIdCasa, userIdFora, tipo, grupoId, data, local, hora, currentColor
+  campeonatoId, userIdCasa, userIdFora, tipo, grupoId, data, local, hora, currentColor,jogoId
 }) => {
   const navigate = useNavigate();
   const [imageSrcCasa, setImageSrcCasa] = useState('');
@@ -13,10 +13,8 @@ const CardCompetition = ({
   const [userCasaInfo, setUserCasaInfo] = useState({});
   const [userForaInfo, setUserForaInfo] = useState({});
   const endColor = chroma(currentColor).darken(1).css();
+  const [showModalEditarJogo, setShowModalEditarJogo] = useState(false);
   
-  const editarJogo = () => { 
-    setShowModalEditarJogo(true);
-  };
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -143,8 +141,20 @@ const CardCompetition = ({
 
 
   return (
+
     <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white text-center mt-10">
       <div className="flex flex-col items-center py-4">
+
+          <ModalEditarJogo
+            isVisible={showModalEditarJogo} 
+            currentColor={currentColor} 
+            grupoId={grupoId}
+            jogoId = {jogoId}
+            campeonatoId={campeonatoId} 
+            onClose={() => {
+              setShowModalEditarJogo(false);
+          }}/>
+        
         <div className="flex justify-between items-center w-full px-6">
           <div className="flex flex-col items-center">
             <img alt="Home Team Logo" src={imageSrcCasa} className="h-32 w-32 rounded-full object-cover" />
@@ -190,7 +200,9 @@ const CardCompetition = ({
           text='Editar Jogo'
           borderRadius='10px'
           size='sm'
-          onClick={() => {}} 
+          onClick={() => {
+            setShowModalEditarJogo(true);
+          }} 
         />
         </div>
       </div>

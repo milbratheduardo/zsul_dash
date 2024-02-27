@@ -29,4 +29,5 @@ export { default as CardJogos } from './CardJogos';
 export { default as ModalCompeticao } from './ModalCompeticao';
 export { default as ModalPerfil } from './ModalPerfil';
 export { default as ModalAdicionarJogo } from './ModalAdicionarJogo';
+export { default as ModalEditarJogo } from './ModalEditarJogo';
 

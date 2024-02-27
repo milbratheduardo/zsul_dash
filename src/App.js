@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Calendario, Campeonatos, ComissaoTecnica, 
-    Elenco, Home, MeuPerfil, Sumulas, Login, Signup, CampeonatoDetalhes, Transferencias, Clubes } from './pages';
+    Elenco, Home, MeuPerfil, Sumulas, Login, 
+    Signup, CampeonatoDetalhes, Transferencias, Clubes,
+  SumulasDetalhes } from './pages';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,6 +25,7 @@ const App = () => {
               {/* Administração */}
               <Route path='/calendario' element={<Calendario />} />
               <Route path='/sumulas' element={<Sumulas />} />
+              <Route path="/sumulas/:id" element={<SumulasDetalhes />} />
               {/* Meu Perfil */}
               <Route path='/perfil' element={<MeuPerfil />} />
               {/* Administrador */}
