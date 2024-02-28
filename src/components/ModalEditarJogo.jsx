@@ -6,96 +6,131 @@ import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
+
 const fields = ModalAdicionarJogoFields;
 let fieldsState = {
-  timeCasa: '',
-  timeFora: '',
+    timeCasa: '',
+    timeFora: '',
 };
 
 fields.forEach((field) => (fieldsState[field.id] = ''));
 
-const ModalEditarJogo = ({ isVisible, onClose, currentColor, jogoId, 
-    grupoId, campeonatoId, }) => {
+const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupoId, 
+  jogoId, timeCasa, timeFora }) => {
   if (!isVisible) return null;
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
-  const [initialState, setInitialState] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [initialData, setInitialData] = useState([]);
   const [userOptions, setUserOptions] = useState([]);
-  const [campeonato, setCampeonato] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchJogoData = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/jogos/${jogoId}`);
-        const data = await response.json();
-        if (response.ok) {
-          setModalFieldsState(data);
-          setInitialState(data);
-        } else {
-          toast.error('Erro ao carregar dados do jogo.');
-        }
-      } catch (error) {
-        console.error('Error fetching jogo data:', error);
-        setErrorMessage("Houve um problema ao conectar com o servidor.");
-      }
-    };
-
-    fetchJogoData();
-  }, [jogoId]);
-
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
   };
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/jogos/${jogoId}`);
+        const data = await response.json();
+        if (data.status === 200 && data.data) {
+          setInitialData(data.data);
+        } else {
+          toast.error('Failed to fetch groups');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('An error occurred while fetching groups');
+      }
+    };
+    fetchInitialData();
+  }, [jogoId]);
 
-    const changedFields = Object.keys(modalFieldsState).reduce((acc, key) => {
-      if (modalFieldsState[key] !== initialState[key]) {
-        acc[key] = modalFieldsState[key];
+  console.log('initial: ', initialData)
+
+  useEffect(() => {
+    const fetchUserIds = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/inscricoes/campeonato/${campeonatoId}`);
+        const result = await response.json();
+        console.log('result', result);
+  
+        if (response.ok && result.data && Array.isArray(result.data)) {
+          const teamNamesPromises = result.data.map(async (item) => {
+            const userResponse = await fetch(`http://localhost:3000/users/${item.userId}`);
+            const userData = await userResponse.json();
+            console.log('Times: ', userData)
+            if (userResponse.ok) {
+              return { value: item.userId, label: `${userData.data.teamName}` };
+            } else {
+              throw new Error(`Failed to fetch team name for user ID: ${item.userId}`);
+            }
+          });
+  
+          // Resolve all promises to get team names
+          const options = await Promise.all(teamNamesPromises);
+          setUserOptions(options);
+        } else {
+          throw new Error('Failed to fetch user IDs');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('Erro ao carregar IDs de usuário');
+      }
+    };
+  
+    fetchUserIds();
+  }, [campeonatoId]);
+
+  const handleSubmit= async (e)=>{
+    e.preventDefault();
+    editarJogo();
+  }
+
+ 
+  const editarJogo = async () => {
+    const changes = Object.keys(modalFieldsState).reduce((acc, field) => {
+      if (modalFieldsState[field] !== (initialData[field] || '')) {
+        acc.push({ field, value: modalFieldsState[field] });
       }
       return acc;
-    }, {});
-
-    if (Object.keys(changedFields).length > 0) {
-      await editarJogo(changedFields);
-    } else {
-      toast.info('Nenhuma alteração detectada.');
+    }, []);
+  
+    if (changes.length === 0) {
+      toast.info('No changes made.');
+      return;
     }
-  };
-
-  const editarJogo = async (changedFields) => {
-    console.log('Changed fields for PATCH:', changedFields);
+  
+    console.log('Changes to be sent: ', changes);
     try {
       const response = await fetch(`http://localhost:3000/jogos/${jogoId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(changedFields)
+        body: JSON.stringify(changes)
       });
-      
+  
       const data = await response.json();
-      if (response.ok) {
-        toast.success(`Jogo Editado com sucesso!`, {
+      if (data.status === 200) {
+        toast.success('Jogo editado com sucesso!', {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate(`/campeonatos/${campeonatoId}`) 
+          onClose: () => navigate(`/campeonatos/${campeonatoId}`)
         });
       } else {
-        setErrorMessage(data.msg);
+        console.error('Error:', data.msg);
+        setErrorMessage(data.msg || 'Erro desconhecido.');
       }
     } catch (error) {
-      console.error('There was a problem with the PATCH operation:', error);
+      console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   };
-
-  console.log("Initial State: ", initialState)
+  
+  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -104,7 +139,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, jogoId,
           X
         </button>
         <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
-          <HeaderModal title={`Cadastre novo Jogo do ${campeonato.name}`} heading='Preencha todos os dados' />
+          <HeaderModal title={`Edite Jogo Entre ${timeCasa} e ${timeFora}`} heading='Preencha todos os dados' />
           <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
               {errorMessage && 
               <div 
@@ -121,35 +156,32 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, jogoId,
               </div>
             }
             <div className='-space-y-px'>
-            {userOptions.length > 0 && (
                 <div className="mt-4">
-                    <select
+                      <select
                         id="timeCasa"
                         value={modalFieldsState.timeCasa}
                         onChange={handleChange}
-                        required
                         >
-                        <option value="">Selecione Time Casa</option>
+                        <option value="">{timeCasa}</option>
                         {userOptions.map((option) => (
                             <option key={option.value} value={option.value}>
                             {option.label}
                             </option>
                         ))}
-                        </select>
+                      </select>
 
-                        <select
+                      <select
                         id="timeFora"
                         value={modalFieldsState.timeFora}
                         onChange={handleChange}
-                        required
                         >
-                        <option value="">Selecione Time Fora</option>
+                        <option value="">{timeFora}</option>
                         {userOptions.map((option) => (
                             <option key={option.value} value={option.value}>
                             {option.label}
                             </option>
                         ))}
-                    </select>
+                      </select>
                     {fields.map((field, index) => (
                         <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
                         {field.type === 'dropdown' ? (
@@ -162,7 +194,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, jogoId,
                                 className='mt-3 p-2 block w-full border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
                             >
                                 <option value='' disabled>
-                                {field.placeholder}
+                                {initialData[field.id] ? initialData[field.id] : field.placeholder}
                                 </option>
                                 {field.options.map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -185,7 +217,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, jogoId,
                                 name={field.name}
                                 type={field.type}
                                 isRequired={field.isRequired}
-                                placeholder={field.placeholder}
+                                placeholder={initialData[field.id] ? initialData[field.id] : field.placeholder}
                                 mask={field.mask}
                             />
                             </div>
@@ -193,8 +225,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, jogoId,
                         </div>
                     ))}
                 </div>
-                )}
-              <FormAction currentColor={currentColor} text='Cadastrar' />
+              <FormAction currentColor={currentColor} text='Editar' />
             </div>
             
           </form>

@@ -151,6 +151,8 @@ const CardCompetition = ({
             grupoId={grupoId}
             jogoId = {jogoId}
             campeonatoId={campeonatoId} 
+            timeCasa={userCasaInfo.data?.teamName}
+            timeFora={userForaInfo.data?.teamName}
             onClose={() => {
               setShowModalEditarJogo(false);
           }}/>

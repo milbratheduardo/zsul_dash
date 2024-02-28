@@ -17,7 +17,7 @@ const Input = ({ handleChange, value, labelText, labelFor, id, name, type, isReq
           id={id}
           name={name}
           type={type}
-          required={isRequired}
+          //required={isRequired}
           className={`${fixedInputClass} ${customClass}`}
           placeholder={placeholder}
         />
@@ -28,7 +28,7 @@ const Input = ({ handleChange, value, labelText, labelFor, id, name, type, isReq
           id={id}
           name={name}
           type={type}
-          required={isRequired}
+          //required={isRequired}
           className={`${fixedInputClass} ${customClass}`}
           placeholder={placeholder}
         />
