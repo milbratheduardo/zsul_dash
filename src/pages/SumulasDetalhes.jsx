@@ -6,17 +6,19 @@ import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
+import { useParams } from 'react-router-dom';
 
 const SumulasDetalhes = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
-  const [showModal, setShowModal] = useState(false);
+  const [campeonato, setCampeonato] = useState([]);
   const [showAtletasOpcoes, setShowAtletasOpcoes] = useState(false);
   const [selectedAtleta, setSelectedAtleta] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id || null;
   const [atletas, setAtletas] = useState([]);
-  console.log('id', teamId)
+  const { id } = useParams();
+
   const [selectedAtletaData, setSelectedAtletaData] = useState({
     name: '',
     dateOfBirth: '',
@@ -25,7 +27,6 @@ const SumulasDetalhes = () => {
   });
 
   const handleAtletaClick = (atleta) => {
-    // Assegura que os dados do atleta estão sendo corretamente acessados
     console.log('Dados do Atleta:', atleta); // Confirma os dados no console
     const atletaDados = {
       Nome: atleta.name,
@@ -46,6 +47,21 @@ const SumulasDetalhes = () => {
     localStorage.setItem('selectedAtletaId', atleta._id);
     localStorage.setItem('selectedTeamId', teamId); 
   };
+
+  useEffect(() => {
+    const fetchCampeonato = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/campeonatos/${id}`);
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setCampeonato(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchCampeonato();
+  }, []);
 
   useEffect(() => {
     const fetchAtletas = async () => {
@@ -143,13 +159,6 @@ const SumulasDetalhes = () => {
 
           {themeSettings && <ThemeSettings />}
           
-          <ModalAtleta 
-            isVisible={showModal} 
-            currentColor={currentColor} 
-            teamId = {teamId} 
-            onClose={() => {
-              setShowModal(false);
-          }}/>
           <ModalAtletasOpcoes 
             isVisible={showAtletasOpcoes} 
             atleta={selectedAtleta}
@@ -161,18 +170,18 @@ const SumulasDetalhes = () => {
             }} 
           />
           
-          {!showModal && !showAtletasOpcoes && (
+          {!showAtletasOpcoes && (
             <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Header category='Clube' title='Elenco do Campeonato X' />
+                <Header category='Clube' title={`Elenco do ${campeonato.name}`} />
                 <Button 
                   color='white'
                   bgColor={currentColor}
-                  text='Adicionar Atleta'
+                  text='Exportar Lista'
                   borderRadius='10px'
                   size='md'
                   onClick={() => {
-                    setShowModal(true);
+                    
                   }}
                 />
               </div>        
