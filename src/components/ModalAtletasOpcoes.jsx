@@ -123,11 +123,15 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                     backgroundColor: endColor2}}>Estatísticas</button>
                   <div className='w-full' aria-hidden='true'></div>
                 </div>    
-                <ModalInscricaoCampeonato
-            isVisible={isModalInscricaoOpen}
-            onClose={() => setIsModalInscricaoOpen(false)} // Função para fechar o ModalInscricaoCampeonato
-          />
               </form>
+              <ModalInscricaoCampeonato
+                  isVisible={isModalInscricaoOpen}
+                  currentColor={currentColor}
+                  atletaNome={atletaNome}
+                  atletaId={atleta._id}
+                  teamId={teamId}
+                  onClose={() => setIsModalInscricaoOpen(false)} // Função para fechar o ModalInscricaoCampeonato
+                />
             </div>
           </div>
         </div>

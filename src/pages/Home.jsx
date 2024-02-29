@@ -7,6 +7,7 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+import { toast } from 'react-toastify';
 
 
 const Home = () => {  
@@ -41,7 +42,7 @@ const Home = () => {
     const generatePDF = () => {
       const doc = new jsPDF();
       if (!userAtletas.data || userAtletas.data.length === 0) {
-        alert("Não há atletas cadastrados para gerar o PDF.");
+        toast.error("Não há atletas cadastrados para gerar o PDF.");
         return; // Interrompe a execução do método
       }
       // Assuming userInfo and userAtletas are accessible here
@@ -55,18 +56,15 @@ const Home = () => {
     
       const pageWidth = doc.internal.pageSize.getWidth();
       const teamName = userInfo.data.teamName;
-      const teamNameWidth = doc.getStringUnitWidth(teamName) * doc.internal.getFontSize() / doc.internal.scaleFactor;
-      const teamNameXPosition = (pageWidth / 2) - 15;
+      const teamNameXPosition = (pageWidth / 2);
     
       doc.setFontSize(26);
-      doc.text(teamName, teamNameXPosition, 30); // Adjust Y position as needed
+      doc.text(teamName, teamNameXPosition, 30, 'center'); // Adjust Y position as needed
     
       // Center "Atletas" above the table
       doc.setFontSize(18);
       const atletasTitle = "Atletas";
-      const atletasTitleWidth = doc.getStringUnitWidth(atletasTitle) * doc.internal.getFontSize() / doc.internal.scaleFactor;
-      const atletasTitleXPosition = (pageWidth / 2) - (atletasTitleWidth / 2);
-      doc.text(atletasTitle, atletasTitleXPosition, 45); // Adjust Y position as needed
+      doc.text(atletasTitle, teamNameXPosition, 45, 'center'); // Adjust Y position as needed
     
       // Define the table columns
       const tableColumn = ["Nome", "Documento", "Categoria"]; // Add more columns as needed

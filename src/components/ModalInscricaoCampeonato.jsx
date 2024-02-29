@@ -1,14 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import CardCompetition from './CardCompetition'; 
+import React, { useState, useEffect } from 'react'; 
+import FormAction from './FormAction';
+import HeaderModal from './HeaderModal';
+import { toast } from 'react-toastify';
 
-const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor }) => {
+const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome, atletaId, teamId }) => {
+  if (!isVisible) return null;
+  
   const [campeonatos, setCampeonatos] = useState([]);
+  const [selectedCampeonatoId, setSelectedCampeonatoId] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleClose = (e) => {
+    if (e.target.id === 'wrapper') onClose();
+  };
+
+  const handleChange = (e) => {
+    setSelectedCampeonatoId(e.target.value);
+  };
 
   useEffect(() => {
     const fetchCampeonatosInscritos = async () => {
-      const user = JSON.parse(localStorage.getItem('user')) || {};
-      const teamId = user.data.id; 
-      console.log('teamId:', teamId);
       try {
         const response = await fetch(`http://localhost:3000/inscricoes/user/${teamId}`);
         const data = await response.json();
@@ -29,36 +40,28 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor }) => {
       }
     };
 
-    if (isVisible) {
-      fetchCampeonatosInscritos();
-    }
-  }, [isVisible]);
-
-  if (!isVisible) return null;
-
-  const handleCloseClickOutside = (event) => {
-    if (event.target.id === 'modalInscricaoWrapper') {
-      onClose();
-    }
-  };
-  const handleInscribe = async (campeonatoId) => {
-    localStorage.setItem('selectedCampeonatoId', campeonatoId);
-
-    alert(`Campeonato ${campeonatoId} inscrito com sucesso!`);
+    
+    fetchCampeonatosInscritos();
+    
+  }, [teamId]);
   
-  
-    const selectedCampeonatoId = localStorage.getItem('selectedCampeonatoId');
-    const selectedTeamId = localStorage.getItem('selectedTeamId');
-    const selectedAtletaId = localStorage.getItem('selectedAtletaId');
-  
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+    console.log('aqui1');
+    inscreverAtleta();
+  }
+
+  const inscreverAtleta = async () => {
+    console.log('aqui2');
     const requestBody = {
       campeonatoId: selectedCampeonatoId,
-      userId: selectedTeamId,
-      elencoId: selectedAtletaId,
+      userId: teamId,
+      elencoId: atletaId,
     };
   
+    console.log("Body: ", requestBody);
+  
     try {
-
       const response = await fetch('http://localhost:3000/sumula/', {
         method: 'POST',
         headers: {
@@ -67,68 +70,67 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor }) => {
         body: JSON.stringify(requestBody),
       });
   
-      if (response.ok) {
-   
-        const responseData = await response.json();
-        console.log('Resposta da requisição:', responseData);
-
+      const data = await response.json();
+      if (data.status === 200) {
+        toast.success(`Atleta Inscrito com Sucesso!`, {
+          position: "top-center",
+          autoClose: 5000, 
+        });
+      } else if (data.status === 400 || data.status === 500) {
+        setErrorMessage(data.msg); 
       } else {
-   
-        console.error('Erro na requisição:', response.statusText);
+        console.log('Error:', data.msg);
       }
-    } catch (error) {
-      console.error('Erro ao fazer requisição:', error);
-    }
   
-    onClose(); 
-  };
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    }
+  }  
+
   return (
-    <div
-      id='modalInscricaoWrapper'
-      className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center'
-      onClick={handleCloseClickOutside}
-    >
-      <div
-        className='relative w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex flex-col bg-white p-2 rounded'
-        style={{ maxHeight: '600px', overflowY: 'auto' }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            background: '#fff',
-            color: '#000',
-            border: 'none',
-            fontSize: '24px',
-            cursor: 'pointer',
-          }}
-        >
+    <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
+      <div className='w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex flex-col' style={{ height: '100%', maxHeight: '600px' }}>
+        <button className='text-white text-xl place-self-end' onClick={() => onClose()}>
           X
         </button>
-        <div className="pt-4 px-4 pb-4">
-          <h2 className="text-center mb-4">Inscrição em Campeonato</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {campeonatos.map((campeonato) => (
-              <CardCompetition
-                key={campeonato._id}
-                image={campeonato.pictureBase64}
-                title={campeonato.name}
-                category={campeonato.categoria}
-                type={campeonato.tipoCompeticao}
-                participants={campeonato.participantes}
-                vacancies={campeonato.vagas}
-                date={campeonato.dataInicio}
-                city={campeonato.cidade}
-                showViewDetailsButton={false}
-                currentColor={currentColor}
-                showInscribeButton={true} 
-    onInscribeClick={() => handleInscribe(campeonato._id)}
-              />
-            ))}
-          </div>
+        <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
+          <HeaderModal title={`Inscrever o Atleta ${atletaNome}`} heading='Preencha todos os dados' />
+          <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
+              {errorMessage && 
+              <div 
+                style={{
+                  backgroundColor: 'red', 
+                  color: 'white',         
+                  padding: '10px',       
+                  borderRadius: '5px',    
+                  textAlign: 'center',    
+                  marginBottom: '10px'    
+                }}
+              >
+                {errorMessage}
+              </div>
+            }
+            <div className='-space-y-px'>
+            <div className="mt-4">
+              <select
+                id="selectedCampeonatoId"
+                value={selectedCampeonatoId}
+                onChange={handleChange}
+                required
+                className="mb-4"
+              >
+                <option value="">Selecione o Campeonato</option>
+                {campeonatos.map((campeonato) => (
+                  <option key={campeonato._id} value={campeonato._id}>
+                    {campeonato.name}
+                  </option>
+                ))}
+              </select>
+              </div>            
+            <FormAction currentColor={currentColor} text='Inscrever' />
+            </div>            
+          </form>
         </div>
       </div>
     </div>
@@ -136,4 +138,4 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor }) => {
 };
 
 export default ModalInscricaoCampeonato;
-``
+

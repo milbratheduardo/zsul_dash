@@ -7,6 +7,9 @@ import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 
 const SumulasDetalhes = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
@@ -15,8 +18,10 @@ const SumulasDetalhes = () => {
   const [showAtletasOpcoes, setShowAtletasOpcoes] = useState(false);
   const [selectedAtleta, setSelectedAtleta] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {};
+  const [userInfo, setUserInfo] = useState({});
   const teamId = user.data.id || null;
   const [atletas, setAtletas] = useState([]);
+  const [atletasIds, setAtletasIds] = useState([]);
   const { id } = useParams();
 
   const [selectedAtletaData, setSelectedAtletaData] = useState({
@@ -64,27 +69,66 @@ const SumulasDetalhes = () => {
   }, []);
 
   useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/users/${teamId}`);
+       
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data);
+        } else {
+          console.error('Erro ao buscar dados do usuário');
+        }
+      } catch (error) {
+        console.error('Erro na solicitação:', error);
+      }
+    };
+
+    if (user.data.id) {
+      fetchUserInfo();
+    }
+  }, [user.data.id]); 
+
+  useEffect(() => {
+    const fetchAtletasIds = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/sumula/team/${teamId}`);
+        const data = await response.json();
+        console.log('Dados Time: ', data);
+        setAtletasIds(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchAtletasIds();
+  }, []);
+
+  useEffect(() => {
     const fetchAtletas = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/elenco/team/${teamId}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        if (atletasIds && atletasIds.length > 0) {
+          let allAtletas = [];
+          for (const elencoId of atletasIds) {
+            const response = await fetch(`http://localhost:3000/elenco/${elencoId.elencoId}`);
+            if (!response.ok) {
+              throw new Error(`Network response was not ok for elencoId ${elencoId.elencoId}`);
+            }
+            const data = await response.json();
+            allAtletas.push(data.data);
+          }
+  
+          
+          setAtletas(allAtletas);
+          console.log('Atletas: ', allAtletas);
         }
-        const data = await response.json();
-        setAtletas(data.data);
-        console.log('Atletas: ', data)
-        data.data.forEach(atleta => {
-          fetchImageForAtleta(atleta.userId);
-        });
       } catch (error) {
         console.error('Fetch error:', error);
       }
     };
-
-    if (teamId) {
-      fetchAtletas();
-    }
-  }, [teamId]);
+  
+    fetchAtletas();
+  }, [atletasIds]);
 
   const formatCPF = (cpf) => {
     if (typeof cpf === 'string') {
@@ -122,6 +166,53 @@ const SumulasDetalhes = () => {
     },
     { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
   ];
+
+  console.log('ATletas: ', atletas)
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    if (!atletas || atletas.length === 0) {
+      toast.error("Não há atletas cadastrados para gerar o PDF.");
+      return; 
+    }
+    
+    const logo = userInfo.data?.pictureBase64; 
+    if (logo) {
+      doc.addImage(logo, 'PNG', 10, 0, 50, 50);
+    } else {
+      console.error("A imagem base64 está null.");
+      
+    }
+  
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const teamName = userInfo.data.teamName;
+    const teamNameXPosition = (pageWidth / 2);
+  
+    doc.setFontSize(26);
+    doc.text(teamName, teamNameXPosition, 30, 'center');
+    
+    doc.setFontSize(22);
+    doc.text(campeonato.name, teamNameXPosition, 40, 'center');
+  
+    
+    doc.setFontSize(16);
+    const atletasTitle = "Atletas";
+    doc.text(atletasTitle, teamNameXPosition, 50, 'center'); 
+  
+    
+    const tableColumn = ["Nome", "Documento", "Categoria"]; 
+    
+    const tableRows = atletas.map(atleta => [
+      atleta.name, // Adjust according to your data structure
+      atleta.CPF, // Adjust according to your data structure
+      atleta.category// Add more fields as needed
+    ]);
+  
+    // Add the table to the PDF
+    doc.autoTable(tableColumn, tableRows, { startY: 55 }); // Adjust positioning as needed
+  
+    // Open the PDF in a new browser tab
+    doc.output('dataurlnewwindow');
+  };
 
 
   return (
@@ -173,16 +264,14 @@ const SumulasDetalhes = () => {
           {!showAtletasOpcoes && (
             <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Header category='Clube' title={`Elenco do ${campeonato.name}`} />
+                <Header category='Súmula' title={`Elenco do ${campeonato.name}`} />
                 <Button 
                   color='white'
                   bgColor={currentColor}
                   text='Exportar Lista'
                   borderRadius='10px'
                   size='md'
-                  onClick={() => {
-                    
-                  }}
+                  onClick={generatePDF}
                 />
               </div>        
              
