@@ -21,6 +21,7 @@ export { default as ModalStaff } from './ModalStaff';
 export { default as HeaderModal } from './HeaderModal';
 export { default as LoginAction } from './LoginAction';
 export { default as ModalAtletasOpcoes } from './ModalAtletasOpcoes';
+export { default as ModalAtletasOpcoesSumulas } from './ModalAtletasOpcoesSumulas';
 export { default as ModalClubeOpcoes } from './ModalClubeOpcoes';
 export { default as ModalStaffOpcoes } from './ModalStaffOpcoes';
 export { default as CardCompetition } from './CardCompetition';

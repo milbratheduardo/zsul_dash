@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import HeaderModal from './HeaderModal';
 import chroma from 'chroma-js';
+import { toast } from 'react-toastify';
 
 
 const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
@@ -15,40 +16,28 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
         if (e.target.id === 'wrapper') onClose();
       };
     
-    const funcao1 = {
-
-      };
-
-    const funcao2 = {
-
-      };
-
-    const funcao3 = {
-
-      };
-
-    const funcao4 = {
-
-      };
-
-    const funcao5 = {
-
-      };
-      const handleDeleteStaff = async () => {
+      const handleDeleteStaff = async (e) => {
+        e.preventDefault();
         const selectedStaffId = localStorage.getItem('selectedStaffId');
         if (selectedStaffId) {
           try {
             const response = await fetch(`http://localhost:3000/staff/${selectedStaffId}`, {
               method: 'DELETE',
             });
-            if (!response.ok) {
-              throw new Error('Erro ao deletar o staff');
+            const data = await response.json();
+            if (data.status === 200) {
+              toast.success('Staff Demitido com Sucesso!', {
+                position: "top-center",
+                autoClose: 5000,
+                onClose: () => navigate('/staff') 
+              });
+              console.log('Dados: ', data);
+            } else {
+              setErrorMessage(data.msg)
+              console.error('Erro ao cadastrar campeonato ' + errorMessage);
             }
-           
-            onClose(); 
-            window.location.reload(); 
           } catch (error) {
-            console.error('Erro ao deletar staff:', error);
+            console.error(error);
           }
         } 
       };
@@ -67,12 +56,12 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
                     backgroundColor: currentColor}}>Gerar Carteirinha</button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button
-  className='text-white py-2 px-4 rounded w-full sm:w-1/2'
-  style={{ backgroundColor: endColor }}
-  onClick={handleDeleteStaff} // Adiciona o evento onClick aqui
->
-  Demitir Staff
-</button>
+                    className='text-white py-2 px-4 rounded w-full sm:w-1/2'
+                    style={{ backgroundColor: endColor }}
+                    onClick={handleDeleteStaff}
+                  >
+                    Demitir Staff
+                  </button>
                   <div className='w-full' aria-hidden='true'></div>  
                 </div>    
                 
