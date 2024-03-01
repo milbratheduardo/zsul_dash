@@ -34,8 +34,24 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
     const funcao5 = {
 
       };
-
-
+      const handleDeleteStaff = async () => {
+        const selectedStaffId = localStorage.getItem('selectedStaffId');
+        if (selectedStaffId) {
+          try {
+            const response = await fetch(`http://localhost:3000/staff/${selectedStaffId}`, {
+              method: 'DELETE',
+            });
+            if (!response.ok) {
+              throw new Error('Erro ao deletar o staff');
+            }
+           
+            onClose(); 
+            window.location.reload(); 
+          } catch (error) {
+            console.error('Erro ao deletar staff:', error);
+          }
+        } 
+      };
     return (
         <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
           <div className='w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex flex-col' style={{ height: '100%', maxHeight: '600px' }}>
@@ -50,8 +66,13 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
                     backgroundColor: currentColor}}>Gerar Carteirinha</button>
                   <div className='w-full' aria-hidden='true'></div>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: endColor}}>Demitir Staff</button>
+                  <button
+  className='text-white py-2 px-4 rounded w-full sm:w-1/2'
+  style={{ backgroundColor: endColor }}
+  onClick={handleDeleteStaff} // Adiciona o evento onClick aqui
+>
+  Demitir Staff
+</button>
                   <div className='w-full' aria-hidden='true'></div>  
                 </div>    
                 

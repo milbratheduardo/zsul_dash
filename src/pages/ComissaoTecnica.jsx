@@ -20,9 +20,13 @@ const ComissaoTecnica = () => {
   const teamId = user.data.id || null;
   const [staff, setStaff] = useState([]);
   
-  const handleStaffClick = (name) => {
-    setSelectedStaff({ name });
+  const handleStaffClick = (name, _id) => {
+    console.log(`Staff ID: ${_id}`); // Mostra o ID no console
+    setSelectedStaff({ name, id: _id }); // Se você quiser usar o ID depois, guarde-o aqui
     setShowStaffOpcoes(true);
+  
+    // Salva o ID no localStorage
+    localStorage.setItem('selectedStaffId', _id);
   };
 
   useEffect(() => {
@@ -62,10 +66,11 @@ const ComissaoTecnica = () => {
           </div>
       )
     },
-      { field: 'name', headerText: 'Staff', width: '150', textAlign: 'Center', 
-        template: ({name}) => (
-        <a href="#" onClick={() => handleStaffClick(name)}>{name}</a>
-      )},
+    { field: 'name', headerText: 'Staff', width: '150', textAlign: 'Center', 
+    template: ({name, _id}) => ( // Altere 'id' para '_id' aqui
+      <a href="#" onClick={() => handleStaffClick(name, _id)}>{name}</a> // E aqui também
+    )
+  },
       {
         field: 'CPF',
         headerText: 'Documento',

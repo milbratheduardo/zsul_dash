@@ -43,6 +43,27 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
           fetchTimeInfo();
         }
       }, [teamId]);
+      const handleDemitirAtleta = async () => {
+        const atletaId = localStorage.getItem('selectedAtletaId');
+        if (!atletaId) {
+            console.error('ID do atleta não encontrado.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/elenco/${atletaId}`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                console.log('Atleta demitido com sucesso.');
+                onClose(); // Fechar modal após demissão
+            } else {
+                console.error('Erro ao demitir atleta.');
+            }
+        } catch (error) {
+            console.error('Erro na solicitação:', error);
+        }
+    };
 
       console.log('time Info: ', timeInfo)
       const gerarCarteirinhaPDF = () => {
@@ -58,7 +79,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
           unit: 'mm',
           format: [100, 60]
         });
-      
+
         // Cores da carteirinha
         const backgroundColor = '#D3D3D3'; 
       
@@ -109,8 +130,9 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
                     backgroundColor: startColor2}}>Solicitar Transferência</button>
                   <div className='w-full' aria-hidden='true'></div>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: currentColor}}>Demitir Atleta</button>
+                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{ backgroundColor: currentColor }} onClick={handleDemitirAtleta}>
+                    Demitir Atleta
+                </button>
                   <button
                     className='text-white py-2 px-4 rounded w-full sm:w-1/2'
                     style={{ backgroundColor: endColor }}
