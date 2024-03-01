@@ -176,10 +176,6 @@ const Elenco = () => {
                   }}
                 />
               </div>             
-             
-       
-              
-
               <GridComponent
                 dataSource={atletas}
                 allowPaging

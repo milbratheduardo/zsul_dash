@@ -90,10 +90,13 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
       const data = await response.json();
       if (response.ok) {
+        
         toast.success('Atleta Cadastrado com sucesso!', {
           position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate('/elenco')
+          autoClose: 2000,
+          onClose: () => {
+            window.location.reload(); 
+          } 
         });
         localStorage.setItem('fotoAtleta', data.msg._id);
         return data.msg._id; 

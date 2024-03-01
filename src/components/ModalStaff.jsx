@@ -50,8 +50,10 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
       if (data.status === 200) {
         toast.success('Membro do Staff Cadastrado com sucesso!', {
           position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate('/staff') 
+          autoClose: 2000,
+          onClose: () => {
+            window.location.reload(); // Recarrega a página ao fechar o toast
+          } 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 
