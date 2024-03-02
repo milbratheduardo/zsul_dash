@@ -4,6 +4,7 @@ import chroma from 'chroma-js';
 import jsPDF from 'jspdf';
 import Logo from '../img/Logo_exemplo.png';
 import ModalInscricaoCampeonato from './ModalInscricaoCampeonato';
+import { toast } from 'react-toastify';
 
 const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atleta, teamId }) => {
     if (!isVisible) return null;
@@ -12,6 +13,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
     const startColor = chroma(currentColor).brighten(1.5).css(); 
     const endColor = chroma(currentColor).darken(1).css();
     const endColor2 = chroma(currentColor).darken(2).css();
+    const [errorMessage, setErrorMessage] = useState("")
     const [isModalInscricaoOpen, setIsModalInscricaoOpen] = useState(false);
     const [timeInfo, setTimeInfo] = useState({});
     const handleClose = (e) => {
@@ -43,7 +45,8 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
           fetchTimeInfo();
         }
       }, [teamId]);
-      const handleDemitirAtleta = async () => {
+      const handleDemitirAtleta = async (e) => {
+        e.preventDefault();
         const atletaId = localStorage.getItem('selectedAtletaId');
         if (!atletaId) {
             console.error('ID do atleta não encontrado.');
@@ -54,16 +57,22 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
             const response = await fetch(`http://localhost:3000/elenco/${atletaId}`, {
                 method: 'DELETE',
             });
-            if (response.ok) {
-                console.log('Atleta demitido com sucesso.');
-                onClose(); // Fechar modal após demissão
+            const data = await response.json();
+            if (data.status === 200) {
+              toast.success('Atleta Demitido com Sucesso!', {
+                position: "top-center",
+                autoClose: 5000,
+                onClose: () => navigate('/elenco') 
+              });
+              console.log('Dados: ', data);
             } else {
-                console.error('Erro ao demitir atleta.');
+              setErrorMessage(data.msg)
+              console.error('Erro ao cadastrar campeonato ' + errorMessage);
             }
-        } catch (error) {
-            console.error('Erro na solicitação:', error);
-        }
-    };
+          } catch (error) {
+            console.error(error);
+          }
+        };
 
       console.log('time Info: ', timeInfo)
       const gerarCarteirinhaPDF = () => {
@@ -106,7 +115,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         doc.text(`Clube: ${timeInfo.data.teamName}`, textX, textYStart + 5);
         doc.text(`Data de Nasc.: ${dateOfBirth}`, textX, textYStart + 10);
 
-        doc.save(`Carteirinha-${name}.pdf`);
+        doc.output('dataurlnewwindow');
       };
       
     return (
@@ -118,7 +127,20 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
             <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
               <HeaderModal title={`Opções para ${atletaNome}`} heading='Escolha uma ação' />
               <form className='mt-4 space-y-4'>    
-                
+                {errorMessage && 
+                <div 
+                  style={{
+                    backgroundColor: 'red', 
+                    color: 'white',         
+                    padding: '10px',       
+                    borderRadius: '5px',    
+                    textAlign: 'center',    
+                    marginBottom: '10px'    
+                  }}
+                >
+                  {errorMessage}
+                </div>
+              }                
                 <div className='flex flex-wrap justify-center gap-2'>
                 <button
                   className='text-white py-2 px-4 rounded w-full sm:w-1/2'

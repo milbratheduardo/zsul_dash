@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
 import { GridComponent, ColumnsDirective, ColumnDirective,
   Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
-import { Header, Button, ModalAtleta, ModalAtletasOpcoes,  } from '../components';
+import { Header, Button, ModalAtletasOpcoesSumulas,  } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -15,7 +15,7 @@ const SumulasDetalhes = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
   const [campeonato, setCampeonato] = useState([]);
-  const [showAtletasOpcoes, setShowAtletasOpcoes] = useState(false);
+  const [showAtletasOpcoesSumulas, setShowAtletasOpcoesSumulas] = useState(false);
   const [selectedAtleta, setSelectedAtleta] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const [userInfo, setUserInfo] = useState({});
@@ -47,7 +47,7 @@ const SumulasDetalhes = () => {
       CPF: atleta.CPF,
     });
     setSelectedAtleta(atleta);
-    setShowAtletasOpcoes(true);
+    setShowAtletasOpcoesSumulas(true);
     console.log(atletaDados)
     localStorage.setItem('selectedAtletaId', atleta._id);
     localStorage.setItem('selectedTeamId', teamId); 
@@ -250,18 +250,20 @@ const SumulasDetalhes = () => {
 
           {themeSettings && <ThemeSettings />}
           
-          <ModalAtletasOpcoes 
-            isVisible={showAtletasOpcoes} 
+          <ModalAtletasOpcoesSumulas 
+            isVisible={showAtletasOpcoesSumulas} 
             atleta={selectedAtleta}
             atletaNome={selectedAtleta ? selectedAtleta.name : ''}
             currentColor={currentColor}
             teamId = {teamId}
+            campeonatoNome={campeonato.name}
+            campeonatoId={campeonato._id}
             onClose={() => {
-              setShowAtletasOpcoes(false);
+              setShowAtletasOpcoesSumulas(false);
             }} 
           />
           
-          {!showAtletasOpcoes && (
+          {!showAtletasOpcoesSumulas && (
             <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Header category='Súmula' title={`Elenco do ${campeonato.name}`} />

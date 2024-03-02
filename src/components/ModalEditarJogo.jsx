@@ -98,37 +98,42 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
       return acc;
     }, []);
   
-    if (changes.length === 0) {
-      toast.info('No changes made.');
+    const changesAll = changes.filter(change => change.field !== "" && change.value !== "");
+  
+    if (changesAll.length === 0) {
+      toast.info('Não houve mudanças!');
       return;
     }
   
-    console.log('Changes to be sent: ', changes);
-    try {
-      const response = await fetch(`http://localhost:3000/jogos/${jogoId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(changes)
-      });
-  
-      const data = await response.json();
-      if (data.status === 200) {
-        toast.success('Jogo editado com sucesso!', {
-          position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate(`/campeonatos/${campeonatoId}`)
+    for (const change of changesAll) {
+      try {
+        const response = await fetch(`http://localhost:3000/jogos/${jogoId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(change)
         });
-      } else {
-        console.error('Error:', data.msg);
-        setErrorMessage(data.msg || 'Erro desconhecido.');
+  
+        const data = await response.json();
+        if (response.ok) {
+          toast.success(`Campo ${change.field} editado com sucesso!`, {
+            position: "top-center",
+            autoClose: 5000
+          });
+        } else {
+          console.error('Error:', data.msg);
+          toast.error(data.msg || 'Erro desconhecido.');
+        }
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        toast.error("Houve um problema ao conectar com o servidor.");
       }
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-      setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
+  
+    navigate(`/campeonatos/${campeonatoId}`);
   };
+  
   
   
 
