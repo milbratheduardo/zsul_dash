@@ -28,6 +28,7 @@ const CampeonatoDetalhes = () => {
   const [showModalAdicionarJogo, setShowModalAdicionarJogo] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState('');
   const [jogos, setJogos] = useState([]);
+  const [estatisticas, setEstatisticas] = useState([]);
 
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
@@ -37,7 +38,7 @@ const CampeonatoDetalhes = () => {
   const gridColumns = [
     { field: 'P', headerText: 'P', width: '25' },
     { field: 'teamName', headerText: 'Nome', width: '100' },
-    { field: 'J', headerText: 'J', width: '25' },
+    { field: 'gamesPlayed', headerText: 'J', width: '25' },
     { field: 'V', headerText: 'V', width: '25' },
     { field: 'E', headerText: 'E', width: '25' },
     { field: 'D', headerText: 'D', width: '25' },
@@ -223,7 +224,7 @@ const CampeonatoDetalhes = () => {
       try {
         const response = await fetch(`http://localhost:3000/jogos/campeonato/${id}`);
         const data = await response.json();
-        console.log('Dados: ', data);
+        console.log('Dados Jogos: ', data);
         setJogos(data.data); 
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
@@ -232,7 +233,9 @@ const CampeonatoDetalhes = () => {
 
     fetchJogos();
   }, []);
-  
+
+ 
+     
 
   useEffect(() => {
     const fetchCampeonato = async () => {

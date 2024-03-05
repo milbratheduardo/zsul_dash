@@ -427,14 +427,77 @@ const ModalAdicionarJogoFields = [
         autoComplete:"local",
         isRequired:true,
         placeholder:"Local da Partida",
-    }
-    
-    
-    
-   
-    
-]
+    },
+  ]
+    const ModalSumulaJogoFields = [
+        {
+            labelText:"Gols da Equipe da Casa",
+            labelFor:"",
+            id:"userCasaGols",
+            name:"userCasaGols",
+            type:"number",
+            autoComplete:"userCasaGols",
+            isRequired:true,
+            placeholder:"Gols da Equipe da Casa",
+                
+        },
+        {
+            labelText:"Gols da Equipe de Fora",
+            labelFor:"",
+            id:"userForaGols",
+            name:"userForaGols",
+            type:"number",
+            autoComplete:"userForaGols",
+            isRequired:true,
+            placeholder:"Gols da Equipe de Fora",
+                
+        },           
+    ]
+    const ModalAdmFields=[
+        {
+            labelText:"Nome",
+            labelFor:"nome",
+            id:"teamName",
+            name:"teamName",
+            type:"text",
+            autoComplete:"nome",
+            isRequired:true,
+            placeholder:"Nome do Adm"   
+        },
+        {
+            labelText:"Email",
+            labelFor:"email",
+            id:"email",
+            name:"email",
+            type:"email",
+            autoComplete:"email",
+            isRequired:true,
+            placeholder:"Email"   
+        },
+        {
+            labelText:"Senha",
+            labelFor:"password",
+            id:"password",
+            name:"senha",
+            type:"password",
+            autoComplete:"current-password",
+            isRequired:true,
+            placeholder:"Senha"  
+        },
+        {
+            labelText:"Confirme a Senha",
+            labelFor:"confirmPassword",
+            id:"confirmPassword",
+            name:"confirm-password",
+            type:"password",
+            autoComplete:"confirm-password",
+            isRequired:true,
+            placeholder:"Confirme a Senha"   
+        }
+    ]
 
 export {loginFields,signupFields,ModalAtletaFields,
     ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
-    ModalGrupoFields, ModalAdicionarJogoFields}
+    ModalGrupoFields, ModalAdicionarJogoFields, ModalSumulaJogoFields,
+    ModalAdmFields
+    }

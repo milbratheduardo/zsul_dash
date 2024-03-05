@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, ModalEditarJogo } from '../components';
+import { Button, ModalEditarJogo, ModalSumulaJogo } from '../components';
 import chroma from 'chroma-js';
 
 const CardCompetition = ({ 
   campeonatoId, userIdCasa, userIdFora, tipo, grupoId, data, local, hora, currentColor,jogoId
 }) => {
-  const navigate = useNavigate();
+
   const [imageSrcCasa, setImageSrcCasa] = useState('');
   const [imageSrcFora, setImageSrcFora] = useState('');
   const [groups, setGroups] = useState([]);
@@ -14,6 +13,9 @@ const CardCompetition = ({
   const [userForaInfo, setUserForaInfo] = useState({});
   const endColor = chroma(currentColor).darken(1).css();
   const [showModalEditarJogo, setShowModalEditarJogo] = useState(false);
+  const [showModalSumulaJogo, setShowModalSumulaJogo] = useState(false);
+  const [jogoEstatisticas, setJogoEstatisticas] = useState(null);
+
   
 
   useEffect(() => {
@@ -139,6 +141,32 @@ const CardCompetition = ({
     }
   }, [userIdFora]); 
 
+  useEffect(() => {
+    const fetchEstatisticasJogo = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/estatistica/jogo/${jogoId}`);
+            const data = await response.json();
+            if (data.status === 200 && data.data.length > 0) {                
+                const estatisticasJogo = data.data[0][0]; 
+                if (estatisticasJogo) {
+                    setJogoEstatisticas(estatisticasJogo);
+                } else {
+                    console.error('Estatísticas do jogo não encontradas');
+                    setJogoEstatisticas(null);
+                }
+            } else {
+                console.error('Estatísticas do jogo não encontradas');
+                setJogoEstatisticas(null);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar estatísticas do jogo:', error);
+        }
+    };
+
+    if (jogoId) {
+        fetchEstatisticasJogo();
+    }
+}, [jogoId]);
 
   return (
 
@@ -156,22 +184,53 @@ const CardCompetition = ({
             onClose={() => {
               setShowModalEditarJogo(false);
           }}/>
+
+          <ModalSumulaJogo
+            isVisible={showModalSumulaJogo} 
+            currentColor={currentColor} 
+            jogoId = {jogoId}
+            campeonatoId={campeonatoId} 
+            timeCasa={userCasaInfo.data?._id}
+            timeFora={userForaInfo.data?._id}
+            onClose={() => {
+              setShowModalSumulaJogo(false);
+          }}/>
         
-        <div className="flex justify-between items-center w-full px-6">
+        <div className="flex justify-center items-center w-full px-6">
+          {/* Container para o time de casa */}
           <div className="flex flex-col items-center">
-            <img alt="Home Team Logo" src={imageSrcCasa} className="h-32 w-32 rounded-full object-cover" />
-            <p className="text-gray-700 text-base mt-2">
-              {userCasaInfo.data?.teamName}
-            </p>
+              <img alt="Home Team Logo" src={imageSrcCasa} className="h-16 w-16 object-cover" />
+              <p className="text-gray-700 text-base mt-2">
+                  {userCasaInfo.data?.teamName}
+              </p>
           </div>
-          <span className="text-xl font-semibold">X</span>
+          
+          {/* Container para os gols */}
+          <div className="flex items-center mx-2">
+              {/* Exibe gols do time de casa se estiverem disponíveis */}
+              {jogoEstatisticas ? (
+                  <span className="text-xl font-semibold">{jogoEstatisticas.userCasaGols}</span>
+              ) : (
+                  <span className="text-xl font-semibold">-</span> // Substitua "-" por espaço vazio se preferir
+              )}
+              <span className="text-xl font-semibold mx-1">X</span>
+              {/* Exibe gols do time de fora se estiverem disponíveis */}
+              {jogoEstatisticas ? (
+                  <span className="text-xl font-semibold">{jogoEstatisticas.userForaGols}</span>
+              ) : (
+                  <span className="text-xl font-semibold">-</span> // Substitua "-" por espaço vazio se preferir
+              )}
+          </div>
+
+          {/* Container para o time de fora */}
           <div className="flex flex-col items-center">
-            <img alt="Away Team Logo" src={imageSrcFora} className="h-32 w-32 rounded-full object-cover" />
-            <p className="text-gray-700 text-base mt-2">
-              {userForaInfo.data?.teamName}
-            </p>
+              <img alt="Away Team Logo" src={imageSrcFora} className="h-16 w-16 object-cover" />
+              <p className="text-gray-700 text-base mt-2">
+                  {userForaInfo.data?.teamName}
+              </p>
           </div>
-        </div>
+      </div>
+
         <div className="mt-4 px-6">
           <p className="text-gray-700 text-sm">
             Tipo: {tipo}
@@ -194,7 +253,9 @@ const CardCompetition = ({
           text='Súmula'
           borderRadius='10px'
           size='sm'
-          onClick={() => {}} 
+          onClick={() => {
+            setShowModalSumulaJogo(true);
+          }} 
         />
         <Button 
           color='white'

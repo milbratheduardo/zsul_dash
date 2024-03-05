@@ -1,19 +1,22 @@
 import React, { useEffect, useState} from 'react';
-import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button, ModalPerfil } from '../components';
+import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button, ModalPerfil, ModalAdm } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
+import chroma from 'chroma-js';
 
 const MeuPerfil = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
   const [userInfo, setUserInfo] = useState({});
   const [showModal, setShowModal] =   useState(false);
+  const [showModalAdm, setShowModalAdm] =   useState(false);
   const [userAtletas, setUserAtletas] = useState([]);
   const [userStaff, setUserStaff] = useState([]);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const userId = user.data.id || null;
   const [imageSrc, setImageSrc] = useState('');
   console.log('userId: ', userId)
+  const endColor = chroma(currentColor).darken(1).css();
   
   useEffect(() => {
     const imageData = {
@@ -159,19 +162,39 @@ const MeuPerfil = () => {
               setShowModal(false);
           }}/>
 
+          <ModalAdm
+            isVisible={showModalAdm} 
+            currentColor={currentColor} 
+            userId = {userId} 
+            onClose={() => {
+              setShowModalAdm(false);
+          }}/>
+
           <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Header category='Perfil' title='Meu Perfil' />
-              <Button 
-                  color='white'
-                  bgColor={currentColor}
-                  text='Editar Perfil'
-                  borderRadius='10px'
-                  size='md'
-                  onClick={() => {
-                    setShowModal(true);
-                  }}
-                />
+                <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 sm:mt-0'>
+                  <Button 
+                      color='white'
+                      bgColor={currentColor}
+                      text='Editar Perfil'
+                      borderRadius='10px'
+                      size='md'
+                      onClick={() => {
+                        setShowModal(true);
+                      }}
+                    />
+                    <Button 
+                      color='white'
+                      bgColor={endColor}
+                      text='Adicionar Adm'
+                      borderRadius='10px'
+                      size='md'
+                      onClick={() => {
+                        setShowModalAdm(true);
+                      }}
+                    />
+                </div>
             </div>
             <div className="w-full lg:w-4/12 px-4 mx-auto z-10">
               <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
