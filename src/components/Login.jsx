@@ -34,7 +34,13 @@ const LoginComponent = () => {
       const data = await response.json();
       if (response.ok) {
         console.log('Login successful:', data);
-        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('user', JSON.stringify(data)); // Salva todas as informações do usuário
+        console.log('Login successful. User ID:', data.data.id); // Exibe o ID do usuário no console
+        localStorage.setItem('Login atual', data.data.id); // Grava o ID do usuário no campo "Login atual" no localStorage
+        
+        // Chama fetchUserData sem passar userId como argumento
+        await fetchUserData();
+        
         navigate('/home'); 
       } else {
         setErrorMessage(data.message || 'Erro no login');
@@ -45,11 +51,42 @@ const LoginComponent = () => {
     }
   };
 
+  const fetchUserData = async () => {
+    // Recupera o ID do usuário armazenado no localStorage sob a chave "Login atual"
+    const userId = localStorage.getItem('Login atual');
+    if (!userId) {
+      console.error('No user ID found in localStorage');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:3000/users/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Aqui você precisa substituir 'seuTokenAqui' pelo token de autenticação, se necessário
+          // "Authorization": `Bearer ${seuTokenAqui}`
+        }
+      });
+  
+      const userData = await response.json();
+      if (response.ok) {
+        console.log('User data fetched successfully:', userData);
+        // Ajuste para acessar o campo permission corretamente, considerando a estrutura de dados
+        console.log('User permission:', userData.data.permission); // Exibe a permissão do usuário no console
+        localStorage.setItem('permissao', userData.data.permission); // Salva a permissão do usuário no localStorage
+      } else {
+        console.error('Erro ao buscar dados do usuário:', userData.message);
+      }
+    } catch (error) {
+      console.error('Erro na conexão ao buscar dados do usuário:', error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     authenticateUser();
   };
-
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       {errorMessage && 
