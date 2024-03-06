@@ -139,14 +139,47 @@ const Home = () => {
       ]);
     
       // Add the table to the PDF
-      doc.autoTable(tableColumn, tableRows, { startY: 50 }); // Adjust positioning as needed
+      doc.autoTable(tableColumn, tableRows, { startY: 50 }); 
     
-      // Open the PDF in a new browser tab
+      
       doc.output('dataurlnewwindow');
     };
     
+    const generateUserPDF = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/users/`);
+        if (!response.ok) throw new Error('Erro ao buscar dados dos usuários');
+        const result = await response.json(); 
     
+ 
+        if (!result.data || result.data.length === 0) {
+          toast.error("Não há dados de usuários disponíveis para gerar o PDF.");
+          return;
+        }
+    
+        const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.text("Informações dos clubes", 105, 20, null, 'center');
 
+        const userDetails = result.data.map(user => [
+          user.teamName, 
+          user.city,    
+          user.state,    
+        ]);
+    
+        doc.autoTable({
+          head: [["Nome do Clube", "Cidade", "Estado"]],
+          body: userDetails,
+          startY: 30,
+        });
+    
+        doc.output('dataurlnewwindow');
+        toast.success("PDF de usuários gerado com sucesso!");
+      } catch (error) {
+        console.error('Erro ao buscar informações dos usuários para PDF:', error);
+        toast.error("Erro ao buscar informações dos usuários para o PDF.");
+      }
+    };
 
     useEffect(() => {
       const fetchUserAtletas = async () => {
@@ -216,27 +249,27 @@ const Home = () => {
                   </div>
                 </div>
                 <div className='mt-6'>
-  {permissao !== 'TEquipe' ? (
-    <Button 
-      color='white' 
-      bgColor='#4CAF50' // Cor verde fixa
-      text='Downloaddd' 
-      borderRadius='10px' 
-      size='md' 
-      onClick={generatePDF}
-    />
-  ) : (
-    <Button 
-    style={{ display: 'none' }} 
-    color='white' 
-    bgColor={currentColor} 
-    text='Download' 
-    borderRadius='10px' 
-    size='md' 
-    onClick={generatePDF}
-  />
-  )}
-</div>
+                {permissao !== 'TEquipe' ? (
+                  <Button 
+                    color='white' 
+                    bgColor={currentColor}
+                    text='Downloaddd' 
+                    borderRadius='10px' 
+                    size='md' 
+                    onClick={generatePDF}
+                  />
+                ) : (
+                  <Button 
+                  style={{ display: 'none' }} 
+                  color='white' 
+                  bgColor='#4CAF50' // Cor verde fixa
+                  text='Baixar' 
+                  borderRadius='10px' 
+                  size='md' 
+                  onClick={generateUserPDF}
+                />
+                )}
+              </div>
 
               </div>
               
