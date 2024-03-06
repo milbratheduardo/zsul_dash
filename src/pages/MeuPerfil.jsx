@@ -17,6 +17,7 @@ const MeuPerfil = () => {
   const [imageSrc, setImageSrc] = useState('');
   console.log('userId: ', userId)
   const endColor = chroma(currentColor).darken(1).css();
+  const permissao = localStorage.getItem('permissao') || '';
   
   useEffect(() => {
     const imageData = {
@@ -210,9 +211,12 @@ const MeuPerfil = () => {
                     <h3 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
                     {userInfo.data?.teamName || 'Carregando...'}
                     </h3>
+                    {
+                    permissao !== 'TEquipe' && (
                     <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                       {userInfo.data?.city || 'Carregando...'}
                     </div>
+                    )}
                     <div className="mb-2 text-blueGray-600 mt-10">
                       {userInfo.data?.email || 'Carregando...'}
                     </div>
@@ -220,6 +224,8 @@ const MeuPerfil = () => {
                   <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
                     <div className="flex flex-wrap justify-center">
                       <div className="w-full lg:w-9/12 px-4 flex justify-around">
+                        {
+                        permissao !== 'TEquipe' && (
                         <div>
                           <h4 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700">
                             Atletas
@@ -228,15 +234,22 @@ const MeuPerfil = () => {
                             {userAtletas.data?.length ? userAtletas.data?.length : 'Carregando...'}
                           </div>
                         </div>
-
+ 
+                        )}
+                        {
+                        permissao !== 'TEquipe' && (
                         <div>
                           <h4 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700">
                             Staff
                           </h4>
+                          
                           <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 ">
                             {userStaff.data?.length ? userStaff.data?.length : 'Carregando...'}
                           </div>
+                          
                       </div>
+                        )}
+                       
                     </div>
                   </div>
                   </div>

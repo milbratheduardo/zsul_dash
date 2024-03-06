@@ -29,7 +29,7 @@ const CampeonatoDetalhes = () => {
   const [selectedGroupId, setSelectedGroupId] = useState('');
   const [jogos, setJogos] = useState([]);
   const [estatisticas, setEstatisticas] = useState([]);
-
+  const permissao = localStorage.getItem('permissao') || '';
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
 
@@ -366,16 +366,20 @@ const CampeonatoDetalhes = () => {
                             deletarCampeonato();
                         }}
                     />
-                    <Button 
-                        color='white'
-                        bgColor='green'
-                        text='Inscrever-se'
-                        borderRadius='10px'
-                        size='sm'
-                        onClick={() => {
-                            inscreverTime();
-                        }}
-                    />
+                  {
+                    permissao !== 'TEquipe' && (
+                      <Button 
+                          color='white'
+                          bgColor='green'
+                          text='Inscrever-se'
+                          borderRadius='10px'
+                          size='sm'
+                          onClick={() => {
+                              inscreverTime();
+                          }}
+                      />
+                    )
+                  }
                 </div>
               </div>
               <div>        

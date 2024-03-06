@@ -16,7 +16,7 @@ const Home = () => {
     const user = JSON.parse(localStorage.getItem('user')) || {};
     const [userAtletas, setUserAtletas] = useState([]);
     const [userInfo, setUserInfo] = useState({});
-
+const permissao = localStorage.getItem('permissao');
     useEffect(() => {
       const fetchUserInfo = async () => {
         const userId = user.data.id;
@@ -153,9 +153,30 @@ const Home = () => {
                   </div>
                 </div>
                 <div className='mt-6'>
-                  <Button color='white' bgColor={currentColor} onClick={generatePDF} text='Download' borderRadius='10px' size='md' />
-                </div>
+  {permissao !== 'TEquipe' ? (
+    <Button 
+      color='white' 
+      bgColor='#4CAF50' // Cor verde fixa
+      text='Downloaddd' 
+      borderRadius='10px' 
+      size='md' 
+      onClick={generatePDF}
+    />
+  ) : (
+    <Button 
+    style={{ display: 'none' }} 
+    color='white' 
+    bgColor={currentColor} 
+    text='Download' 
+    borderRadius='10px' 
+    size='md' 
+    onClick={generatePDF}
+  />
+  )}
+</div>
+
               </div>
+              
 
               <div className='flex m-3 flex-wrap justify-center gap-1 items-center'>
                 {earningData.map((item) => (
