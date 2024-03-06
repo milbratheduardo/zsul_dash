@@ -16,7 +16,11 @@ const Home = () => {
     const user = JSON.parse(localStorage.getItem('user')) || {};
     const [userAtletas, setUserAtletas] = useState([]);
     const [userInfo, setUserInfo] = useState({});
-const permissao = localStorage.getItem('permissao');
+    const [proximasPartidas, setProximasPartidas] = useState([]);
+
+    const permissao = localStorage.getItem('permissao');
+
+
     useEffect(() => {
       const fetchUserInfo = async () => {
         const userId = user.data.id;
@@ -38,6 +42,65 @@ const permissao = localStorage.getItem('permissao');
         fetchUserInfo();
       }
     }, [user.data.id]); 
+
+    useEffect(() => {
+      const fetchProximasPartidas = async () => {
+        const userId = user.data.id;
+        try {
+          const response = await fetch(`http://localhost:3000/jogos/team/${userId}`);
+    
+          if (response.ok) {
+            const data = await response.json();
+            const partidasComDataParsed = data.data
+              .map(partida => ({
+                ...partida,
+                dataParsed: new Date(partida.data.split('/').reverse().join('-') + 'T' + partida.hora)
+              }))
+              .filter(partida => partida.dataParsed > new Date())
+              .sort((a, b) => a.dataParsed - b.dataParsed)
+              .slice(0, 3);
+    
+            
+            const partidasComInfo = await Promise.all(partidasComDataParsed.map(async partida => {
+              return await fetchAdditionalInfo(partida);
+            }));
+    
+            setProximasPartidas(partidasComInfo);
+          } else {
+            console.error('Erro ao buscar próximas partidas');
+          }
+        } catch (error) {
+          console.error('Erro na solicitação:', error);
+        }
+      };
+    
+      if (user.data.id) {
+        fetchProximasPartidas();
+      }
+    }, [user.data.id]);
+
+    const fetchAdditionalInfo = async (jogo) => {
+      const campeonatoResponse = await fetch(`http://localhost:3000/campeonatos/${jogo.campeonatoId}`);
+      const campeonatoData = await campeonatoResponse.json();
+    
+      const userCasaResponse = await fetch(`http://localhost:3000/users/${jogo.userIdCasa}`);
+      const userCasaData = await userCasaResponse.json();
+    
+      const userForaResponse = await fetch(`http://localhost:3000/users/${jogo.userIdFora}`);
+      const userForaData = await userForaResponse.json();
+    
+      const campeonatoName = campeonatoData?.data.name || 'Desconhecido';
+      const teamNameCasa = userCasaData?.data.teamName || 'Equipe Casa Desconhecida';
+      const teamNameFora = userForaData?.data.teamName || 'Equipe Fora Desconhecida';
+    
+      return {
+        ...jogo,
+        campeonatoName,
+        teamNameCasa,
+        teamNameFora
+      };
+    };
+    
 
     const generatePDF = () => {
       const doc = new jsPDF();
@@ -201,6 +264,20 @@ const permissao = localStorage.getItem('permissao');
               <div className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-4 m-3 rounded-2xl md:w-780'>
                 <div className='flex justify-between'>
                   <p className='font-semibold text-xl'>Próximas Partidas</p>
+                </div>
+                <div className='mt-5 flex flex-row flex-wrap justify-center gap-4'> {/* Modificação aqui */}
+                  {proximasPartidas.length > 0 ? (
+                    proximasPartidas.map((partida) => (
+                      <div key={partida._id} className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-4 mb-4 rounded-2xl w-1/3'> {/* Ajustes aqui */}
+                        <p className='font-semibold'>{partida.teamNameCasa} vs {partida.teamNameFora}</p>
+                        <p>Campeonato: {partida.campeonatoName}</p>
+                        <p>Data: {partida.data}</p>
+                        <p>Local: {partida.local}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Nenhuma partida agendada.</p>
+                  )}
                 </div>
               </div>
             </div>

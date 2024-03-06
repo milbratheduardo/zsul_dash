@@ -33,4 +33,4 @@ export { default as ModalAdicionarJogo } from './ModalAdicionarJogo';
 export { default as ModalEditarJogo } from './ModalEditarJogo';
 export { default as ModalSumulaJogo } from './ModalSumulaJogo';
 export { default as ModalAdm } from './ModalAdm';
-
+export { default as ModalTransferencia } from './ModalTransferencia';

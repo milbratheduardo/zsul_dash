@@ -16,6 +16,7 @@ const Elenco = () => {
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id || null;
   const [atletas, setAtletas] = useState([]);
+  const [transferencias, setTransferencias] = useState([]);
   console.log('id', teamId)
   const [selectedAtletaData, setSelectedAtletaData] = useState({
     name: '',
@@ -70,6 +71,29 @@ const Elenco = () => {
     }
   }, [teamId]);
 
+  useEffect(() => {
+    const fetchTransferencias = async () => {
+      try {
+        const res = await fetch('http://localhost:3000/transferencia/');
+        if (!res.ok) throw new Error('Erro ao buscar transferências');
+        const result = await res.json();
+        setTransferencias(result.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchTransferencias();
+  }, []); 
+
+  const rowDataBound = (args) => {
+    const isTransferido = transferencias.some(transf => transf.jogadorId === args.data._id);
+    if (isTransferido) {
+      args.row.style.backgroundColor = 'yellow';
+    }
+  };
+  
+
   const formatCPF = (cpf) => {
     if (typeof cpf === 'string') {
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
@@ -81,7 +105,7 @@ const Elenco = () => {
     {
       headerText: 'Foto',
       template: ({ fotoAtletaBase64 }) => (
-        <div className='text-center'>
+        <div className='text-center' style={{display: 'flex', justifyContent: 'center', objectFit: 'cover' }}>
           <img src={fotoAtletaBase64} alt="Foto Atleta" style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
         </div>
       ),
@@ -182,13 +206,14 @@ const Elenco = () => {
                 allowSorting
                 toolbar={['Search']}
                 width='auto'
+                rowDataBound={rowDataBound} // Adiciona o manipulador de evento aqui
               >
                 <ColumnsDirective>
                   {atletasGrid.map((item, index) => (
-                    <ColumnDirective key={index} {...item}/>
+                    <ColumnDirective key={index} {...item} />
                   ))}
                 </ColumnsDirective>
-                <Inject services={[Page, Search, Toolbar]}/>
+                <Inject services={[Page, Search, Toolbar]} />
               </GridComponent>           
               
             </div>

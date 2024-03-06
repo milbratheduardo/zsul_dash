@@ -32,7 +32,7 @@ const SumulasDetalhes = () => {
   });
 
   const handleAtletaClick = (atleta) => {
-    console.log('Dados do Atleta:', atleta); // Confirma os dados no console
+    console.log('Dados do Atleta:', atleta); 
     const atletaDados = {
       Nome: atleta.name,
       DataDeNascimento: atleta.dateOfBirth,
@@ -95,14 +95,18 @@ const SumulasDetalhes = () => {
         const response = await fetch(`http://localhost:3000/sumula/team/${teamId}`);
         const data = await response.json();
         console.log('Dados Time: ', data);
-        setAtletasIds(data.data); 
+  
+        const atletasFiltrados = data.data.filter(atleta => atleta.campeonatoId === id);
+        
+        setAtletasIds(atletasFiltrados); 
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
       }
     };
-
+  
     fetchAtletasIds();
-  }, []);
+  }, [teamId, id]); 
+  
 
   useEffect(() => {
     const fetchAtletas = async () => {

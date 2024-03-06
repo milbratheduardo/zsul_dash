@@ -61,7 +61,7 @@ const ComissaoTecnica = () => {
     {
       field: 'fotoStaffBase64', headerText: 'Imagem', width: '150', textAlign: 'Center',
       template: (rowData) => (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', objectFit: 'cover' }}>
               <img src={rowData.fotoStaffBase64} alt={rowData.name} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
           </div>
       )

@@ -367,7 +367,7 @@ const CampeonatoDetalhes = () => {
                         }}
                     />
                   {
-                    permissao !== 'TEquipe' && (
+                    /*permissao !== 'TEquipe'*/
                       <Button 
                           color='white'
                           bgColor='green'
@@ -378,7 +378,6 @@ const CampeonatoDetalhes = () => {
                               inscreverTime();
                           }}
                       />
-                    )
                   }
                 </div>
               </div>

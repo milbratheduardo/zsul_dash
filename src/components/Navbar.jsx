@@ -80,7 +80,7 @@ const Navbar = () => {
       />
       {screenSize > 900 && (
         <TooltipComponent content='Profile' position='BottomCenter'>
-          <div className='flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg' onClick={() => handleClick('userProfile')}>
+          <div className='flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg'>
             <img className='rounded-full w-12 h-12' src={imageSrc} alt='Profile'/>
             <p>
               <span className='text-gray-400 font-bold ml-1 text-14'>{user.data.teamName}</span>

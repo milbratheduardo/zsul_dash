@@ -4,7 +4,9 @@ import chroma from 'chroma-js';
 import jsPDF from 'jspdf';
 import Logo from '../img/Logo_exemplo.png';
 import ModalInscricaoCampeonato from './ModalInscricaoCampeonato';
+import ModalTransferencia from './ModalTransferencia';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atleta, teamId }) => {
     if (!isVisible) return null;
@@ -15,14 +17,21 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
     const endColor2 = chroma(currentColor).darken(2).css();
     const [errorMessage, setErrorMessage] = useState("")
     const [isModalInscricaoOpen, setIsModalInscricaoOpen] = useState(false);
+    const [isModalTransferenciaOpen, setIsModalTransferenciaOpen] = useState(false);
     const [timeInfo, setTimeInfo] = useState({});
+    const navigate = useNavigate();
     const handleClose = (e) => {
         if (e.target.id === 'wrapper') onClose();
       };
 
       const handleInscricaoClick = (event) => {
-        event.preventDefault(); // Isso previne o comportamento padrão do evento, que é a submissão do formulário
+        event.preventDefault(); 
         setIsModalInscricaoOpen(true);
+      };
+
+      const handleTransferenciaClick = (event) => {
+        event.preventDefault(); 
+        setIsModalTransferenciaOpen(true);
       };
 
       useEffect(() => {
@@ -75,7 +84,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         };
 
       console.log('time Info: ', timeInfo)
-      const gerarCarteirinhaPDF = () => {
+      const gerarCarteirinhaPDF = (atleta) => {
         const { name, dateOfBirth, fotoAtletaBase64, CPF} = atleta; 
       
         if (!name || !dateOfBirth || !fotoAtletaBase64 || !CPF) {
@@ -150,7 +159,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   Gerar Carteirinha
                 </button>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: startColor2}}>Solicitar Transferência</button>
+                    backgroundColor: startColor2}} onClick={(event) => handleTransferenciaClick(event)}>Solicitar Transferência</button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{ backgroundColor: currentColor }} onClick={handleDemitirAtleta}>
                     Demitir Atleta
@@ -174,8 +183,17 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   atletaNome={atletaNome}
                   atletaId={atleta._id}
                   teamId={teamId}
-                  onClose={() => setIsModalInscricaoOpen(false)} // Função para fechar o ModalInscricaoCampeonato
+                  onClose={() => setIsModalInscricaoOpen(false)} 
                 />
+
+              <ModalTransferencia
+                  isVisible={isModalTransferenciaOpen}
+                  currentColor={currentColor}
+                  atletaNome={atletaNome}
+                  atletaId={atleta._id}
+                  teamId={teamId}
+                  onClose={() => setIsModalTransferenciaOpen(false)} 
+                />  
             </div>
           </div>
         </div>

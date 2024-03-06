@@ -43,9 +43,9 @@ const Sidebar = () => {
                 </p>
                 {item.links.map((link) => {
                  
-                 if(permissao === 'TEquipe' && (link.name === 'elenco' || link.name === 'staff')) {
+                 /*if(permissao === 'TEquipe' && (link.name === 'elenco' || link.name === 'staff')) {
                   return null;
-              }
+              }*/
               
                   return (
                     <NavLink

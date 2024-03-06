@@ -225,7 +225,7 @@ const MeuPerfil = () => {
                     <div className="flex flex-wrap justify-center">
                       <div className="w-full lg:w-9/12 px-4 flex justify-around">
                         {
-                        permissao !== 'TEquipe' && (
+                        /*permissao !== 'TEquipe'*/ 
                         <div>
                           <h4 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700">
                             Atletas
@@ -234,10 +234,9 @@ const MeuPerfil = () => {
                             {userAtletas.data?.length ? userAtletas.data?.length : 'Carregando...'}
                           </div>
                         </div>
- 
-                        )}
+                        }
                         {
-                        permissao !== 'TEquipe' && (
+                        /*permissao !== 'TEquipe'*/
                         <div>
                           <h4 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700">
                             Staff
@@ -248,7 +247,7 @@ const MeuPerfil = () => {
                           </div>
                           
                       </div>
-                        )}
+                        }
                        
                     </div>
                   </div>

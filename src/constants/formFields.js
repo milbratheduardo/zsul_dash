@@ -496,8 +496,33 @@ const ModalAdicionarJogoFields = [
         }
     ]
 
+    const ModalTransferenciaFields=[
+        {
+            labelText:"Motivo",
+            labelFor:"Motivo",
+            id:"motivo",
+            name:"motivo",
+            type:"text",
+            autoComplete:"motivo",
+            isRequired:true,
+            placeholder:"Motivo da Transferência"   
+        },
+        {
+            labelText:"Data",
+            labelFor:"",
+            id:"data",
+            name:"data",
+            type:"text",
+            autoComplete:"data",
+            isRequired:true,
+            placeholder:"Data da Solicitação",
+            mask: "99/99/9999"    
+        },
+        
+    ]
+
 export {loginFields,signupFields,ModalAtletaFields,
     ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
     ModalGrupoFields, ModalAdicionarJogoFields, ModalSumulaJogoFields,
-    ModalAdmFields
+    ModalAdmFields, ModalTransferenciaFields
     }
