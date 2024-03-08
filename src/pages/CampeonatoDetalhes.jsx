@@ -38,13 +38,14 @@ const CampeonatoDetalhes = () => {
   const gridColumns = [
     { field: 'P', headerText: 'P', width: '25' },
     { field: 'teamName', headerText: 'Nome', width: '100' },
-    { field: 'gamesPlayed', headerText: 'J', width: '25' },
-    { field: 'V', headerText: 'V', width: '25' },
-    { field: 'E', headerText: 'E', width: '25' },
-    { field: 'D', headerText: 'D', width: '25' },
-    { field: 'GF', headerText: 'GF', width: '25' },
-    { field: 'SG', headerText: 'SG', width: '25' },
-    { field: 'Pts', headerText: 'Pts', width: '25' },
+    { field: 'numeroJogos', headerText: 'J', width: '25' },
+    { field: 'vitorias', headerText: 'V', width: '25' },
+    { field: 'empates', headerText: 'E', width: '25' },
+    { field: 'derrotas', headerText: 'D', width: '25' },
+    { field: 'golsFeitos', headerText: 'GF', width: '25' },
+    { field: 'saldoGols', headerText: 'SG', width: '25' },
+    { field: 'pontos', headerText: 'Pts', width: '25' },
+  
     {
       headerText: 'Deletar',
       template: ({ teamId }) => <ActionButtonTemplate teamId={teamId} />,
@@ -75,13 +76,35 @@ const CampeonatoDetalhes = () => {
   }, [id]);
 
   useEffect(() => {
-    const fetchTimeGroups = async () => {
+    const fetchTimeGroupsAndStats = async () => {
       if (!selectedGroupId) return;
       try {
         const response = await fetch(`http://localhost:3000/grupos/team/grupo/${selectedGroupId}`);
         const data = await response.json();
         if (data.status === 200 && data.data) {
-          setTimeGroups(data.data);
+          const statsPromises = data.data.map(async (team) => {
+            const teamStatsResponse = await fetch(`http://localhost:3000/users/${team.teamId}`);
+            const teamStatsData = await teamStatsResponse.json();
+            if (teamStatsData.status === 200 && teamStatsData.data) {
+              return {
+                ...team,
+                numeroJogos: teamStatsData.data.numeroJogos || 0,
+                vitorias: teamStatsData.data.vitorias || 0,
+                empates: teamStatsData.data.empates || 0,
+                derrotas: teamStatsData.data.derrotas || 0,
+                golsFeitos: teamStatsData.data.golsFeitos || 0,
+                saldoGols: teamStatsData.data.saldoGols || 0,
+                pontos: teamStatsData.data.pontos || 0,
+              };
+            } else {
+              return team;
+            }
+          });
+  
+          let teamsWithStats = await Promise.all(statsPromises);          
+          teamsWithStats.sort((a, b) => b.pontos - a.pontos);
+          teamsWithStats = teamsWithStats.map((team, index) => ({ ...team, P: index + 1 }));
+          setTimeGroups(teamsWithStats);
         } else {
           toast.error('Failed to fetch groups');
         }
@@ -90,9 +113,11 @@ const CampeonatoDetalhes = () => {
         toast.error('An error occurred while fetching groups');
       }
     };
-
-    fetchTimeGroups();
+  
+    fetchTimeGroupsAndStats();
   }, [selectedGroupId]);
+  
+  
 
   const inscreverTime = async () => {
     const payload = {

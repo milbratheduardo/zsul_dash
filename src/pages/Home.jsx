@@ -1,6 +1,5 @@
 import React, { useEffect, useState} from 'react';
 import { Button } from '../components';
-import { earningData } from '../data/dummy';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -8,6 +7,8 @@ import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { toast } from 'react-toastify';
+import { FaCircleCheck, FaHandshakeSimple } from 'react-icons/fa6';
+import { IoMdCloseCircle } from 'react-icons/io';
 
 
 const Home = () => {  
@@ -42,6 +43,8 @@ const Home = () => {
         fetchUserInfo();
       }
     }, [user.data.id]); 
+
+    console.log('userInfo: ', userInfo)
 
     useEffect(() => {
       const fetchProximasPartidas = async () => {
@@ -203,6 +206,36 @@ const Home = () => {
       }
     }, [user.data.id]);
 
+    const earningData = [
+      {
+        icon: <FaCircleCheck />,
+        amount: userInfo.data.vitorias ? userInfo.data.vitorias : '0', 
+        subtitle: 'Vitórias',
+        title: 'Vitórias',
+        iconColor: '#52bf90',
+        iconBg: '#d9ead3', 
+        pcColor: 'red-600',
+      },
+      {
+        icon: <FaHandshakeSimple />,
+        amount: userInfo.data.empates ? userInfo.data.empates : '0' , 
+        subtitle: 'Empates',
+        title: 'Empates',
+        iconColor: 'rgb(255, 244, 229)',
+        iconBg: 'rgb(254, 201, 15)',
+        pcColor: 'green-600',
+      },
+      {
+        icon: <IoMdCloseCircle />,
+        amount: userInfo.data.derrotas ? userInfo.data.derrotas : '0', 
+        subtitle: 'Derrotas',
+        title: 'Derrotas',
+        iconColor: 'rgb(228, 106, 118)',
+        iconBg: 'rgb(255, 244, 229)',
+        pcColor: 'green-600',
+      },
+    ];
+
 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
@@ -253,7 +286,7 @@ const Home = () => {
                   <Button 
                     color='white' 
                     bgColor={currentColor}
-                    text='Downloaddd' 
+                    text='Download' 
                     borderRadius='10px' 
                     size='md' 
                     onClick={generatePDF}
@@ -262,8 +295,8 @@ const Home = () => {
                   <Button 
                   style={{ display: 'none' }} 
                   color='white' 
-                  bgColor='#4CAF50' // Cor verde fixa
-                  text='Baixar' 
+                  bgColor={currentColor} 
+                  text='Download' 
                   borderRadius='10px' 
                   size='md' 
                   onClick={generateUserPDF}
