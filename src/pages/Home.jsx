@@ -18,6 +18,7 @@ const Home = () => {
     const [userAtletas, setUserAtletas] = useState([]);
     const [userInfo, setUserInfo] = useState({});
     const [proximasPartidas, setProximasPartidas] = useState([]);
+    const [earningData, setEarningData] = useState([]);
 
     const permissao = localStorage.getItem('permissao');
 
@@ -206,35 +207,39 @@ const Home = () => {
       }
     }, [user.data.id]);
 
-    const earningData = [
-      {
-        icon: <FaCircleCheck />,
-        amount: userInfo.data.vitorias ? userInfo.data.vitorias : '0', 
-        subtitle: 'Vitórias',
-        title: 'Vitórias',
-        iconColor: '#52bf90',
-        iconBg: '#d9ead3', 
-        pcColor: 'red-600',
-      },
-      {
-        icon: <FaHandshakeSimple />,
-        amount: userInfo.data.empates ? userInfo.data.empates : '0' , 
-        subtitle: 'Empates',
-        title: 'Empates',
-        iconColor: 'rgb(255, 244, 229)',
-        iconBg: 'rgb(254, 201, 15)',
-        pcColor: 'green-600',
-      },
-      {
-        icon: <IoMdCloseCircle />,
-        amount: userInfo.data.derrotas ? userInfo.data.derrotas : '0', 
-        subtitle: 'Derrotas',
-        title: 'Derrotas',
-        iconColor: 'rgb(228, 106, 118)',
-        iconBg: 'rgb(255, 244, 229)',
-        pcColor: 'green-600',
-      },
-    ];
+    useEffect(() => {
+      if (Object.keys(userInfo).length > 0) {
+        setEarningData([ 
+          {
+            icon: <FaCircleCheck />,
+            amount: userInfo.data.vitorias ? userInfo.data.vitorias : '0', 
+            subtitle: 'Vitórias',
+            title: 'Vitórias',
+            iconColor: '#52bf90',
+            iconBg: '#d9ead3', 
+            pcColor: 'red-600',
+          },
+          {
+            icon: <FaHandshakeSimple />,
+            amount: userInfo.data.empates ? userInfo.data.empates : '0', 
+            subtitle: 'Empates',
+            title: 'Empates',
+            iconColor: 'rgb(255, 244, 229)',
+            iconBg: 'rgb(254, 201, 15)',
+            pcColor: 'green-600',
+          },
+          {
+            icon: <IoMdCloseCircle />,
+            amount: userInfo.data.derrotas ? userInfo.data.derrotas : '0', 
+            subtitle: 'Derrotas',
+            title: 'Derrotas',
+            iconColor: 'rgb(228, 106, 118)',
+            iconBg: 'rgb(255, 244, 229)',
+            pcColor: 'green-600',
+          },
+        ]);
+      }
+    }, [userInfo]);
 
 
   return (
