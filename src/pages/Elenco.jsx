@@ -17,6 +17,8 @@ const Elenco = () => {
   const teamId = user.data.id || null;
   const [atletas, setAtletas] = useState([]);
   const [transferencias, setTransferencias] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   console.log('id', teamId)
   const [selectedAtletaData, setSelectedAtletaData] = useState({
     name: '',
@@ -26,8 +28,7 @@ const Elenco = () => {
   });
 
   const handleAtletaClick = (atleta) => {
-    // Assegura que os dados do atleta estão sendo corretamente acessados
-    console.log('Dados do Atleta:', atleta); // Confirma os dados no console
+    console.log('Dados do Atleta:', atleta); 
     const atletaDados = {
       Nome: atleta.name,
       DataDeNascimento: atleta.dateOfBirth,
@@ -57,21 +58,11 @@ const Elenco = () => {
         }
         const data = await response.json();
         setAtletas(data.data);
-        console.log('Atletas: ', data)
-        data.data.forEach(atleta => {
-          fetchImageForAtleta(atleta.userId);
-        });
       } catch (error) {
         console.error('Fetch error:', error);
       }
     };
-
-    if (teamId) {
-      fetchAtletas();
-    }
-  }, [teamId]);
-
-  useEffect(() => {
+  
     const fetchTransferencias = async () => {
       try {
         const res = await fetch('http://localhost:3000/transferencia/');
@@ -83,8 +74,18 @@ const Elenco = () => {
       }
     };
   
-    fetchTransferencias();
-  }, []); 
+    const loadData = async () => {
+      setLoading(true); 
+      await Promise.all([fetchAtletas(), fetchTransferencias()]);
+      setLoading(false); 
+    };
+  
+    if (teamId) {
+      loadData();
+    }
+  }, [teamId]); 
+   
+
 
   const rowDataBound = (args) => {
     const isTransferido = transferencias.some(transf => transf.jogadorId === args.data._id);
@@ -114,10 +115,10 @@ const Elenco = () => {
     },
     {
       field: 'name', headerText: 'Atleta', width: '150', textAlign: 'Center', 
-      template: (atleta) => ( // Aqui, "atleta" representa o objeto completo do atleta na linha atual
+      template: (atleta) => ( 
         <a href="#" onClick={(e) => {
-          e.preventDefault(); // Prevenir o comportamento padrão do link
-          handleAtletaClick(atleta); // Passando o objeto atleta completo
+          e.preventDefault(); 
+          handleAtletaClick(atleta); 
         }}>{atleta.name}</a>
       )
     },
@@ -199,7 +200,10 @@ const Elenco = () => {
                     setShowModal(true);
                   }}
                 />
-              </div>             
+              </div> 
+              {loading ? (
+                <div>Carregando...</div> // Ou um componente de Spinner
+                ) : (            
               <GridComponent
                 dataSource={atletas}
                 allowPaging
@@ -215,7 +219,7 @@ const Elenco = () => {
                 </ColumnsDirective>
                 <Inject services={[Page, Search, Toolbar]} />
               </GridComponent>           
-              
+              )}
             </div>
           )}            
           </div>

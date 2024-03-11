@@ -11,12 +11,50 @@ import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 const ControleAtletas = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
+  
+    const [campeonatos, setCampeonatos] = useState([]);
+    const [selectedCampeonatoId, setSelectedCampeonatoId] = useState('');
+    const [inscricoes, setInscricoes] = useState([]);
 
+    useEffect(() => {
+      const fetchCampeonatos = async () => {
+        try {
+          const response = await fetch('http://localhost:3000/campeonatos/');
+          const data = await response.json();
+          console.log('Campeonatos: ', data);
+          setCampeonatos(data.data); 
+        } catch (error) {
+          console.error("Erro ao buscar campeonatos:", error);
+        }
+      };
+  
+      fetchCampeonatos();
+    }, []);
+
+    useEffect(() => {
+      const fetchInscricoes = async () => {
+        if (selectedCampeonatoId) {
+          try {
+            const response = await fetch(`http://localhost:3000/inscricoes/campeonato/${selectedCampeonatoId}`);
+            const data = await response.json();
+            setInscricoes(data.data);
+          } catch (error) {
+            console.error("Erro ao buscar inscrições:", error);
+          }
+        }
+      };
+  
+      fetchInscricoes();
+    }, [selectedCampeonatoId]);
+
+    const handleCampeonatoChange = (event) => {
+      setSelectedCampeonatoId(event.target.value);
+    };
   
 
     const ControleGrid = [
       {
-        field: 'teamName',
+        field: 'userId',
         headerText: 'Time',
         width: '200',
         textAlign: 'Center',
@@ -97,8 +135,14 @@ const ControleAtletas = () => {
             <div className='m-2 md:m-10 mt-24 p-2 
             md:p-10 bg-white rounded-3xl'>
               <Header category="Administrador" title="Controle de Atletas"/>
+              <select onChange={handleCampeonatoChange} value={selectedCampeonatoId} className='mb-4'>
+                <option value=''>Selecione um campeonato</option>
+                {campeonatos.map((campeonato) => (
+                  <option key={campeonato._id} value={campeonato._id}>{campeonato.name}</option>
+                ))}
+              </select>
               <GridComponent
-                dataSource={''}
+                dataSource={inscricoes}
                 allowPaging
                 allowSorting
                 toolbar={['Search']}
