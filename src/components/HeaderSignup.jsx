@@ -1,18 +1,22 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
-const HeaderSignup = ({heading, paragraph, linkName, linkUrl, title}) => {
+const HeaderSignup = ({logo, heading, paragraph, linkName, linkUrl, title}) => {
   return (
     <div className="mb-10">
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              {title}
-            </h2>
+            {logo && <img src={logo} alt="Logo" 
+              style={{ 
+                
+                width: '100%', 
+                maxHeight: '170px', 
+                marginBottom: '5px'
+              }} />}
             <h3 className="mt-6 text-center text-3xl font-extrabold text-gray-600">
                 {heading}
             </h3>
             <p className="mt-2 text-center text-sm text-gray-600 mt-5">
             {paragraph} {' '}
-            <Link to={linkUrl} className="font-medium text-cyan-600 hover:text-cyan-500">
+            <Link to={linkUrl} className="font-medium text-yellow-700 hover:text-yellow-800">
                 {linkName}
             </Link>
             </p>

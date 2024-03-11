@@ -119,7 +119,6 @@ const LoginComponent = () => {
           />
         ))}
       </div>
-      <FormExtra />
       <LoginAction text='Login'/>
     </form>
   );

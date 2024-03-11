@@ -11,3 +11,5 @@ export { default as CampeonatoDetalhes } from './CampeonatoDetalhes';
 export { default as Transferencias } from './Transferencias';
 export { default as Clubes } from './Clubes';
 export { default as SumulasDetalhes } from './SumulasDetalhes';
+export { default as Campos } from './Campos';
+export { default as ControleAtletas } from './ControleAtletas';

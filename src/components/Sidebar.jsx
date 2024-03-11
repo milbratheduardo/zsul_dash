@@ -6,6 +6,7 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
 import { links } from '../data/dummy';
 import { useStateContext } from '../contexts/ContextProvider';
+import logoZsul from '../img/logo_zsul.png';
 const permissao = localStorage.getItem('permissao');
 const Sidebar = () => {
   
@@ -26,7 +27,10 @@ const Sidebar = () => {
           <div className='flex justify-between items-center'>
             <Link to='/' onClick={handleCloseSideBar}
             className='items-center gap-3 ml-3 mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900'>
-              <PiSoccerBallFill /> <span>ZSUL Esportes</span>
+              <img src={logoZsul} alt="Logo"  style={{           
+                width: '80%', 
+                maxHeight: '150px', 
+              }} />
             </Link>
             <TooltipComponent content="Menu" position='BottomCenter'>
               <button type='button' onClick={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)}              
@@ -58,7 +62,8 @@ const Sidebar = () => {
                       className={({ isActive }) => isActive ? activeLink : normalLink}
                     >
                       {link.icon}
-                      <span className='capitalize'>{link.name}</span>
+                      <span className='capitalize'>{link.name === 'staff' ? 'Comissão Técnica' : 
+                      link.name === 'ControleAtletas' ? 'Controle de Atletas' : link.name}</span>
                     </NavLink>
                   );
                 })}

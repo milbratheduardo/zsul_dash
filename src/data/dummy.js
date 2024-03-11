@@ -13,6 +13,7 @@ import { IoIosPeople } from "react-icons/io";
 import { TiTick } from 'react-icons/ti';
 import { GiSoccerField} from 'react-icons/gi';
 import { GrLocation } from 'react-icons/gr';
+import { PiSoccerBallFill } from "react-icons/pi";
 import avatar from './avatar.jpg';
 import avatar2 from './avatar2.jpg';
 import avatar3 from './avatar3.png';
@@ -239,7 +240,15 @@ export const links = [
       },
       {
         name: 'Clubes',
+        icon: <PiSoccerBallFill />,
+      },
+      {
+        name: 'Campos',
         icon: <GiSoccerField />,
+      },
+      {
+        name: 'ControleAtletas',
+        icon: <FaPeopleGroup />,
       },
       
     ],

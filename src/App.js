@@ -3,7 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Calendario, Campeonatos, ComissaoTecnica, 
     Elenco, Home, MeuPerfil, Sumulas, Login, 
     Signup, CampeonatoDetalhes, Transferencias, Clubes,
-  SumulasDetalhes } from './pages';
+  SumulasDetalhes, 
+  Campos,
+  ControleAtletas} from './pages';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,6 +33,8 @@ const App = () => {
               {/* Administrador */}
               <Route path='/transferencias' element={<Transferencias />} />
               <Route path='/clubes' element={<Clubes />} />
+              <Route path='/campos' element={<Campos />} />
+              <Route path='/controleAtletas' element={<ControleAtletas />} />
           </Routes>
                
         </BrowserRouter>

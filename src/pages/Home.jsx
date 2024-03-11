@@ -209,7 +209,7 @@ const Home = () => {
     const earningData = [
       {
         icon: <FaCircleCheck />,
-        amount: userInfo.data.vitorias ? userInfo.data.vitorias : '0', 
+        //amount: userInfo.data.vitorias ? userInfo.data.vitorias : '0', 
         subtitle: 'Vitórias',
         title: 'Vitórias',
         iconColor: '#52bf90',
@@ -218,7 +218,7 @@ const Home = () => {
       },
       {
         icon: <FaHandshakeSimple />,
-        amount: userInfo.data.empates ? userInfo.data.empates : '0' , 
+        //amount: userInfo.data.empates ? userInfo.data.empates : '0' , 
         subtitle: 'Empates',
         title: 'Empates',
         iconColor: 'rgb(255, 244, 229)',
@@ -227,7 +227,7 @@ const Home = () => {
       },
       {
         icon: <IoMdCloseCircle />,
-        amount: userInfo.data.derrotas ? userInfo.data.derrotas : '0', 
+        //amount: userInfo.data.derrotas ? userInfo.data.derrotas : '0', 
         subtitle: 'Derrotas',
         title: 'Derrotas',
         iconColor: 'rgb(228, 106, 118)',
@@ -278,7 +278,7 @@ const Home = () => {
                 <div className='flex justify-between items-center'>
                   <div>
                     <p className='font-bold text-gray-400'>Número de Atletas</p>
-                    <p className='text-2xl'>{userAtletas.data?.length ? userAtletas.data?.length : 'Carregando...'}</p>
+                    <p className='text-2xl'>{userAtletas.data?.length ? userAtletas.data?.length : '0'}</p>
                   </div>
                 </div>
                 <div className='mt-6'>
