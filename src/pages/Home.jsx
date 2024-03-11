@@ -283,7 +283,7 @@ const Home = () => {
                 <div className='flex justify-between items-center'>
                   <div>
                     <p className='font-bold text-gray-400'>Número de Atletas</p>
-                    <p className='text-2xl'>{userAtletas.data?.length ? userAtletas.data?.length : 'Carregando...'}</p>
+                    <p className='text-2xl'>{userAtletas.data?.length ? userAtletas.data?.length : '0'}</p>
                   </div>
                 </div>
                 <div className='mt-6'>

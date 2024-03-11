@@ -521,8 +521,52 @@ const ModalAdicionarJogoFields = [
         
     ]
 
+    const ModalCamposFields=[
+        {
+            labelText:"Nome do Estádio",
+            labelFor:"name",
+            id:"name",
+            name:"name",
+            type:"text",
+            autoComplete:"name",
+            isRequired:true,
+            placeholder:"Nome do Estádio"   
+        },
+        {
+            labelText:"Endereço do Estádio",
+            labelFor:"endereco",
+            id:"endereco",
+            name:"endereco",
+            type:"text",
+            autoComplete:"endereco",
+            isRequired:true,
+            placeholder:"Endereço do Estádio"   
+        },
+        {
+            labelText:"Cidade do Estádio",
+            labelFor:"cidade",
+            id:"cidade",
+            name:"cidade",
+            type:"text",
+            autoComplete:"cidade",
+            isRequired:true,
+            placeholder:"Cidade do Estádio"   
+        },
+        {
+            labelText:"Link Google Maps",
+            labelFor:"maps",
+            id:"maps",
+            name:"maps",
+            type:"text",
+            autoComplete:"maps",
+            isRequired:true,
+            placeholder:"Link Google Maps"   
+        },
+        
+    ]
+
 export {loginFields,signupFields,ModalAtletaFields,
     ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
     ModalGrupoFields, ModalAdicionarJogoFields, ModalSumulaJogoFields,
-    ModalAdmFields, ModalTransferenciaFields
+    ModalAdmFields, ModalTransferenciaFields, ModalCamposFields
     }
