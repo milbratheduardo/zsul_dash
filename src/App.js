@@ -6,7 +6,8 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   SumulasDetalhes, 
   Campos,
   ControleAtletas,
-  Documentos} from './pages';
+  Documentos,
+  Estatísticas} from './pages';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,6 +26,7 @@ const App = () => {
               <Route path='/staff' element={<ComissaoTecnica />} />
               <Route path='/campeonatos' element={<Campeonatos />} />
               <Route path="/campeonatos/:id" element={<CampeonatoDetalhes />} />
+              <Route path="/estatísticas" element={<Estatísticas />} />
               {/* Administração */}
               <Route path='/calendario' element={<Calendario />} />
               <Route path='/sumulas' element={<Sumulas />} />

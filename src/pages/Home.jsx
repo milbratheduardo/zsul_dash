@@ -287,7 +287,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className='mt-6'>
-                {permissao !== 'TEquipe' ? (
+                {permissao !== 'admin' ? (
                   <Button 
                     color='white' 
                     bgColor={currentColor}

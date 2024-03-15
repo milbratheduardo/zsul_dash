@@ -10,6 +10,7 @@ import { HiOutlineRefresh } from 'react-icons/hi';
 import { FaPeopleGroup, FaTrophy, FaCalendarDay, FaCircleCheck,
 FaHandshakeSimple } from "react-icons/fa6";
 import { IoIosPeople } from "react-icons/io";
+import { IoIosStats } from "react-icons/io";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { TiTick } from 'react-icons/ti';
 import { GiSoccerField} from 'react-icons/gi';
@@ -203,6 +204,10 @@ export const links = [
       {
         name: 'campeonatos',
         icon: <FaTrophy />,
+      },
+      {
+        name: 'estatísticas',
+        icon: <IoIosStats />,
       },
     ],
   },

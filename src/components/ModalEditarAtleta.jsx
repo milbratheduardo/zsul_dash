@@ -23,30 +23,48 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();  
-    editarAtleta();
-  };
-
-  const editarAtleta = async () => {
-    const payload = {
-      ...modalFieldsState,
-      atletaId,
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const userId = atletaId; 
+    if (userId) {
+   
+      await enviarImagem('RGFrente');
+      await enviarImagem('RGVerso');
+      await enviarImagem('fotoAtleta');
+  
+   
+      localStorage.removeItem('fotoAtleta');
     }
+  }
 
-    console.log('payload: ', payload)
+  const enviarImagem = async (imageField) => {
+    const userId = atletaId
+    if (!userId) {
+      console.error('UserID não encontrado no localStorage.');
+      return;
+    }
+  
+    const file = document.getElementById(imageField).files[0];
+    if (!file) {
+      console.error('Nenhum arquivo selecionado para o campo:', imageField);
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('userType', 'elenco');
+    formData.append('imageField', imageField);
+    formData.append('file', file); 
+  
     try {
-      const response = await fetch(`http://localhost:3000/elenco/${atletaId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
+      const response = await fetch('http://localhost:3000/image', {
+        method: 'POST',
+        body: formData,
       });
-
-      const data = await response.json();
+  
       if (response.ok) {
-        
+        console.log(`${imageField} enviado com sucesso`);
         toast.success('Atleta Editado com sucesso!', {
           position: "top-center",
           autoClose: 2000,
@@ -57,16 +75,15 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
         localStorage.setItem('fotoAtleta', data.msg._id);
         return data.msg._id; 
       } else {
-        setErrorMessage(data.message);
-        return null; 
+        const data = await response.json();
+        console.error(`Erro ao enviar ${imageField}`, data.message);
       }
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-      setErrorMessage("Houve um problema ao conectar com o servidor.");
-      return null; 
+      console.error(`Erro ao enviar ${imageField}`, error);
     }
   }
 
+  
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
       <div className='w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex flex-col' style={{ height: '100%', maxHeight: '600px' }}>
@@ -133,7 +150,7 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
                   )}
                 </div>
               ))}
-              <FormAction currentColor={currentColor} text='Cadastrar' />
+              <FormAction currentColor={currentColor} text='Editar' />
             </div>
             
           </form>

@@ -63,9 +63,9 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
 
       console.log('time Info: ', timeInfo)
       const gerarCarteirinhaPDF = (atleta) => {
-        const { name, dateOfBirth, fotoAtletaBase64, CPF} = atleta; 
+        const { name, dateOfBirth, fotoAtletaBase64, CPF, RGFrenteBase64, RGVersoBase64} = atleta; 
       
-        if (!name || !dateOfBirth || !fotoAtletaBase64 || !CPF) {
+        if (!name || !dateOfBirth || !fotoAtletaBase64 || !CPF || !RGFrenteBase64 || !RGVersoBase64) {
           console.error('Dados incompletos do atleta para gerar a carteirinha.');
           return;
         }
@@ -102,7 +102,20 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         doc.text(`Clube: ${timeInfo.data.teamName}`, textX, textYStart + 5);
         doc.text(`Data de Nasc.: ${dateOfBirth}`, textX, textYStart + 10);
 
-        doc.output('dataurlnewwindow');
+        const pdfBlob = doc.output('blob');
+
+        // Criar URL para o Blob
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+      
+        // Abrir em nova aba
+        window.open(pdfUrl);
+      
+        console.log('PDF aberto em uma nova aba com sucesso!');
+        
+        toast.success('Carteirinha gerada com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+        });
       };
       
     return (

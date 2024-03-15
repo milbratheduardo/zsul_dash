@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+import { format } from 'date-fns';
 
 const SumulasDetalhes = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
@@ -23,6 +24,8 @@ const SumulasDetalhes = () => {
   const [atletas, setAtletas] = useState([]);
   const [atletasIds, setAtletasIds] = useState([]);
   const { id } = useParams();
+  const [selectedStatus, setSelectedStatus] = useState('');
+
 
   const [selectedAtletaData, setSelectedAtletaData] = useState({
     name: '',
@@ -52,6 +55,45 @@ const SumulasDetalhes = () => {
     localStorage.setItem('selectedAtletaId', atleta._id);
     localStorage.setItem('selectedTeamId', teamId); 
   };
+
+  const handleStatusChange = async (atleta, newStatus) => {
+    try {
+      const responseGet = await fetch(`http://localhost:3000/sumula/elenco/${atleta._id}`);
+      if (!responseGet.ok) {
+        throw new Error('Erro ao obter o ID do atleta');
+      }
+      const dataGet = await responseGet.json();
+      console.log('Response GET:', dataGet);
+      const idSumula = dataGet?.data?.[0]?._id;
+      console.log('idSumula:', idSumula);
+
+  
+      const responsePatch = await fetch(`http://localhost:3000/sumula/${idSumula}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ field: 'status', value: newStatus }),
+      });
+  
+      if (!responsePatch.ok) {
+        throw new Error('Erro ao atualizar o status do atleta');
+      }
+  
+      const updatedAtletas = atletas.map((a) => {
+        if (a._id === atleta._id) {
+          return { ...a, status: newStatus };
+        }
+        return a;
+      });
+  
+      setAtletas(updatedAtletas);
+      window.location.reload()
+    } catch (error) {
+      console.error('Erro ao atualizar o status do atleta:', error);
+    }
+  };
+  
 
   useEffect(() => {
     const fetchCampeonato = async () => {
@@ -119,7 +161,12 @@ const SumulasDetalhes = () => {
               throw new Error(`Network response was not ok for elencoId ${elencoId.elencoId}`);
             }
             const data = await response.json();
-            allAtletas.push(data.data);
+            const atletaComStatus = {
+              ...data.data,
+              status: elencoId.status,
+            };
+            
+            allAtletas.push(atletaComStatus);
           }
   
           
@@ -154,10 +201,10 @@ const SumulasDetalhes = () => {
     },
     {
       field: 'name', headerText: 'Atleta', width: '150', textAlign: 'Center', 
-      template: (atleta) => ( // Aqui, "atleta" representa o objeto completo do atleta na linha atual
+      template: (atleta) => (
         <a href="#" onClick={(e) => {
-          e.preventDefault(); // Prevenir o comportamento padrão do link
-          handleAtletaClick(atleta); // Passando o objeto atleta completo
+          e.preventDefault(); 
+          handleAtletaClick(atleta);
         }}>{atleta.name}</a>
       )
     },
@@ -169,15 +216,33 @@ const SumulasDetalhes = () => {
       template: (props) => <span>{formatCPF(props.CPF)}</span>,
     },
     { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
+    {
+      field: 'status',
+      headerText: 'Status',
+      width: '150',
+      textAlign: 'Center',
+      template: (atleta) => (
+        <select
+          value={atleta.status}
+          onChange={(e) => handleStatusChange(atleta, e.target.value)}
+        >
+          <option value="ativo">Ativo</option>
+          <option value="banco">Banco</option>
+        </select>
+      ),
+    },
   ];
 
-  console.log('ATletas: ', atletas)
   const generatePDF = () => {
-    const doc = new jsPDF();
-    if (!atletas || atletas.length === 0) {
-      toast.error("Não há atletas cadastrados para gerar o PDF.");
-      return; 
+    const atletasAtivo = atletas.filter((atleta) => atleta.status === "ativo");
+    const today = format(new Date(), "dd/MM/yyyy");
+
+    if (!atletasAtivo || atletasAtivo.length === 0) {
+      toast.error("Não há atletas com status 'ativo' disponíveis para gerar o PDF.");
+      return;
     }
+  
+    const doc = new jsPDF();
     
     const logo = userInfo.data?.pictureBase64; 
     if (logo) {
@@ -196,23 +261,32 @@ const SumulasDetalhes = () => {
     
     doc.setFontSize(22);
     doc.text(campeonato.name, teamNameXPosition, 40, 'center');
+
+    doc.setFontSize(20);
+    doc.text("X", teamNameXPosition, 60, 'center');
+
+    doc.setFontSize(12);
+    doc.text("Data", 195, 20, 'right');
+    doc.setFontSize(12);
+    doc.text(today, 200, 30, 'right');
   
     
     doc.setFontSize(16);
     const atletasTitle = "Atletas";
-    doc.text(atletasTitle, teamNameXPosition, 50, 'center'); 
+    doc.text(atletasTitle, teamNameXPosition, 75, 'center'); 
   
     
-    const tableColumn = ["Nome", "Documento", "Categoria"]; 
+    const tableColumn = ["Nº","Nome", "Documento", "Categoria"]; 
     
-    const tableRows = atletas.map(atleta => [
+    const tableRows = atletasAtivo.map(atleta => [
+      "",
       atleta.name, // Adjust according to your data structure
       atleta.CPF, // Adjust according to your data structure
       atleta.category// Add more fields as needed
     ]);
   
     // Add the table to the PDF
-    doc.autoTable(tableColumn, tableRows, { startY: 55 }); // Adjust positioning as needed
+    doc.autoTable(tableColumn, tableRows, { startY: 80 }); // Adjust positioning as needed
   
     // Open the PDF in a new browser tab
     doc.output('dataurlnewwindow');

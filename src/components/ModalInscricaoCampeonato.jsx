@@ -47,21 +47,45 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
   
   const handleSubmit = async (e) => {
     e.preventDefault(); 
-    console.log('aqui1');
+    verificarStatus();
     inscreverAtleta();
   }
 
-  const inscreverAtleta = async () => {
-    console.log('aqui2');
-    const requestBody = {
-      campeonatoId: selectedCampeonatoId,
-      userId: teamId,
-      elencoId: atletaId,
-    };
-  
-    console.log("Body: ", requestBody);
-  
+  const verificarStatus = async (teamId, selectedCampeonatoId) => {
     try {
+      const response = await fetch(`http://localhost:3000/sumula/team/${teamId}`);
+      const data = await response.json();
+
+      const count = data.data && data.data.reduce ? data.data.reduce((acc, obj) => {
+        if (obj.campeonatoId === selectedCampeonatoId) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0) : 0;
+  
+      const status = count <= 29 ? 'ativo' : 'banco';
+      console.log('Count:', count);
+      console.log('Status:', status);
+  
+      return status;
+    } catch (error) {
+      console.error('Erro ao obter os dados:', error.message);
+      throw new Error('Erro ao obter os dados');
+    }
+  };
+  
+  const inscreverAtleta = async () => {
+    try {
+      const status = await verificarStatus(teamId, selectedCampeonatoId);
+  
+      const requestBody = {
+        campeonatoId: selectedCampeonatoId,
+        userId: teamId,
+        elencoId: atletaId,
+        status: status
+      };
+      console.log('Request Body:', requestBody);
+  
       const response = await fetch('http://localhost:3000/sumula/', {
         method: 'POST',
         headers: {
@@ -74,10 +98,10 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
       if (data.status === 200) {
         toast.success(`Atleta Inscrito com Sucesso!`, {
           position: "top-center",
-          autoClose: 5000, 
+          autoClose: 5000,
         });
       } else if (data.status === 400 || data.status === 500) {
-        setErrorMessage(data.msg); 
+        setErrorMessage(data.msg);
       } else {
         console.log('Error:', data.msg);
       }
@@ -86,7 +110,8 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
       console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
-  }  
+  }; 
+  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
