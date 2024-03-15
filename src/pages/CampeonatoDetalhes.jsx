@@ -83,25 +83,34 @@ const CampeonatoDetalhes = () => {
         const data = await response.json();
         if (data.status === 200 && data.data) {
           const statsPromises = data.data.map(async (team) => {
-            const teamStatsResponse = await fetch(`http://localhost:3000/users/${team.teamId}`);
-            const teamStatsData = await teamStatsResponse.json();
-            if (teamStatsData.status === 200 && teamStatsData.data) {
-              return {
-                ...team,
-                numeroJogos: teamStatsData.data.numeroJogos || 0,
-                vitorias: teamStatsData.data.vitorias || 0,
-                empates: teamStatsData.data.empates || 0,
-                derrotas: teamStatsData.data.derrotas || 0,
-                golsFeitos: teamStatsData.data.golsFeitos || 0,
-                saldoGols: teamStatsData.data.saldoGols || 0,
-                pontos: teamStatsData.data.pontos || 0,
-              };
-            } else {
+            try {
+              const teamStatsResponse = await fetch(`http://localhost:3000/inscricoes/user/${team.teamId}`);
+              const teamStatsData = await teamStatsResponse.json();
+              const statsForCampeonato = teamStatsData.data.find(
+                (stats) => stats.campeonatoId === id
+              );
+  
+              if (statsForCampeonato) {
+                return {
+                  ...team,
+                  numeroJogos: statsForCampeonato.numeroJogos || 0,
+                  vitorias: statsForCampeonato.vitorias || 0,
+                  empates: statsForCampeonato.empates || 0,
+                  derrotas: statsForCampeonato.derrotas || 0,
+                  golsFeitos: statsForCampeonato.golsFeitos || 0,
+                  saldoGols: statsForCampeonato.saldoGols || 0,
+                  pontos: statsForCampeonato.pontos || 0,
+                };
+              } else {
+                return team;
+              }
+            } catch (error) {
+              console.error('Error fetching team stats:', error);
               return team;
             }
           });
   
-          let teamsWithStats = await Promise.all(statsPromises);          
+          let teamsWithStats = await Promise.all(statsPromises);
           teamsWithStats.sort((a, b) => b.pontos - a.pontos);
           teamsWithStats = teamsWithStats.map((team, index) => ({ ...team, P: index + 1 }));
           setTimeGroups(teamsWithStats);

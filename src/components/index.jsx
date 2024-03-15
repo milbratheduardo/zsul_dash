@@ -35,3 +35,5 @@ export { default as ModalSumulaJogo } from './ModalSumulaJogo';
 export { default as ModalAdm } from './ModalAdm';
 export { default as ModalTransferencia } from './ModalTransferencia';
 export { default as ModalCampos } from './ModalCampos';
+export { default as ModalEditarAtleta } from './ModalEditarAtleta';
+export { default as ModalAtletaDocumentos } from './ModalAtletaDocumentos';

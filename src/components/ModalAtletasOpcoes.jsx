@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 import Logo from '../img/Logo_exemplo.png';
 import ModalInscricaoCampeonato from './ModalInscricaoCampeonato';
 import ModalTransferencia from './ModalTransferencia';
-import { toast } from 'react-toastify';
+import ModalEditarAtleta from './ModalEditarAtleta';
 import { useNavigate } from 'react-router-dom';
 
 const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atleta, teamId }) => {
@@ -18,6 +18,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
     const [errorMessage, setErrorMessage] = useState("")
     const [isModalInscricaoOpen, setIsModalInscricaoOpen] = useState(false);
     const [isModalTransferenciaOpen, setIsModalTransferenciaOpen] = useState(false);
+    const [isModalEditarOpen, setIsModalEditarOpen] = useState(false);
     const [timeInfo, setTimeInfo] = useState({});
     const navigate = useNavigate();
     const handleClose = (e) => {
@@ -27,6 +28,11 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
       const handleInscricaoClick = (event) => {
         event.preventDefault(); 
         setIsModalInscricaoOpen(true);
+      };
+
+      const handleEditarClick = (event) => {
+        event.preventDefault(); 
+        setIsModalEditarOpen(true);
       };
 
       const handleTransferenciaClick = (event) => {
@@ -54,34 +60,6 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
           fetchTimeInfo();
         }
       }, [teamId]);
-      const handleDemitirAtleta = async (e) => {
-        e.preventDefault();
-        const atletaId = localStorage.getItem('selectedAtletaId');
-        if (!atletaId) {
-            console.error('ID do atleta não encontrado.');
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://localhost:3000/elenco/${atletaId}`, {
-                method: 'DELETE',
-            });
-            const data = await response.json();
-            if (data.status === 200) {
-              toast.success('Atleta Demitido com Sucesso!', {
-                position: "top-center",
-                autoClose: 5000,
-                onClose: () => navigate('/elenco') 
-              });
-              console.log('Dados: ', data);
-            } else {
-              setErrorMessage(data.msg)
-              console.error('Erro ao cadastrar campeonato ' + errorMessage);
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        };
 
       console.log('time Info: ', timeInfo)
       const gerarCarteirinhaPDF = (atleta) => {
@@ -161,8 +139,8 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
                     backgroundColor: startColor2}} onClick={(event) => handleTransferenciaClick(event)}>Solicitar Transferência</button>
                   <div className='w-full' aria-hidden='true'></div>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{ backgroundColor: currentColor }} onClick={handleDemitirAtleta}>
-                    Demitir Atleta
+                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{ backgroundColor: currentColor }} onClick={(event) => handleEditarClick(event)}>
+                    Editar Atleta
                 </button>
                   <button
                     className='text-white py-2 px-4 rounded w-full sm:w-1/2'
@@ -194,6 +172,15 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   teamId={teamId}
                   onClose={() => setIsModalTransferenciaOpen(false)} 
                 />  
+
+              <ModalEditarAtleta
+                  isVisible={isModalEditarOpen}
+                  currentColor={currentColor}
+                  atletaNome={atletaNome}
+                  atletaId={atleta._id}
+                  teamId={teamId}
+                  onClose={() => setIsModalEditarOpen(false)} 
+                />   
             </div>
           </div>
         </div>

@@ -13,3 +13,4 @@ export { default as Clubes } from './Clubes';
 export { default as SumulasDetalhes } from './SumulasDetalhes';
 export { default as Campos } from './Campos';
 export { default as ControleAtletas } from './ControleAtletas';
+export { default as Documentos } from './Documentos';

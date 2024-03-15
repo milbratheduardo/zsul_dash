@@ -177,6 +177,39 @@ const ModalAtletaFields = [
     }
 ]
 
+const ModalEditarAtletaFields = [
+    {
+        labelText:"RG Frente",
+        labelFor:"rgfrente",
+        id:"RGFrente",
+        name:"RGFrente",
+        type:"file",
+        autoComplete:"rgfrente",
+        isRequired:false,
+        placeholder:"Frente do RG"   
+    },
+    {
+        labelText:"RG Verso",
+        labelFor:"rgverso",
+        id:"RGVerso",
+        name:"RGVerso",
+        type:"file",
+        autoComplete:"rgverso",
+        isRequired:false,
+        placeholder:"Verso do RG" 
+    },
+    {
+        labelText:"Foto do Atleta",
+        labelFor:"foto",
+        id:"fotoAtleta",
+        name:"fotoAtleta",
+        type:"file",
+        autoComplete:"foto",
+        isRequired:false,
+        placeholder:"Foto do Atleta" 
+    }
+]
+
 const ModalStaffFields = [
     {
         labelText:"Nome do Membro do Staff",
@@ -568,5 +601,5 @@ const ModalAdicionarJogoFields = [
 export {loginFields,signupFields,ModalAtletaFields,
     ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
     ModalGrupoFields, ModalAdicionarJogoFields, ModalSumulaJogoFields,
-    ModalAdmFields, ModalTransferenciaFields, ModalCamposFields
+    ModalAdmFields, ModalTransferenciaFields, ModalCamposFields, ModalEditarAtletaFields
     }
