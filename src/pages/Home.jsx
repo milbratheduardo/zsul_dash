@@ -281,12 +281,20 @@ const Home = () => {
             <div className='flex flex-wrap lg:flex-nowrap justify-center'>
               <div className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-80 p-8 pt-9 m-3 bg-no-repeat bg-cover bg-center'>
                 <div className='flex justify-between items-center'>
+                {permissao !== 'admin' && (
                   <div>
                     <p className='font-bold text-gray-400'>Número de Atletas</p>
                     <p className='text-2xl'>{userAtletas.data?.length ? userAtletas.data?.length : '0'}</p>
                   </div>
+                )}
                 </div>
                 <div className='mt-6'>
+                {permissao === 'admin' && (
+                  <div>
+                    <p className='font-bold text-gray-400'>Número de Times</p>
+           
+                  </div>
+                )}
                 {permissao !== 'admin' ? (
                   <Button 
                     color='white' 
@@ -297,15 +305,18 @@ const Home = () => {
                     onClick={generatePDF}
                   />
                 ) : (
+                  
+                <div style={{ marginTop: '20px' }}>
                   <Button 
-                  style={{ display: 'none' }} 
-                  color='white' 
-                  bgColor={currentColor} 
-                  text='Download' 
-                  borderRadius='10px' 
-                  size='md' 
-                  onClick={generateUserPDF}
-                />
+                    color='white' 
+                    bgColor='#4CAF50' // Cor modificada para verde
+                    text='Download'
+                    borderRadius='10px' 
+                    size='md' 
+                    onClick={generateUserPDF}
+                  />
+                </div>
+  
                 )}
               </div>
 

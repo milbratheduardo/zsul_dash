@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PrivateRoute from './pages/PrivateRoute'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Calendario, Campeonatos, ComissaoTecnica, 
     Elenco, Home, MeuPerfil, Sumulas, Login, 
@@ -22,8 +23,11 @@ const App = () => {
               <Route path='/signup' element={<Signup/>} />
               <Route path='/home' element={<Home/> } />
               {/* Páginas */}
-              <Route path='/elenco' element={<Elenco/>} />
-              <Route path='/staff' element={<ComissaoTecnica />} />
+              <Route path='/elenco' element={
+                <PrivateRoute component={Elenco} /> // Use PrivateRoute aqui
+              } />
+              <Route path='/staff' element={<PrivateRoute component={ComissaoTecnica} />} />
+              
               <Route path='/campeonatos' element={<Campeonatos />} />
               <Route path="/campeonatos/:id" element={<CampeonatoDetalhes />} />
               <Route path="/estatísticas" element={<Estatísticas />} />
