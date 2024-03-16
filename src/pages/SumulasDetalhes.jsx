@@ -237,8 +237,8 @@ const SumulasDetalhes = () => {
     const atletasAtivo = atletas.filter((atleta) => atleta.status === "ativo");
     const today = format(new Date(), "dd/MM/yyyy");
 
-    if (!atletasAtivo || atletasAtivo.length === 0) {
-      toast.error("Não há atletas com status 'ativo' disponíveis para gerar o PDF.");
+    if (!atletasAtivo || atletasAtivo.length === 0 || atletasAtivo.length > 30) {
+      toast.error("Quantidade de Atletas Incompatíveis para Gerar a Súmula.");
       return;
     }
   
@@ -292,6 +292,8 @@ const SumulasDetalhes = () => {
     doc.output('dataurlnewwindow');
   };
 
+  const atletasAtivo = atletas.filter((atleta) => atleta.status === "ativo");
+  const quantidadeAtletasAtivos = atletasAtivo.length;
 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
@@ -344,7 +346,7 @@ const SumulasDetalhes = () => {
           {!showAtletasOpcoesSumulas && (
             <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Header category='Súmula' title={`Elenco do ${campeonato.name}`} />
+                <Header category='Súmula' title={`Elenco do ${campeonato.name}`} subtitle={`(${quantidadeAtletasAtivos} atletas ativos)`}/>
                 <Button 
                   color='white'
                   bgColor={currentColor}
@@ -353,10 +355,7 @@ const SumulasDetalhes = () => {
                   size='md'
                   onClick={generatePDF}
                 />
-              </div>        
-             
-       
-              
+              </div>               
 
               <GridComponent
                 dataSource={atletas}
