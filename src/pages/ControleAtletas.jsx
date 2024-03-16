@@ -54,7 +54,7 @@ const ControleAtletas = () => {
 
     const ControleGrid = [
       {
-        field: 'userId',
+        field: 'userName',
         headerText: 'Time',
         width: '200',
         textAlign: 'Center',
