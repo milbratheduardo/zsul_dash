@@ -20,7 +20,7 @@ const LoginComponent = () => {
 
   const authenticateUser = async () => {
     try {
-      const response = await fetch("http://localhost:3000/users/login", {
+      const response = await fetch("https://zsul-api.onrender.com/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const LoginComponent = () => {
     }
   
     try {
-      const response = await fetch(`http://localhost:3000/users/${userId}`, {
+      const response = await fetch(`https://zsul-api.onrender.com/users/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

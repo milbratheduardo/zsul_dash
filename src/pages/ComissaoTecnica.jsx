@@ -32,7 +32,7 @@ const ComissaoTecnica = () => {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/staff/team/${teamId}`);
+        const response = await fetch(` https://zsul-api.onrender.com/staff/team/${teamId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

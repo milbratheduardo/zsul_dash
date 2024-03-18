@@ -58,7 +58,7 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
     formData.append('file', file); 
   
     try {
-      const response = await fetch('http://localhost:3000/image', {
+      const response = await fetch(' https://zsul-api.onrender.com/image', {
         method: 'POST',
         body: formData,
       });

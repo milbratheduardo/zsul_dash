@@ -38,7 +38,7 @@ const ModalCampos = ({ isVisible, onClose, currentColor }) => {
 
     console.log('payload: ', payload)
     try {
-      const response = await fetch('http://localhost:3000/jogos', {
+      const response = await fetch(' https://zsul-api.onrender.com/jogos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

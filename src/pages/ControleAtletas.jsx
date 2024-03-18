@@ -19,7 +19,7 @@ const ControleAtletas = () => {
     useEffect(() => {
       const fetchCampeonatos = async () => {
         try {
-          const response = await fetch('http://localhost:3000/campeonatos/');
+          const response = await fetch(' https://zsul-api.onrender.com/campeonatos/');
           const data = await response.json();
           console.log('Campeonatos: ', data);
           setCampeonatos(data.data); 
@@ -35,7 +35,7 @@ const ControleAtletas = () => {
       const fetchInscricoes = async () => {
         if (selectedCampeonatoId) {
           try {
-            const response = await fetch(`http://localhost:3000/inscricoes/campeonato/${selectedCampeonatoId}`);
+            const response = await fetch(` https://zsul-api.onrender.com/inscricoes/campeonato/${selectedCampeonatoId}`);
             const data = await response.json();
             setInscricoes(data.data);
           } catch (error) {

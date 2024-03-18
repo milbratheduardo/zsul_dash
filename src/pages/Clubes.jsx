@@ -16,7 +16,7 @@ const Clubes = () => {
       const fetchClubes = async () => {
         setIsLoading(true);
         try {
-          const response = await fetch('http://localhost:3000/users/');
+          const response = await fetch(' https://zsul-api.onrender.com/users/');
           const data = await response.json();
           setClubes(data.data);
           console.log('Clubes: ', clubes);
@@ -38,7 +38,7 @@ const Clubes = () => {
       setIsLoading(true);
     
       try {
-        const response = await fetch('http://localhost:3000/users/');
+        const response = await fetch(' https://zsul-api.onrender.com/users/');
         const data = await response.json();
         const clubesAtualizados = data.data;
     

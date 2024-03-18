@@ -41,7 +41,7 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/staff/', {
+      const response = await fetch(' https://zsul-api.onrender.com/staff/', {
         method: 'POST',
         body: formData,
       });

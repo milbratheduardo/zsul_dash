@@ -44,7 +44,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
       useEffect(() => {
         const fetchTimeInfo = async () => {
           try {
-            const response = await fetch(`http://localhost:3000/users/${teamId}`);
+            const response = await fetch(` https://zsul-api.onrender.com/users/${teamId}`);
            
             if (response.ok) {
               const data = await response.json();

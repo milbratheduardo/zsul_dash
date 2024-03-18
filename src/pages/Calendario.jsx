@@ -22,7 +22,7 @@ const Calendario = () => {
   useEffect(() => {
     const fetchJogosEInformacoesAdicionais = async () => {
       const userId = user.data.id;
-      const response = await fetch(`http://localhost:3000/jogos/team/${userId}`);
+      const response = await fetch(` https://zsul-api.onrender.com/jogos/team/${userId}`);
       const data = await response.json();
   
       if (data.status === 200) {
@@ -35,13 +35,13 @@ const Calendario = () => {
   }, []);
   
   const fetchAdditionalInfo = async (jogo) => {
-    const campeonatoResponse = await fetch(`http://localhost:3000/campeonatos/${jogo.campeonatoId}`);
+    const campeonatoResponse = await fetch(` https://zsul-api.onrender.com/campeonatos/${jogo.campeonatoId}`);
     const campeonatoData = await campeonatoResponse.json();
   
-    const userCasaResponse = await fetch(`http://localhost:3000/users/${jogo.userIdCasa}`);
+    const userCasaResponse = await fetch(` https://zsul-api.onrender.com/users/${jogo.userIdCasa}`);
     const userCasaData = await userCasaResponse.json();
   
-    const userForaResponse = await fetch(`http://localhost:3000/users/${jogo.userIdFora}`);
+    const userForaResponse = await fetch(` https://zsul-api.onrender.com/users/${jogo.userIdFora}`);
     const userForaData = await userForaResponse.json();
   
     const campeonatoName = campeonatoData?.data.name || 'Desconhecido';

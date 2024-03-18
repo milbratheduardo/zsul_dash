@@ -16,14 +16,14 @@ const Transferencias = () => {
   useEffect(() => {
     const fetchTransferencias = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/transferencia/`);
+        const response = await fetch(` https://zsul-api.onrender.com/transferencia/`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
         
         const promises = data.data.map(async (transferencia) => {
-          const responseTime = await fetch(`http://localhost:3000/users/${transferencia.novoTimeId}`);
+          const responseTime = await fetch(` https://zsul-api.onrender.com/users/${transferencia.novoTimeId}`);
           if (!responseTime.ok) {
             console.error('Erro ao buscar nome do time para o ID:', transferencia.novoTimeId);
             return transferencia; 

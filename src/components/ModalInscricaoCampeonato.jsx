@@ -21,13 +21,13 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
   useEffect(() => {
     const fetchCampeonatosInscritos = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/inscricoes/user/${teamId}`);
+        const response = await fetch(` https://zsul-api.onrender.com/inscricoes/user/${teamId}`);
         const data = await response.json();
 
         const campeonatoIds = data.data.map(item => item.campeonatoId);
 
         const campeonatoDetailsPromises = campeonatoIds.map(_id =>
-          fetch(`http://localhost:3000/campeonatos/${_id}`)
+          fetch(` https://zsul-api.onrender.com/campeonatos/${_id}`)
           .then(response => response.json())
         );
 
@@ -53,7 +53,7 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
 
   const verificarStatus = async (teamId, selectedCampeonatoId) => {
     try {
-      const response = await fetch(`http://localhost:3000/sumula/team/${teamId}`);
+      const response = await fetch(` https://zsul-api.onrender.com/sumula/team/${teamId}`);
       const data = await response.json();
 
       const count = data.data && data.data.reduce ? data.data.reduce((acc, obj) => {
@@ -86,7 +86,7 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
       };
       console.log('Request Body:', requestBody);
   
-      const response = await fetch('http://localhost:3000/sumula/', {
+      const response = await fetch(' https://zsul-api.onrender.com/sumula/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

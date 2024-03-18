@@ -16,7 +16,7 @@ const ModalAtletaDocumentos = ({ isVisible, onClose, atleta, atletaNome, teamId,
   useEffect(() => {
     const fetchTime = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/users/${atleta.teamId}`);
+          const response = await fetch(` https://zsul-api.onrender.com/users/${atleta.teamId}`);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }

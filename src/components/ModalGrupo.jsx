@@ -34,7 +34,7 @@ const ModalGrupo = ({ isVisible, onClose, currentColor, campeonatoId }) => {
       campeonatoId,
     }
     try {
-      const response = await fetch('http://localhost:3000/grupos/', {
+      const response = await fetch(' https://zsul-api.onrender.com/grupos/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

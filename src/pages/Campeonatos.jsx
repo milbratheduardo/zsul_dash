@@ -16,7 +16,7 @@ const Campeonatos = () => {
   useEffect(() => {
     const fetchCampeonatos = async () => {
       try {
-        const response = await fetch('http://localhost:3000/campeonatos/');
+        const response = await fetch(' https://zsul-api.onrender.com/campeonatos/');
         const data = await response.json();
         console.log('Dados: ', data);
         setCampeonatos(data.data); 

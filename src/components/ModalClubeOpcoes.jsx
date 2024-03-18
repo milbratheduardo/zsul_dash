@@ -24,7 +24,7 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
          imageField: "picture"
       };
     
-       const apiUrl = 'http://localhost:3000/image/blob';
+       const apiUrl = ' https://zsul-api.onrender.com/image/blob';
     
         fetch(apiUrl, {
           method: 'POST',
@@ -49,7 +49,7 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
         const fetchUserInfo = async () => {
           const userId = teamId;
           try {
-            const response = await fetch(`http://localhost:3000/users/${userId}`);
+            const response = await fetch(` https://zsul-api.onrender.com/users/${userId}`);
            
             if (response.ok) {
               const data = await response.json();
@@ -72,7 +72,7 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
         const fetchUserAtletas = async () => {
           const userId = teamId;
           try {
-            const responseAtletas = await fetch(`http://localhost:3000/elenco/team/${userId}`);
+            const responseAtletas = await fetch(` https://zsul-api.onrender.com/elenco/team/${userId}`);
     
             if (responseAtletas.ok) {
               const dataAtletas = await responseAtletas.json();
@@ -97,7 +97,7 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
         const fetchUserStaff = async () => {
           const userId = teamId;
           try {
-            const responseStaff = await fetch(`http://localhost:3000/staff/team/${userId}`);
+            const responseStaff = await fetch(` https://zsul-api.onrender.com/staff/team/${userId}`);
             console.log('Staff: ', responseStaff);
             if (responseStaff.ok) {
               const dataStaff = await responseStaff.json();
@@ -121,7 +121,7 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
         e.preventDefault();
 
         try{
-          const response = await fetch(`http://localhost:3000/users/${teamId}`, {
+          const response = await fetch(` https://zsul-api.onrender.com/users/${teamId}`, {
           method: 'DELETE',
         }); 
 

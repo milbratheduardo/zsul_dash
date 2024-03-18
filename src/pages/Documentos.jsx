@@ -55,7 +55,7 @@ const Documentos = () => {
   useEffect(() => {
     const fetchAtletas = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/elenco/`);
+          const response = await fetch(` https://zsul-api.onrender.com/elenco/`);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -63,7 +63,7 @@ const Documentos = () => {
     
           const atletasWithTeamName = await Promise.all(
             data.data.map(async (atleta) => {
-              const teamResponse = await fetch(`http://localhost:3000/users/${atleta.teamId}`);
+              const teamResponse = await fetch(` https://zsul-api.onrender.com/users/${atleta.teamId}`);
               if (!teamResponse.ok) {
                 throw new Error('Error fetching team data');
               }

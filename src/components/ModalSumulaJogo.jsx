@@ -57,7 +57,7 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
   useEffect(() => {
     const fetchTimeCasa = async () => {
         try {
-            const url = `http://localhost:3000/sumula/campeonato/${campeonatoId}`;
+            const url = ` https://zsul-api.onrender.com/sumula/campeonato/${campeonatoId}`;
             const response = await fetch(url);
             const data = await response.json();
             
@@ -65,7 +65,7 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
                 const filteredData = data.data.filter(item => item.userId === timeCasa);
                 
                 const atletasDetailsPromises = filteredData.map(async (item) => {
-                    const elencoResponse = await fetch(`http://localhost:3000/elenco/${item.elencoId}`);
+                    const elencoResponse = await fetch(` https://zsul-api.onrender.com/elenco/${item.elencoId}`);
                     const elencoData = await elencoResponse.json();
                     
                     if (elencoData.status === 200 && elencoData.data) {
@@ -95,7 +95,7 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
 useEffect(() => {
   const fetchTimeFora = async () => {
       try {
-          const url = `http://localhost:3000/sumula/campeonato/${campeonatoId}`;
+          const url = ` https://zsul-api.onrender.com/sumula/campeonato/${campeonatoId}`;
           const response = await fetch(url);
           const data = await response.json();
           
@@ -103,7 +103,7 @@ useEffect(() => {
               const filteredData = data.data.filter(item => item.userId === timeFora);
               
               const atletasDetailsPromises = filteredData.map(async (item) => {
-                  const elencoResponse = await fetch(`http://localhost:3000/elenco/${item.elencoId}`);
+                  const elencoResponse = await fetch(` https://zsul-api.onrender.com/elenco/${item.elencoId}`);
                   const elencoData = await elencoResponse.json();
                   
                   if (elencoData.status === 200 && elencoData.data) {
@@ -141,7 +141,7 @@ const handleSubmit = async (e) => {
       userForaGols: modalFieldsState.userForaGols,
     };
 
-    const responseJogo = await fetch('http://localhost:3000/estatistica/', {
+    const responseJogo = await fetch(' https://zsul-api.onrender.com/estatistica/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ const handleSubmit = async (e) => {
 
     console.log('estatistica: ', estatisticaJogador)
 
-    const responseEstatistica = await fetch('http://localhost:3000/estatistica/jogador', {
+    const responseEstatistica = await fetch(' https://zsul-api.onrender.com/estatistica/jogador', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

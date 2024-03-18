@@ -33,7 +33,7 @@ const Navbar = () => {
       imageField: "picture"
     };
 
-    const apiUrl = 'http://localhost:3000/image/blob';
+    const apiUrl = ' https://zsul-api.onrender.com/image/blob';
 
     fetch(apiUrl, {
       method: 'POST',
