@@ -28,30 +28,34 @@ const ModalCampos = ({ isVisible, onClose, currentColor }) => {
 
   const handleSubmit= async (e)=>{
     e.preventDefault();
-    adcJogo();
-  }
 
- 
-  const adcJogo = async () => {
-    const payload = {
+    const formData = new FormData();
+    formData.append('nome', modalFieldsState['name']);
+    formData.append('cidade', modalFieldsState['cidade']);
+    formData.append('endereco', modalFieldsState['endereco']);
+    formData.append('linkMaps', modalFieldsState['maps']);
+  
+    const fileField = document.querySelector("input[type='file']");
+    if (fileField && fileField.files[0]) {
+      formData.append('file', fileField.files[0]);
     }
 
-    console.log('payload: ', payload)
+    for (let [key, value] of formData.entries()) { 
+      console.log(key, value);
+    }
+
     try {
-      const response = await fetch(' https://zsul-api.onrender.com/jogos', {
+      const response = await fetch('http://localhost:3000/campos/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
+        body: formData,
       });
       
       const data = await response.json();
       if (data.status === 200) {
-        toast.success(`Jogo Cadastrado ao  com sucesso ao ${campeonato.name}!`, {
+        toast.success(`Estádio  Cadastrado com sucesso!`, {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate(`/campeonatos/${campeonatoId}`) 
+          onClose: () => navigate(`/campos`) 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 

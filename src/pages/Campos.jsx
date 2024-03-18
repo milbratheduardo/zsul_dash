@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Header, Navbar, Footer, Sidebar, ThemeSettings, ModalCampos, Button } from '../components';
+import { Header, Navbar, Footer, Sidebar, ThemeSettings, ModalCampos, Button, ModalCampoOpcoes } from '../components';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
@@ -9,18 +9,71 @@ const Campos = () => {
     const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
     const [campos, setCampos] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [selectedCampo, setSelectedCampo] = useState(null);
+    const [showCampoOpcoes, setShowCampoOpcoes] = useState(false);
 
 
-  const clubesGrid = [
-    {field: 'teamName', headerText: 'Nome', width: '150', textAlign: 'Center', 
-    template: (clube) => (
+    useEffect(() => {
+      const fetchCampos = async () => {
+        try {
+          const response = await fetch('http://localhost:3000/campos/');
+          const data = await response.json();
+          setCampos(data.data);
+          console.log('Campos: ', campos);
+        } catch (error) {
+          console.error("Erro ao buscar campos:", error);
+        } 
+      };
+  
+      fetchCampos();
+    }, []);
+
+    const handleCampoClick = async (_id) => {
+      console.log("Id Click: ", _id);    
+      try {
+        const response = await fetch('http://localhost:3000/campos/');
+        const data = await response.json();
+        const camposAtualizados = data.data;
+    
+        const campoEncontrado = camposAtualizados.find(campo => campo._id === _id);
+        if (campoEncontrado) {
+          console.log('Clube escolhido:', campoEncontrado);
+          setSelectedCampo(campoEncontrado);
+          setShowCampoOpcoes(true);
+        } else {
+          console.error('Campo não encontrado para o ID:', _id);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar campos:", error);
+      }
+    };
+
+
+  const camposGrid = [
+    {
+      headerText: 'Imagem',
+      template: ({ fotoCampoBase64 }) => (
+        <div className='text-center'>
+          <img src={fotoCampoBase64} alt="Imagem" style={{ width: '150px', height: '50px', borderRadius: '50%' }} />
+        </div>
+      ),
+      textAlign: 'Center',
+      width: '100'
+    },
+    {field: 'nome', headerText: 'Nome do Estádio', width: '150', textAlign: 'Center', 
+    template: (campo) => (
         <a href="#" onClick={(e) => {
             e.preventDefault();
-            handleClubeClick(clube._id);
-        }}>{clube.teamName}</a>) },
+            handleCampoClick(campo._id);
+        }}>{campo.nome}</a>) },
     { field: 'endereco', headerText: 'Endereço', width: '200', textAlign: 'Center' },
     { field: 'city', headerText: 'Cidade', width: '150', textAlign: 'Center' },
-    { field: 'localizacao', headerText: 'Google Maps', width: '150', textAlign: 'Center' }
+    {
+      field: 'linkMaps', headerText: 'Google Maps', width: '150', textAlign: 'Center',
+      template: (campo) => (
+        campo.linkMaps ? <a href={campo.linkMaps} target="_blank" rel="noopener noreferrer">{campo.linkMaps}</a> : <span>N/A</span>
+      )
+    }
   ];
 
   
@@ -66,7 +119,15 @@ const Campos = () => {
               setShowModal(false);
           }}/>
 
-        {!showModal && (
+          <ModalCampoOpcoes
+            isVisible={showCampoOpcoes} 
+            currentColor={currentColor}  
+            campoId = {selectedCampo?._id}
+            onClose={() => {
+              setShowCampoOpcoes(false);
+          }}/>
+
+        {!showModal && !showCampoOpcoes && (
             <div className='m-2 md:m-10 mt-24 p-2 
             md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -83,14 +144,14 @@ const Campos = () => {
                 />
               </div>      
               <GridComponent
-                dataSource={''}
+                dataSource={campos}
                 allowPaging
                 allowSorting
                 toolbar={['Search']}
                 width='auto'
               >
                 <ColumnsDirective>
-                  {clubesGrid.map((item, index) => (
+                  {camposGrid.map((item, index) => (
                     <ColumnDirective key={index} {...item}/>
                   ))}
                 </ColumnsDirective>

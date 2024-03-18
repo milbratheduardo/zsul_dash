@@ -599,6 +599,16 @@ const ModalAdicionarJogoFields = [
             isRequired:true,
             placeholder:"Link Google Maps"   
         },
+        {
+            labelText:"Imagem do Estádio",
+            labelFor:"imagem",
+            id:"imagem",
+            name:"imagem",
+            type:"file",
+            autoComplete:"imagem",
+            isRequired:true,
+            placeholder:"Imagem do Estádio" 
+        }
         
     ]
 

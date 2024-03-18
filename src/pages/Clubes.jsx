@@ -11,6 +11,47 @@ const Clubes = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedClube, setSelectedClube] = useState(null);
     const [showClubesOpcoes, setShowClubesOpcoes] = useState(false);
+
+    const handleStatusChange = async (clube, newStatus) => {
+      try {
+        const responseGet = await fetch(`https://zsul-api.onrender.com/users/${clube._id}`);
+        if (!responseGet.ok) {
+          throw new Error('Erro ao obter o ID do Usuário');
+        }
+        const dataGet = await responseGet.json();
+        console.log('Response GET:', dataGet);  
+
+        const body = {
+          userIdRequesting: "65f39396a540cfb413056b43",
+          field: 'permission',
+          value: newStatus,
+        };
+    
+        const responsePatch = await fetch(`https://zsul-api.onrender.com/users/${clube._id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+    
+        if (!responsePatch.ok) {
+          throw new Error('Erro ao atualizar o status do atleta');
+        }
+    
+        const updatedClubes = clubes.map((a) => {
+          if (a._id === clube._id) {
+            return { ...a, permission: newStatus };
+          }
+          return a;
+        });
+    
+        setClubes(updatedClubes);
+        window.location.reload()
+      } catch (error) {
+        console.error('Erro ao atualizar o status do atleta:', error);
+      }
+    };
   
     useEffect(() => {
       const fetchClubes = async () => {
@@ -55,8 +96,7 @@ const Clubes = () => {
       } finally {
         setIsLoading(false);
       }
-    };
-    
+    };  
 
 
 
@@ -65,7 +105,7 @@ const Clubes = () => {
       headerText: 'Logo',
       template: ({ pictureBase64 }) => (
         <div className='text-center'>
-          <img src={pictureBase64} alt="Logo" style={{ width: '150px', height: '50px' }} />
+          <img src={pictureBase64} alt="Logo" style={{ width: '150px', height: '50px', borderRadius: '50%' }} />
         </div>
       ),
       textAlign: 'Center',
@@ -79,7 +119,22 @@ const Clubes = () => {
         }}>{clube.teamName}</a>) },
     { field: 'email', headerText: 'Email', width: '200', textAlign: 'Center' },
     { field: 'city', headerText: 'Cidade', width: '150', textAlign: 'Center' },
-    { field: 'state', headerText: 'Estado', width: '150', textAlign: 'Center' }
+    { field: 'state', headerText: 'Estado', width: '150', textAlign: 'Center' },
+    {
+      field: 'permission',
+      headerText: 'Tipo de Usuário',
+      width: '150',
+      textAlign: 'Center',
+      template: (clube) => (
+        <select
+          value={clube.permission}
+          onChange={(e) => handleStatusChange(clube, e.target.value)}
+        >
+          <option value="admin">Administrador</option>
+          <option value="TEquipe">Equipe</option>
+        </select>
+      ),
+    },
   ];
 
   
@@ -133,7 +188,7 @@ const Clubes = () => {
             {!showClubesOpcoes && (
             <div className='m-2 md:m-10 mt-24 p-2 
             md:p-10 bg-white rounded-3xl'>
-              <Header category="Administrador" title="Clubes"/>
+              <Header category="Administrador" title="Usuários"/>
               <GridComponent
                 dataSource={clubes}
                 allowPaging

@@ -37,3 +37,4 @@ export { default as ModalTransferencia } from './ModalTransferencia';
 export { default as ModalCampos } from './ModalCampos';
 export { default as ModalEditarAtleta } from './ModalEditarAtleta';
 export { default as ModalAtletaDocumentos } from './ModalAtletaDocumentos';
+export { default as ModalCampoOpcoes } from './ModalCampoOpcoes';

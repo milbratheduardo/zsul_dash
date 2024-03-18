@@ -85,7 +85,8 @@ const Sidebar = () => {
                     >
                       {link.icon}
                       <span className='capitalize'>{link.name === 'staff' ? 'Comissão Técnica' : 
-                      link.name === 'ControleAtletas' ? 'Controle de Atletas' : link.name}</span>
+                      link.name === 'ControleAtletas' ? 'Controle de Atletas' : 
+                      link.name === 'clubes' ? 'Usuários' : link.name}</span>
                     </NavLink>
                   );
                 })}
