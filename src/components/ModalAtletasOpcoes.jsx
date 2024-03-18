@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import HeaderModal from './HeaderModal';
 import chroma from 'chroma-js';
 import jsPDF from 'jspdf';
-import Logo from '../img/Logo_exemplo.png';
+import Logo from '../img/logo_zsul.png';
 import ModalInscricaoCampeonato from './ModalInscricaoCampeonato';
 import ModalTransferencia from './ModalTransferencia';
 import ModalEditarAtleta from './ModalEditarAtleta';
 import { useNavigate } from 'react-router-dom';
+import fundo_carteirinha from '../img/carteirinha.png';
 
 const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atleta, teamId }) => {
     if (!isVisible) return null;
@@ -63,7 +64,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
 
       console.log('time Info: ', timeInfo)
       const gerarCarteirinhaPDF = (atleta) => {
-        const { name, dateOfBirth, fotoAtletaBase64, CPF, RGFrenteBase64, RGVersoBase64} = atleta; 
+        const { name, dateOfBirth, fotoAtletaBase64, CPF, RGFrenteBase64, RGVersoBase64, category} = atleta; 
       
         if (!name || !dateOfBirth || !fotoAtletaBase64 || !CPF || !RGFrenteBase64 || !RGVersoBase64) {
           console.error('Dados incompletos do atleta para gerar a carteirinha.');
@@ -76,31 +77,52 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
           format: [100, 60]
         });
 
-        // Cores da carteirinha
-        const backgroundColor = '#D3D3D3'; 
+        function capitalize(text) {
+          return text.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+        }
+
+        function ajustarTamanhoFonte(doc, texto, larguraMaxima, tamanhoFonte, tamanhoFonteMinimo) {
+          doc.setFontSize(tamanhoFonte);
+          let larguraTexto = doc.getTextWidth(texto);
       
-        // Fundo da carteirinha
-        doc.setFillColor(backgroundColor);
-        doc.rect(0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight(), 'F');
+          while (larguraTexto > larguraMaxima && tamanhoFonte > tamanhoFonteMinimo) {
+            tamanhoFonte--;
+            doc.setFontSize(tamanhoFonte);
+            larguraTexto = doc.getTextWidth(texto);
+          }
       
+          return tamanhoFonte; 
+        }
+
+        const grassBackgroundBase64 = fundo_carteirinha;
+        doc.addImage(grassBackgroundBase64, 'PNG', 0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
        
-        doc.addImage(fotoAtletaBase64, 'JPEG', 5, 15, 25, 30); 
-        // Posição da logo
-        const logoX = 80; 
-        const logoY = 2;  
-        const logoxx = 35;
-        
-       
-        doc.addImage(Logo, 'PNG', logoX, logoY, 20, 20); 
-        doc.setTextColor(0, 0, 0); 
-        const textX = logoxx; 
-        const textYStart = 28; 
+        doc.addImage(fotoAtletaBase64, 'JPEG', 5, 18, 30, 30);        
+        const larguraCampo = 50;
+        let tamanhoFonte = 10; 
+        const tamanhoFonteMinimo = 6; 
+  
+        const textX = 35; 
+        const textYStart = 28;
         doc.setFontSize(10);
-        doc.text('ZSUL Esportes', 10, 15);
-        doc.text(`Nome: ${name}`, textX, textYStart - 5);
-        doc.text(`CPF: ${CPF}`, textX, textYStart);
-        doc.text(`Clube: ${timeInfo.data.teamName}`, textX, textYStart + 5);
-        doc.text(`Data de Nasc.: ${dateOfBirth}`, textX, textYStart + 10);
+
+        
+        doc.setTextColor(0, 0, 0); 
+        tamanhoFonte = ajustarTamanhoFonte(doc, name.toUpperCase(), larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.setFontSize(tamanhoFonte);
+        doc.text(capitalize(`${name}`), textX + 8, textYStart - 16);
+        tamanhoFonte = ajustarTamanhoFonte(doc, CPF, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.setFontSize(tamanhoFonte);
+        doc.text(`${CPF}`, textX + 6, textYStart - 3);
+        tamanhoFonte = ajustarTamanhoFonte(doc, CPF, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.setFontSize(tamanhoFonte);
+        doc.text(capitalize(`${timeInfo.data.teamName}`), textX + 40, textYStart - 3);
+        tamanhoFonte = ajustarTamanhoFonte(doc, CPF, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.setFontSize(tamanhoFonte);
+        doc.text(`${dateOfBirth}`, textX + 6, textYStart + 11);
+        tamanhoFonte = ajustarTamanhoFonte(doc, CPF, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.setFontSize(tamanhoFonte);
+        doc.text(capitalize(`${category}`), textX + 40, textYStart + 11);
 
         const pdfBlob = doc.output('blob');
 
@@ -111,11 +133,6 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         window.open(pdfUrl);
       
         console.log('PDF aberto em uma nova aba com sucesso!');
-        
-        toast.success('Carteirinha gerada com sucesso!', {
-          position: "top-center",
-          autoClose: 5000,
-        });
       };
       
     return (
