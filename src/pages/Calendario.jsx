@@ -22,7 +22,7 @@ const Calendario = () => {
   useEffect(() => {
     const fetchJogosEInformacoesAdicionais = async () => {
       const userId = user.data.id;
-      const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/jogos/team/${userId}`);
+      const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/jogos/team/${userId}`);
       const data = await response.json();
   
       if (data.status === 200) {
@@ -35,13 +35,13 @@ const Calendario = () => {
   }, []);
   
   const fetchAdditionalInfo = async (jogo) => {
-    const campeonatoResponse = await fetch(` http://0.tcp.sa.ngrok.io:17723/campeonatos/${jogo.campeonatoId}`);
+    const campeonatoResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/campeonatos/${jogo.campeonatoId}`);
     const campeonatoData = await campeonatoResponse.json();
   
-    const userCasaResponse = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${jogo.userIdCasa}`);
+    const userCasaResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${jogo.userIdCasa}`);
     const userCasaData = await userCasaResponse.json();
   
-    const userForaResponse = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${jogo.userIdFora}`);
+    const userForaResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${jogo.userIdFora}`);
     const userForaData = await userForaResponse.json();
   
     const campeonatoName = campeonatoData?.data.name || 'Desconhecido';

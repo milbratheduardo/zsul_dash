@@ -58,7 +58,7 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
     formData.append('file', file); 
   
     try {
-      const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/image', {
+      const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/image', {
         method: 'POST',
         body: formData,
       });

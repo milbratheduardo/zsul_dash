@@ -51,7 +51,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
       useEffect(() => {
         const fetchTimeInfo = async () => {
           try {
-            const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${teamId}`);
+            const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${teamId}`);
            
             if (response.ok) {
               const data = await response.json();

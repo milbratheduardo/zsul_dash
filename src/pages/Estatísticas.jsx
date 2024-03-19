@@ -19,7 +19,7 @@ const Estatísticas = () => {
     useEffect(() => {
       const fetchCampeonatos = async () => {
         try {
-          const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/campeonatos/');
+          const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/campeonatos/');
           const data = await response.json();
           console.log('Campeonatos: ', data);
           setCampeonatos(data.data); 
@@ -35,7 +35,7 @@ const Estatísticas = () => {
       const fetchStats = async () => {
         if (selectedCampeonatoId) {
           try {
-            const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/estatistica/jogador/campeonato/${selectedCampeonatoId}`);
+            const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/estatistica/jogador/campeonato/${selectedCampeonatoId}`);
             const data = await response.json();
             setInscricoes(data.data);
           } catch (error) {

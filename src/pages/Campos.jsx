@@ -16,7 +16,7 @@ const Campos = () => {
     useEffect(() => {
       const fetchCampos = async () => {
         try {
-          const response = await fetch('http://0.tcp.sa.ngrok.io:17723/campos/');
+          const response = await fetch('http://0.tcp.sa.ngrok.io:12599/campos/');
           const data = await response.json();
           setCampos(data.data);
           console.log('Campos: ', campos);
@@ -31,7 +31,7 @@ const Campos = () => {
     const handleCampoClick = async (_id) => {
       console.log("Id Click: ", _id);    
       try {
-        const response = await fetch('http://0.tcp.sa.ngrok.io:17723/campos/');
+        const response = await fetch('http://0.tcp.sa.ngrok.io:12599/campos/');
         const data = await response.json();
         const camposAtualizados = data.data;
     

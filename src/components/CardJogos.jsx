@@ -21,7 +21,7 @@ const CardCompetition = ({
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await fetch(`http://0.tcp.sa.ngrok.io:17723/grupos/${grupoId}`);
+        const response = await fetch(`http://0.tcp.sa.ngrok.io:12599/grupos/${grupoId}`);
         const data = await response.json();
         if (data.status === 200 && data.data) {
           setGroups(data.data);
@@ -44,7 +44,7 @@ const CardCompetition = ({
       imageField: "picture"
     };
 
-    const apiUrl = ' http://0.tcp.sa.ngrok.io:17723/image/blob';
+    const apiUrl = ' http://0.tcp.sa.ngrok.io:12599/image/blob';
 
     fetch(apiUrl, {
       method: 'POST',
@@ -73,7 +73,7 @@ const CardCompetition = ({
       imageField: "picture"
     };
 
-    const apiUrl = ' http://0.tcp.sa.ngrok.io:17723/image/blob';
+    const apiUrl = ' http://0.tcp.sa.ngrok.io:12599/image/blob';
 
     fetch(apiUrl, {
       method: 'POST',
@@ -99,7 +99,7 @@ const CardCompetition = ({
     const fetchUserCasaInfo = async () => {
       const userCasa = userIdCasa;
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${userCasa}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${userCasa}`);
        
         if (response.ok) {
           const data = await response.json();
@@ -122,7 +122,7 @@ const CardCompetition = ({
     const fetchUserForaInfo = async () => {
       const userFora = userIdFora;
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${userFora}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${userFora}`);
        
         if (response.ok) {
           const data = await response.json();
@@ -144,7 +144,7 @@ const CardCompetition = ({
   useEffect(() => {
     const fetchEstatisticasJogo = async () => {
         try {
-            const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/estatistica/jogo/${jogoId}`);
+            const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/estatistica/jogo/${jogoId}`);
             const data = await response.json();
             if (data.status === 200 && data.data.length > 0) {                
                 const estatisticasJogo = data.data[0][0]; 

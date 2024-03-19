@@ -27,13 +27,13 @@ const ModalTimeGrupo = ({ isVisible, onClose, currentColor, campeonatoId, grupoI
   useEffect(() => {
     const fetchUserIds = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/inscricoes/campeonato/${campeonatoId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/inscricoes/campeonato/${campeonatoId}`);
         const result = await response.json();
         console.log('result', result);
   
         if (response.ok && result.data && Array.isArray(result.data)) {
           const teamNamesPromises = result.data.map(async (item) => {
-            const userResponse = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${item.userId}`);
+            const userResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${item.userId}`);
             const userData = await userResponse.json();
             console.log('Times: ', userData)
             if (userResponse.ok) {
@@ -62,7 +62,7 @@ const ModalTimeGrupo = ({ isVisible, onClose, currentColor, campeonatoId, grupoI
   useEffect(() => {
     const fetchGroup = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/grupos/${grupoId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/grupos/${grupoId}`);
         const data = await response.json();
         setGrupo(data.data)
         
@@ -86,7 +86,7 @@ const ModalTimeGrupo = ({ isVisible, onClose, currentColor, campeonatoId, grupoI
       grupoId,
     }
     try {
-      const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/grupos/team', {
+      const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/grupos/team', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

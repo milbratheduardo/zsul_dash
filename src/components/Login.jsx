@@ -4,6 +4,8 @@ import Input from "./Input";
 import LoginAction from './LoginAction';
 import FormExtra from './FormExtra';
 import { useNavigate } from 'react-router-dom';
+require('dotenv').config()
+
 
 const fields = loginFields;
 let fieldsState = {};
@@ -20,7 +22,7 @@ const LoginComponent = () => {
 
   const authenticateUser = async () => {
     try {
-      const response = await fetch("http://0.tcp.sa.ngrok.io:17723/users/login", {
+      const response = await fetch("http://0.tcp.sa.ngrok.io:12599/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +62,7 @@ const LoginComponent = () => {
     }
   
     try {
-      const response = await fetch(`http://0.tcp.sa.ngrok.io:17723/users/${userId}`, {
+      const response = await fetch(`http://0.tcp.sa.ngrok.io:12599/users/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

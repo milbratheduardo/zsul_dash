@@ -59,7 +59,7 @@ const CampeonatoDetalhes = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/grupos/campeonato/${id}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/grupos/campeonato/${id}`);
         const data = await response.json();
         if (data.status === 200 && data.data) {
           setGroups(data.data);
@@ -80,12 +80,12 @@ const CampeonatoDetalhes = () => {
     const fetchTimeGroupsAndStats = async () => {
       if (!selectedGroupId) return;
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/grupos/team/grupo/${selectedGroupId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/grupos/team/grupo/${selectedGroupId}`);
         const data = await response.json();
         if (data.status === 200 && data.data) {
           const statsPromises = data.data.map(async (team) => {
             try {
-              const teamStatsResponse = await fetch(` http://0.tcp.sa.ngrok.io:17723/inscricoes/user/${team.teamId}`);
+              const teamStatsResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/inscricoes/user/${team.teamId}`);
               const teamStatsData = await teamStatsResponse.json();
               const statsForCampeonato = teamStatsData.data.find(
                 (stats) => stats.campeonatoId === id
@@ -136,7 +136,7 @@ const CampeonatoDetalhes = () => {
     };
   
     try {
-      const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/inscricoes/', {
+      const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/inscricoes/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ const CampeonatoDetalhes = () => {
   const deletarTimeGrupo = async (teamId) => {
     try {
       const teamIdFetch = teamId.teamId;
-      const groupResponse =  await fetch(` http://0.tcp.sa.ngrok.io:17723/grupos/team/${teamIdFetch}`);
+      const groupResponse =  await fetch(` http://0.tcp.sa.ngrok.io:12599/grupos/team/${teamIdFetch}`);
       const groupData = await groupResponse.json();
       console.log('teamID: ', groupData)
       
@@ -196,7 +196,7 @@ const CampeonatoDetalhes = () => {
         console.log("Payload for deletion:", payload);
   
        
-        const deleteResponse = await fetch(` http://0.tcp.sa.ngrok.io:17723/grupos/grupo`, {
+        const deleteResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/grupos/grupo`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -231,7 +231,7 @@ const CampeonatoDetalhes = () => {
 
   const deletarCampeonato = async () => {
     try {
-      const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/campeonatos/${id}`, {
+      const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/campeonatos/${id}`, {
         method: 'DELETE',
       });
       
@@ -257,7 +257,7 @@ const CampeonatoDetalhes = () => {
   useEffect(() => {
     const fetchJogos = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/jogos/campeonato/${id}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/jogos/campeonato/${id}`);
         const data = await response.json();
         console.log('Dados Jogos: ', data);
         setJogos(data.data); 
@@ -275,7 +275,7 @@ const CampeonatoDetalhes = () => {
   useEffect(() => {
     const fetchCampeonato = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/campeonatos/${id}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/campeonatos/${id}`);
         const data = await response.json();
         console.log('Dados: ', data);
         setCampeonato(data.data); 
