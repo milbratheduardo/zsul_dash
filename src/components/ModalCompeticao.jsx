@@ -51,7 +51,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
     
   
     try {
-      const response = await fetch(' https://zsul-api.onrender.com/campeonatos/', {
+      const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/campeonatos/', {
         method: 'POST',
         body: formData,
       });

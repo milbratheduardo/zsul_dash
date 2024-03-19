@@ -33,7 +33,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/jogos/${jogoId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/jogos/${jogoId}`);
         const data = await response.json();
         if (data.status === 200 && data.data) {
           setInitialData(data.data);
@@ -53,13 +53,13 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
   useEffect(() => {
     const fetchUserIds = async () => {
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/inscricoes/campeonato/${campeonatoId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/inscricoes/campeonato/${campeonatoId}`);
         const result = await response.json();
         console.log('result', result);
   
         if (response.ok && result.data && Array.isArray(result.data)) {
           const teamNamesPromises = result.data.map(async (item) => {
-            const userResponse = await fetch(` https://zsul-api.onrender.com/users/${item.userId}`);
+            const userResponse = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${item.userId}`);
             const userData = await userResponse.json();
             console.log('Times: ', userData)
             if (userResponse.ok) {
@@ -107,7 +107,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
   
     for (const change of changesAll) {
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/jogos/${jogoId}`, {
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/jogos/${jogoId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

@@ -26,7 +26,7 @@ const MeuPerfil = () => {
       imageField: "picture"
     };
 
-    const apiUrl = ' https://zsul-api.onrender.com/image/blob';
+    const apiUrl = ' http://0.tcp.sa.ngrok.io:17723/image/blob';
 
     fetch(apiUrl, {
       method: 'POST',
@@ -52,7 +52,7 @@ const MeuPerfil = () => {
     const fetchUserInfo = async () => {
       const userId = user.data.id;
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/users/${userId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${userId}`);
        
         if (response.ok) {
           const data = await response.json();
@@ -76,7 +76,7 @@ const MeuPerfil = () => {
     const fetchUserAtletas = async () => {
       const userId = user.data.id;
       try {
-        const responseAtletas = await fetch(` https://zsul-api.onrender.com/elenco/team/${userId}`);
+        const responseAtletas = await fetch(` http://0.tcp.sa.ngrok.io:17723/elenco/team/${userId}`);
 
         if (responseAtletas.ok) {
           const dataAtletas = await responseAtletas.json();
@@ -100,7 +100,7 @@ const MeuPerfil = () => {
     const fetchUserStaff = async () => {
       const userId = user.data.id;
       try {
-        const responseStaff = await fetch(` https://zsul-api.onrender.com/staff/team/${userId}`);
+        const responseStaff = await fetch(` http://0.tcp.sa.ngrok.io:17723/staff/team/${userId}`);
         console.log('Staff: ', responseStaff);
         if (responseStaff.ok) {
           const dataStaff = await responseStaff.json();

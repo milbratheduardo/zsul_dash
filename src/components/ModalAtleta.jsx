@@ -58,7 +58,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
     formData.append('file', file); 
   
     try {
-      const response = await fetch(' https://zsul-api.onrender.com/image', {
+      const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/image', {
         method: 'POST',
         body: formData,
       });
@@ -80,7 +80,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
       teamId,
     }
     try {
-      const response = await fetch(' https://zsul-api.onrender.com/elenco/', {
+      const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/elenco/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

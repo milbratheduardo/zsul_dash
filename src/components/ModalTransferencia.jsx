@@ -37,7 +37,7 @@ const ModalTransferencia = ({ isVisible, onClose, currentColor, atletaNome, atle
   useEffect(() => {
     const fetchClubes = async () => {
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/users/`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -73,7 +73,7 @@ const ModalTransferencia = ({ isVisible, onClose, currentColor, atletaNome, atle
     console.log("Body: ", requestBody);
   
     try {
-      const response = await fetch(' https://zsul-api.onrender.com/transferencia/', {
+      const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/transferencia/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

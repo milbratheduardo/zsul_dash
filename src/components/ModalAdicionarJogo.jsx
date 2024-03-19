@@ -33,7 +33,7 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
   useEffect(() => {
     const fetchCampeonatos = async () => {
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/campeonatos/${campeonatoId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/campeonatos/${campeonatoId}`);
         const data = await response.json();
         console.log('Dados: ', data);
         setCampeonato(data.data); 
@@ -49,13 +49,13 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
   useEffect(() => {
     const fetchUserIds = async () => {
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/inscricoes/campeonato/${campeonatoId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/inscricoes/campeonato/${campeonatoId}`);
         const result = await response.json();
         console.log('result', result);
   
         if (response.ok && result.data && Array.isArray(result.data)) {
           const teamNamesPromises = result.data.map(async (item) => {
-            const userResponse = await fetch(` https://zsul-api.onrender.com/users/${item.userId}`);
+            const userResponse = await fetch(` http://0.tcp.sa.ngrok.io:17723/users/${item.userId}`);
             const userData = await userResponse.json();
             console.log('Times: ', userData)
             if (userResponse.ok) {
@@ -101,7 +101,7 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
 
     console.log('payload: ', payload)
     try {
-      const response = await fetch('https://zsul-api.onrender.com/jogos', {
+      const response = await fetch('http://0.tcp.sa.ngrok.io:17723/jogos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

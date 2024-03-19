@@ -15,7 +15,7 @@ const Sumulas = () => {
   useEffect(() => {
     const fetchCampeonatosInscritos = async () => {
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/inscricoes/user/${teamId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/inscricoes/user/${teamId}`);
         const data = await response.json();
         console.log('Campeonatos Inscritos: ', data);
 
@@ -23,7 +23,7 @@ const Sumulas = () => {
         console.log('Campeonato IDs: ', campeonatoIds);
 
       const campeonatoDetailsPromises = campeonatoIds.map(_id =>
-        fetch(` https://zsul-api.onrender.com/campeonatos/${_id}`)
+        fetch(` http://0.tcp.sa.ngrok.io:17723/campeonatos/${_id}`)
         .then(response => response.json())
       );
 

@@ -42,7 +42,7 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
 
   const editPerfil = async (formData) => {
     try {
-      const response = await fetch(' https://zsul-api.onrender.com/image/', {
+      const response = await fetch(' http://0.tcp.sa.ngrok.io:17723/image/', {
         method: 'POST',
         body: formData, 
       });

@@ -52,7 +52,7 @@ const Elenco = () => {
   useEffect(() => {
     const fetchAtletas = async () => {
       try {
-        const response = await fetch(` https://zsul-api.onrender.com/elenco/team/${teamId}`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/elenco/team/${teamId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -65,7 +65,7 @@ const Elenco = () => {
   
     const fetchTransferencias = async () => {
       try {
-        const res = await fetch(' https://zsul-api.onrender.com/transferencia/');
+        const res = await fetch(' http://0.tcp.sa.ngrok.io:17723/transferencia/');
         if (!res.ok) throw new Error('Erro ao buscar transferências');
         const result = await res.json();
         setTransferencias(result.data);

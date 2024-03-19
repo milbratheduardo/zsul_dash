@@ -21,7 +21,7 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
         const selectedStaffId = localStorage.getItem('selectedStaffId');
         if (selectedStaffId) {
           try {
-            const response = await fetch(` https://zsul-api.onrender.com/staff/${selectedStaffId}`, {
+            const response = await fetch(` http://0.tcp.sa.ngrok.io:17723/staff/${selectedStaffId}`, {
               method: 'DELETE',
             });
             const data = await response.json();

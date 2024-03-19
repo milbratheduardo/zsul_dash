@@ -17,8 +17,8 @@ const ModalEstatisticaAtleta = ({ isVisible, onClose, currentColor, teamId, atle
     const fetchAtletaInfo = async () => {
       try {
         const [atletaResponse, estatisticasResponse] = await Promise.all([
-          fetch(`http://zsul-api.onrender.com/elenco/${atletaId}`),
-          fetch(`http://zsul-api.onrender.com/estatistica/jogador/${atletaId}`)
+          fetch(`http://0.tcp.sa.ngrok.io:17723/elenco/${atletaId}`),
+          fetch(`http://0.tcp.sa.ngrok.io:17723/estatistica/jogador/${atletaId}`)
         ]);
 
         if (atletaResponse.ok && estatisticasResponse.ok) {
