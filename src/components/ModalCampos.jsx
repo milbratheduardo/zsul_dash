@@ -30,10 +30,10 @@ const ModalCampos = ({ isVisible, onClose, currentColor }) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('nome', modalFieldsState['name']);
+    formData.append('nome', modalFieldsState['nome']);
     formData.append('cidade', modalFieldsState['cidade']);
     formData.append('endereco', modalFieldsState['endereco']);
-    formData.append('linkMaps', modalFieldsState['maps']);
+    formData.append('linkMaps', modalFieldsState['linkMaps']);
   
     const fileField = document.querySelector("input[type='file']");
     if (fileField && fileField.files[0]) {
@@ -45,7 +45,7 @@ const ModalCampos = ({ isVisible, onClose, currentColor }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/campos/', {
+      const response = await fetch('http://zsul-api.onrender.com/campos/', {
         method: 'POST',
         body: formData,
       });

@@ -562,8 +562,8 @@ const ModalAdicionarJogoFields = [
         {
             labelText:"Nome do Estádio",
             labelFor:"name",
-            id:"name",
-            name:"name",
+            id:"nome",
+            name:"nome",
             type:"text",
             autoComplete:"name",
             isRequired:true,
@@ -592,8 +592,8 @@ const ModalAdicionarJogoFields = [
         {
             labelText:"Link Google Maps",
             labelFor:"maps",
-            id:"maps",
-            name:"maps",
+            id:"linkMaps",
+            name:"linkMaps",
             type:"text",
             autoComplete:"maps",
             isRequired:true,

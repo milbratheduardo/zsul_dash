@@ -163,14 +163,6 @@ const MeuPerfil = () => {
               setShowModal(false);
           }}/>
 
-          <ModalAdm
-            isVisible={showModalAdm} 
-            currentColor={currentColor} 
-            userId = {userId} 
-            onClose={() => {
-              setShowModalAdm(false);
-          }}/>
-
           <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Header category='Perfil' title='Meu Perfil' />
@@ -183,16 +175,6 @@ const MeuPerfil = () => {
                       size='md'
                       onClick={() => {
                         setShowModal(true);
-                      }}
-                    />
-                    <Button 
-                      color='white'
-                      bgColor={endColor}
-                      text='Adicionar Adm'
-                      borderRadius='10px'
-                      size='md'
-                      onClick={() => {
-                        setShowModalAdm(true);
                       }}
                     />
                 </div>

@@ -38,3 +38,4 @@ export { default as ModalCampos } from './ModalCampos';
 export { default as ModalEditarAtleta } from './ModalEditarAtleta';
 export { default as ModalAtletaDocumentos } from './ModalAtletaDocumentos';
 export { default as ModalCampoOpcoes } from './ModalCampoOpcoes';
+export { default as ModalEstatisticaAtleta } from './ModalEstatisticaAtleta';

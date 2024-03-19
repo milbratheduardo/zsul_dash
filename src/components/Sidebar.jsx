@@ -8,7 +8,6 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { links } from '../data/dummy';
 import { useStateContext } from '../contexts/ContextProvider';
 import logoZsul from '../img/logo_zsul.png';
-const permissao = localStorage.getItem('permissao');
 const Sidebar = () => {
   
   const { activeMenu, setActiveMenu, screenSize, currentColor } = useStateContext();
@@ -40,7 +39,6 @@ const Sidebar = () => {
   }, []);
 
 
-
   
   return (
     <div className='ml-3 h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10'>
@@ -69,9 +67,13 @@ const Sidebar = () => {
                 </p>
                 {item.links.map((link) => {
                  
-                 if(permissao === 'admin' && (link.name === 'elenco' || link.name === 'staff')) {
+                 if(permissao === 'admin' && (link.name === 'elenco' || link.name === 'staff' || link.name === 'calendario' || link.name === 'sumulas')) {
                   return null;
-              }
+                }
+
+                if(permissao === 'TEquipe' && (link.name === 'Transferencias' || link.name === 'Clubes' || link.name === 'Campos' || link.name === 'ControleAtletas' || link.name === 'Documentos')) {
+                  return null;
+                }
               
                   return (
                     <NavLink
@@ -86,7 +88,7 @@ const Sidebar = () => {
                       {link.icon}
                       <span className='capitalize'>{link.name === 'staff' ? 'Comissão Técnica' : 
                       link.name === 'ControleAtletas' ? 'Controle de Atletas' : 
-                      link.name === 'clubes' ? 'Usuários' : link.name}</span>
+                      link.name === 'Clubes' ? 'Usuários' : link.name}</span>
                     </NavLink>
                   );
                 })}

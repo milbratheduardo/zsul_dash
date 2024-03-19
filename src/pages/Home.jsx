@@ -168,11 +168,12 @@ const Home = () => {
         const userDetails = result.data.map(user => [
           user.teamName, 
           user.city,    
-          user.state,    
+          user.state, 
+          user.permission   
         ]);
     
         doc.autoTable({
-          head: [["Nome do Clube", "Cidade", "Estado"]],
+          head: [["Nome do Clube", "Cidade", "Estado", "Tipo de Usuário"]],
           body: userDetails,
           startY: 30,
         });
@@ -291,7 +292,7 @@ const Home = () => {
                 <div className='mt-6'>
                 {permissao === 'admin' && (
                   <div>
-                    <p className='font-bold text-gray-400'>Número de Times</p>
+                    <p className='font-bold text-gray-400'>Número de Usuários</p>
            
                   </div>
                 )}
@@ -309,7 +310,7 @@ const Home = () => {
                 <div style={{ marginTop: '20px' }}>
                   <Button 
                     color='white' 
-                    bgColor='#4CAF50' // Cor modificada para verde
+                    bgColor={currentColor}
                     text='Download'
                     borderRadius='10px' 
                     size='md' 

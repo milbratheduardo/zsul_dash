@@ -6,6 +6,7 @@ import Logo from '../img/logo_zsul.png';
 import ModalInscricaoCampeonato from './ModalInscricaoCampeonato';
 import ModalTransferencia from './ModalTransferencia';
 import ModalEditarAtleta from './ModalEditarAtleta';
+import ModalEstatisticaAtleta from './ModalEstatisticaAtleta';
 import { useNavigate } from 'react-router-dom';
 import fundo_carteirinha from '../img/carteirinha.png';
 
@@ -20,6 +21,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
     const [isModalInscricaoOpen, setIsModalInscricaoOpen] = useState(false);
     const [isModalTransferenciaOpen, setIsModalTransferenciaOpen] = useState(false);
     const [isModalEditarOpen, setIsModalEditarOpen] = useState(false);
+    const [isModalEstatisticaOpen, setIsModalEstatisticaOpen] = useState(false);
     const [timeInfo, setTimeInfo] = useState({});
     const navigate = useNavigate();
     const handleClose = (e) => {
@@ -39,6 +41,11 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
       const handleTransferenciaClick = (event) => {
         event.preventDefault(); 
         setIsModalTransferenciaOpen(true);
+      };
+
+      const handleEstatisticaClick = (event) => {
+        event.preventDefault(); 
+        setIsModalEstatisticaOpen(true);
       };
 
       useEffect(() => {
@@ -181,7 +188,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   </button>
                   <div className='w-full' aria-hidden='true'></div>
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: endColor2}}>Estatísticas</button>
+                    backgroundColor: endColor2}} onClick={(event) => handleEstatisticaClick(event)}>Estatísticas</button>
                   <div className='w-full' aria-hidden='true'></div>
                 </div>    
               </form>
@@ -210,6 +217,15 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   atletaId={atleta._id}
                   teamId={teamId}
                   onClose={() => setIsModalEditarOpen(false)} 
+                />   
+
+              <ModalEstatisticaAtleta
+                  isVisible={isModalEstatisticaOpen}
+                  currentColor={currentColor}
+                  atletaNome={atletaNome}
+                  atletaId={atleta._id}
+                  teamId={teamId}
+                  onClose={() => setIsModalEstatisticaOpen(false)} 
                 />   
             </div>
           </div>

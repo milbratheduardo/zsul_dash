@@ -12,6 +12,7 @@ const Campeonatos = () => {
   
   const [showModal, setShowModal] =   useState(false);
   const [campeonatos, setCampeonatos] = useState([]);
+  const [permissao, setPermissao] = useState(localStorage.getItem('permissao'));
 
   useEffect(() => {
     const fetchCampeonatos = async () => {
@@ -73,7 +74,8 @@ const Campeonatos = () => {
             bg-white rounded-3xl'>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Header category='Clube' title='Campeonatos' />
-                  <Button 
+                  {permissao !== 'TEquipe' && (
+                    <Button 
                       color='white'
                       bgColor={currentColor}
                       text='Criar Campeonato'
@@ -83,6 +85,7 @@ const Campeonatos = () => {
                         setShowModal(true);
                       }}
                     />
+                  )}
                </div> 
                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {campeonatos.map((campeonato) => (

@@ -32,6 +32,7 @@ const CampeonatoDetalhes = () => {
   const permissao = localStorage.getItem('permissao') || '';
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
+  
 
   
 
@@ -369,51 +370,53 @@ const CampeonatoDetalhes = () => {
                   </div>
                 }
                 <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 sm:mt-0'>
-                      <Button 
-                        color='white'
-                        bgColor={currentColor}
-                        text='Adicionar Grupo'
-                        borderRadius='10px'
-                        size='sm'
-                        onClick={() => {
-                            setShowModalGrupo(true);
-                        }}
+                {permissao !== 'TEquipe' && (
+                  <>
+                    <Button 
+                      color='white'
+                      bgColor={currentColor}
+                      text='Adicionar Grupo'
+                      borderRadius='10px'
+                      size='sm'
+                      onClick={() => {
+                        setShowModalGrupo(true);
+                      }}
                     />
                     <Button 
-                        color='white'
-                        bgColor={endColor}
-                        text='Adicionar Jogo'
-                        borderRadius='10px'
-                        size='sm'
-                        onClick={() => {
-                            setShowModalAdicionarJogo(true);
-                        }}
+                      color='white'
+                      bgColor={endColor}
+                      text='Adicionar Jogo'
+                      borderRadius='10px'
+                      size='sm'
+                      onClick={() => {
+                        setShowModalAdicionarJogo(true);
+                      }}
                     />
-                    
                     <Button 
-                        color='white'
-                        bgColor='red'
-                        text='Deletar Campeonato'
-                        borderRadius='10px'
-                        size='sm'
-                        onClick={() => {
-                            deletarCampeonato();
-                        }}
+                      color='white'
+                      bgColor='red'
+                      text='Deletar Campeonato'
+                      borderRadius='10px'
+                      size='sm'
+                      onClick={() => {
+                        deletarCampeonato();
+                      }}
                     />
-                  {
-                    /*permissao !== 'TEquipe'*/
-                      <Button 
-                          color='white'
-                          bgColor='green'
-                          text='Inscrever-se'
-                          borderRadius='10px'
-                          size='sm'
-                          onClick={() => {
-                              inscreverTime();
-                          }}
-                      />
-                  }
-                </div>
+                  </>
+                )}
+                {permissao !== 'admin' && (
+                <Button 
+                  color='white'
+                  bgColor='green'
+                  text='Inscrever-se'
+                  borderRadius='10px'
+                  size='sm'
+                  onClick={() => {
+                    inscreverTime();
+                  }}
+                />
+                )}
+              </div>
               </div>
               <div>        
                 <Swiper
@@ -441,17 +444,21 @@ const CampeonatoDetalhes = () => {
                         </GridComponent>
                         </div>
                         <div style={{marginTop:'10px',marginBottom:'10px'}}>
-                        <Button 
-                            color={currentColor}
-                            bgColor='white'
-                            text='Cadastrar Equipe neste Grupo'
-                            borderRadius='10px'
-                            size='sm'
-                            onClick={() => {
-                                setSelectedGroupId(group._id);
-                                setShowModalTimeGrupo(true);
-                            }}
-                        />
+                        
+                        {permissao === 'admin' && (
+                          <Button 
+                              color={currentColor}
+                              bgColor='white'
+                              text='Cadastrar Equipe neste Grupo'
+                              borderRadius='10px'
+                              size='sm'
+                              onClick={() => {
+                                  setSelectedGroupId(group._id);
+                                  setShowModalTimeGrupo(true);
+                              }}
+                          />
+                        )}
+                        
                         </div>                      
                     </SwiperSlide>
                   ))}
