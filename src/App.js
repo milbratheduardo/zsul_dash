@@ -12,11 +12,13 @@ import { Calendario, Campeonatos, ComissaoTecnica,
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Cabecalho } from './components';
 
 const App = () => {  
     return (
         <BrowserRouter>
          <ToastContainer position="top-center" autoClose={5000} hideProgressBar />
+          <Cabecalho />
             <Routes>
               {/* Dashboard */}
               <Route path='/' element={<Login/>} />

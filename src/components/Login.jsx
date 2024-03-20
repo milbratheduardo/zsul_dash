@@ -22,7 +22,7 @@ const LoginComponent = () => {
 
   const authenticateUser = async () => {
     try {
-      const response = await fetch("http://0.tcp.sa.ngrok.io:19685/users/login", {
+      const response = await fetch("https://6ef3-181-220-128-161.ngrok-free.app/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,10 +62,10 @@ const LoginComponent = () => {
     }
   
     try {
-      const response = await fetch(`http://0.tcp.sa.ngrok.io:19685/users/${userId}`, {
+      const response = await fetch(`https://6ef3-181-220-128-161.ngrok-free.app/users/${userId}`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          //"Content-Type": "application/json",
           // Aqui você precisa substituir 'seuTokenAqui' pelo token de autenticação, se necessário
           // "Authorization": `Bearer ${seuTokenAqui}`
         }
