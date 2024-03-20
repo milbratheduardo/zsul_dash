@@ -26,7 +26,7 @@ const MeuPerfil = () => {
       imageField: "picture"
     };
 
-    const apiUrl = ' http://0.tcp.sa.ngrok.io:12599/image/blob';
+    const apiUrl = `${process.env.REACT_APP_API_URL}image/blob`;
 
     fetch(apiUrl, {
       method: 'POST',
@@ -52,7 +52,7 @@ const MeuPerfil = () => {
     const fetchUserInfo = async () => {
       const userId = user.data.id;
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${userId}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}users/${userId}`);
        
         if (response.ok) {
           const data = await response.json();
@@ -76,7 +76,7 @@ const MeuPerfil = () => {
     const fetchUserAtletas = async () => {
       const userId = user.data.id;
       try {
-        const responseAtletas = await fetch(` http://0.tcp.sa.ngrok.io:12599/elenco/team/${userId}`);
+        const responseAtletas = await fetch(` ${process.env.REACT_APP_API_URL}elenco/team/${userId}`);
 
         if (responseAtletas.ok) {
           const dataAtletas = await responseAtletas.json();
@@ -100,7 +100,7 @@ const MeuPerfil = () => {
     const fetchUserStaff = async () => {
       const userId = user.data.id;
       try {
-        const responseStaff = await fetch(` http://0.tcp.sa.ngrok.io:12599/staff/team/${userId}`);
+        const responseStaff = await fetch(` ${process.env.REACT_APP_API_URL}staff/team/${userId}`);
         console.log('Staff: ', responseStaff);
         if (responseStaff.ok) {
           const dataStaff = await responseStaff.json();

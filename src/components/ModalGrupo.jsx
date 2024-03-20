@@ -34,7 +34,7 @@ const ModalGrupo = ({ isVisible, onClose, currentColor, campeonatoId }) => {
       campeonatoId,
     }
     try {
-      const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/grupos/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}grupos/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

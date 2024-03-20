@@ -16,14 +16,14 @@ const Transferencias = () => {
   useEffect(() => {
     const fetchTransferencias = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/transferencia/`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}transferencia/`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
         
         const promises = data.data.map(async (transferencia) => {
-          const responseTime = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${transferencia.novoTimeId}`);
+          const responseTime = await fetch(` ${process.env.REACT_APP_API_URL}users/${transferencia.novoTimeId}`);
           if (!responseTime.ok) {
             console.error('Erro ao buscar nome do time para o ID:', transferencia.novoTimeId);
             return transferencia; 

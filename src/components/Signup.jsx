@@ -26,7 +26,7 @@ const SignupComponent = () => {
 
   const createAccount = async () => {
     try {
-      const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/users/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}users/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

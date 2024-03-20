@@ -57,7 +57,7 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
   useEffect(() => {
     const fetchTimeCasa = async () => {
         try {
-            const url = ` http://0.tcp.sa.ngrok.io:12599/sumula/campeonato/${campeonatoId}`;
+            const url = `${process.env.REACT_APP_API_URL}sumula/campeonato/${campeonatoId}`;
             const response = await fetch(url);
             const data = await response.json();
             
@@ -65,7 +65,7 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
                 const filteredData = data.data.filter(item => item.userId === timeCasa);
                 
                 const atletasDetailsPromises = filteredData.map(async (item) => {
-                    const elencoResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/elenco/${item.elencoId}`);
+                    const elencoResponse = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${item.elencoId}`);
                     const elencoData = await elencoResponse.json();
                     
                     if (elencoData.status === 200 && elencoData.data) {
@@ -95,7 +95,7 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
 useEffect(() => {
   const fetchTimeFora = async () => {
       try {
-          const url = ` http://0.tcp.sa.ngrok.io:12599/sumula/campeonato/${campeonatoId}`;
+          const url = ` ${process.env.REACT_APP_API_URL}sumula/campeonato/${campeonatoId}`;
           const response = await fetch(url);
           const data = await response.json();
           
@@ -103,7 +103,7 @@ useEffect(() => {
               const filteredData = data.data.filter(item => item.userId === timeFora);
               
               const atletasDetailsPromises = filteredData.map(async (item) => {
-                  const elencoResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/elenco/${item.elencoId}`);
+                  const elencoResponse = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${item.elencoId}`);
                   const elencoData = await elencoResponse.json();
                   
                   if (elencoData.status === 200 && elencoData.data) {
@@ -141,7 +141,7 @@ const handleSubmit = async (e) => {
       userForaGols: modalFieldsState.userForaGols,
     };
 
-    const responseJogo = await fetch(' http://0.tcp.sa.ngrok.io:12599/estatistica/', {
+    const responseJogo = await fetch(`${process.env.REACT_APP_API_URL}estatistica/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ const handleSubmit = async (e) => {
 
     console.log('estatistica: ', estatisticaJogador)
 
-    const responseEstatistica = await fetch(' http://0.tcp.sa.ngrok.io:12599/estatistica/jogador', {
+    const responseEstatistica = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

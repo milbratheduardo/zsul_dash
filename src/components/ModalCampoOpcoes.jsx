@@ -31,7 +31,7 @@ const ModalEditarCampo = ({ isVisible, onClose, currentColor, campoId }) => {
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                const response = await fetch(`http://0.tcp.sa.ngrok.io:12599/campos/${campoId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}campos/${campoId}`);
                 const data = await response.json();
                 if (data.status === 200 && data.data) {
                     setInitialData(data.data);
@@ -63,7 +63,7 @@ const ModalEditarCampo = ({ isVisible, onClose, currentColor, campoId }) => {
 
         for (const change of changes) {
             try {
-                const response = await fetch(`http://0.tcp.sa.ngrok.io:12599/campos/${campoId}`, {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}campos/${campoId}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',

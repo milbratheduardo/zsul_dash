@@ -45,7 +45,7 @@ const ModalCampos = ({ isVisible, onClose, currentColor }) => {
     }
 
     try {
-      const response = await fetch('http://0.tcp.sa.ngrok.io:12599/campos/', {
+      const response = await fetch('${process.env.REACT_APP_API_URL}campos/', {
         method: 'POST',
         body: formData,
       });

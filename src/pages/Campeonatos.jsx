@@ -17,7 +17,7 @@ const Campeonatos = () => {
   useEffect(() => {
     const fetchCampeonatos = async () => {
       try {
-        const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/campeonatos/');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`);
         const data = await response.json();
         console.log('Dados: ', data);
         setCampeonatos(data.data); 

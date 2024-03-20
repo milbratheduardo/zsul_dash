@@ -37,7 +37,7 @@ const ModalTransferencia = ({ isVisible, onClose, currentColor, atletaNome, atle
   useEffect(() => {
     const fetchClubes = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}users/`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -73,7 +73,7 @@ const ModalTransferencia = ({ isVisible, onClose, currentColor, atletaNome, atle
     console.log("Body: ", requestBody);
   
     try {
-      const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/transferencia/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}transferencia/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

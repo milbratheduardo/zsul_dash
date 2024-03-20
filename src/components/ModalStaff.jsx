@@ -41,7 +41,7 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
     }
 
     try {
-      const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/staff/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}staff/`, {
         method: 'POST',
         body: formData,
       });

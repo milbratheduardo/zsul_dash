@@ -11,6 +11,8 @@ const fields = ModalAdicionarJogoFields;
 let fieldsState = {
     timeCasa: '',
     timeFora: '',
+    campoId: '',
+    grupoId: '',
 };
 
 fields.forEach((field) => (fieldsState[field.id] = ''));
@@ -23,6 +25,8 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
   const [errorMessage, setErrorMessage] = useState("");
   const [initialData, setInitialData] = useState([]);
   const [userOptions, setUserOptions] = useState([]);
+  const [campos, setCampos] = useState([]);
+  const [grupos, setGrupos] = useState([]);
   const navigate = useNavigate();
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
@@ -33,7 +37,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/jogos/${jogoId}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}jogos/${jogoId}`);
         const data = await response.json();
         if (data.status === 200 && data.data) {
           setInitialData(data.data);
@@ -53,13 +57,13 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
   useEffect(() => {
     const fetchUserIds = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/inscricoes/campeonato/${campeonatoId}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}inscricoes/campeonato/${campeonatoId}`);
         const result = await response.json();
         console.log('result', result);
   
         if (response.ok && result.data && Array.isArray(result.data)) {
           const teamNamesPromises = result.data.map(async (item) => {
-            const userResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${item.userId}`);
+            const userResponse = await fetch(` ${process.env.REACT_APP_API_URL}users/${item.userId}`);
             const userData = await userResponse.json();
             console.log('Times: ', userData)
             if (userResponse.ok) {
@@ -107,7 +111,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
   
     for (const change of changesAll) {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/jogos/${jogoId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}jogos/${jogoId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

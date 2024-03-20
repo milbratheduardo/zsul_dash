@@ -17,8 +17,8 @@ const ModalEstatisticaAtleta = ({ isVisible, onClose, currentColor, teamId, atle
     const fetchAtletaInfo = async () => {
       try {
         const [atletaResponse, estatisticasResponse] = await Promise.all([
-          fetch(`http://0.tcp.sa.ngrok.io:12599/elenco/${atletaId}`),
-          fetch(`http://0.tcp.sa.ngrok.io:12599/estatistica/jogador/${atletaId}`)
+          fetch(`${process.env.REACT_APP_API_URL}elenco/${atletaId}`),
+          fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador/${atletaId}`)
         ]);
 
         if (atletaResponse.ok && estatisticasResponse.ok) {

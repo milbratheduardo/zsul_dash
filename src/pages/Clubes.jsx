@@ -14,7 +14,7 @@ const Clubes = () => {
 
     const handleStatusChange = async (clube, newStatus) => {
       try {
-        const responseGet = await fetch(`http://0.tcp.sa.ngrok.io:12599/users/${clube._id}`);
+        const responseGet = await fetch(`${process.env.REACT_APP_API_URL}users/${clube._id}`);
         if (!responseGet.ok) {
           throw new Error('Erro ao obter o ID do Usuário');
         }
@@ -27,7 +27,7 @@ const Clubes = () => {
           value: newStatus,
         };
     
-        const responsePatch = await fetch(`http://0.tcp.sa.ngrok.io:12599/users/${clube._id}`, {
+        const responsePatch = await fetch(`${process.env.REACT_APP_API_URL}users/${clube._id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const Clubes = () => {
       const fetchClubes = async () => {
         setIsLoading(true);
         try {
-          const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/users/');
+          const response = await fetch(`${process.env.REACT_APP_API_URL}users/`);
           const data = await response.json();
           setClubes(data.data);
           console.log('Clubes: ', clubes);
@@ -79,7 +79,7 @@ const Clubes = () => {
       setIsLoading(true);
     
       try {
-        const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/users/');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}users/`);
         const data = await response.json();
         const clubesAtualizados = data.data;
     

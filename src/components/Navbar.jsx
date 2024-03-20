@@ -33,7 +33,7 @@ const Navbar = () => {
       imageField: "picture"
     };
 
-    const apiUrl = ' http://0.tcp.sa.ngrok.io:12599/image/blob';
+    const apiUrl = `${process.env.REACT_APP_API_URL}image/blob`;
 
     fetch(apiUrl, {
       method: 'POST',

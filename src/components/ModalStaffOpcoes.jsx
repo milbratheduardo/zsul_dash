@@ -21,7 +21,7 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
         const selectedStaffId = localStorage.getItem('selectedStaffId');
         if (selectedStaffId) {
           try {
-            const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/staff/${selectedStaffId}`, {
+            const response = await fetch(` ${process.env.REACT_APP_API_URL}staff/${selectedStaffId}`, {
               method: 'DELETE',
             });
             const data = await response.json();

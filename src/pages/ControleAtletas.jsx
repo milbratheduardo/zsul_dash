@@ -19,7 +19,7 @@ const ControleAtletas = () => {
     useEffect(() => {
       const fetchCampeonatos = async () => {
         try {
-          const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/campeonatos/');
+          const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`);
           const data = await response.json();
           console.log('Campeonatos: ', data);
           setCampeonatos(data.data); 
@@ -35,7 +35,7 @@ const ControleAtletas = () => {
       const fetchInscricoes = async () => {
         if (selectedCampeonatoId) {
           try {
-            const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/inscricoes/campeonato/${selectedCampeonatoId}`);
+            const response = await fetch(` ${process.env.REACT_APP_API_URL}inscricoes/campeonato/${selectedCampeonatoId}`);
             const data = await response.json();
             setInscricoes(data.data);
           } catch (error) {

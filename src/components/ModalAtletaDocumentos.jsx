@@ -16,7 +16,7 @@ const ModalAtletaDocumentos = ({ isVisible, onClose, atleta, atletaNome, teamId,
   useEffect(() => {
     const fetchTime = async () => {
         try {
-          const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${atleta.teamId}`);
+          const response = await fetch(` ${process.env.REACT_APP_API_URL}users/${atleta.teamId}`);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }

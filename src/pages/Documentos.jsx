@@ -55,7 +55,7 @@ const Documentos = () => {
   useEffect(() => {
     const fetchAtletas = async () => {
         try {
-          const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/elenco/`);
+          const response = await fetch(` ${process.env.REACT_APP_API_URL}elenco/`);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -63,7 +63,7 @@ const Documentos = () => {
     
           const atletasWithTeamName = await Promise.all(
             data.data.map(async (atleta) => {
-              const teamResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${atleta.teamId}`);
+              const teamResponse = await fetch(` ${process.env.REACT_APP_API_URL}users/${atleta.teamId}`);
               if (!teamResponse.ok) {
                 throw new Error('Error fetching team data');
               }

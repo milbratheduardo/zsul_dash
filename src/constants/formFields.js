@@ -455,16 +455,7 @@ const ModalAdicionarJogoFields = [
         placeholder:"Hora da Partida",
         mask: "99:99"
     },
-    {
-        labelText: "Local",
-        labelFor: "local",
-        id: "local",
-        name: "local",
-        type:"text",
-        autoComplete:"local",
-        isRequired:true,
-        placeholder:"Local da Partida",
-    },
+    
   ]
     const ModalSumulaJogoFields = [
         {

@@ -58,7 +58,7 @@ const SumulasDetalhes = () => {
 
   const handleStatusChange = async (atleta, newStatus) => {
     try {
-      const responseGet = await fetch(` http://0.tcp.sa.ngrok.io:12599/sumula/elenco/${atleta._id}`);
+      const responseGet = await fetch(` ${process.env.REACT_APP_API_URL}sumula/elenco/${atleta._id}`);
       if (!responseGet.ok) {
         throw new Error('Erro ao obter o ID do atleta');
       }
@@ -68,7 +68,7 @@ const SumulasDetalhes = () => {
       console.log('idSumula:', idSumula);
 
   
-      const responsePatch = await fetch(` http://0.tcp.sa.ngrok.io:12599/sumula/${idSumula}`, {
+      const responsePatch = await fetch(` ${process.env.REACT_APP_API_URL}sumula/${idSumula}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ const SumulasDetalhes = () => {
   useEffect(() => {
     const fetchCampeonato = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/campeonatos/${id}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}campeonatos/${id}`);
         const data = await response.json();
         console.log('Dados: ', data);
         setCampeonato(data.data); 
@@ -113,7 +113,7 @@ const SumulasDetalhes = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${teamId}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}users/${teamId}`);
        
         if (response.ok) {
           const data = await response.json();
@@ -134,7 +134,7 @@ const SumulasDetalhes = () => {
   useEffect(() => {
     const fetchAtletasIds = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/sumula/team/${teamId}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
         const data = await response.json();
         console.log('Dados Time: ', data);
   
@@ -156,7 +156,7 @@ const SumulasDetalhes = () => {
         if (atletasIds && atletasIds.length > 0) {
           let allAtletas = [];
           for (const elencoId of atletasIds) {
-            const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/elenco/${elencoId.elencoId}`);
+            const response = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${elencoId.elencoId}`);
             if (!response.ok) {
               throw new Error(`Network response was not ok for elencoId ${elencoId.elencoId}`);
             }
@@ -204,7 +204,6 @@ const SumulasDetalhes = () => {
       template: (atleta) => (
         <a href="#" onClick={(e) => {
           e.preventDefault(); 
-          handleAtletaClick(atleta);
         }}>{atleta.name}</a>
       )
     },

@@ -19,7 +19,7 @@ const ModalAtletasOpcoesSumulas = ({ isVisible, onClose, atletaNome, currentColo
 
   const buscarSumula = async () => {
     try {
-      const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/sumula/`);
+      const response = await fetch(` ${process.env.REACT_APP_API_URL}sumula/`);
       const resultado = await response.json();
   
       if (!response.ok) throw new Error('Erro ao buscar súmulas');
@@ -48,7 +48,7 @@ const ModalAtletasOpcoesSumulas = ({ isVisible, onClose, atletaNome, currentColo
     e.preventDefault();
     if (sumulaFiltrada.length > 0) {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/sumula/${sumulaFiltrada[0]._id}`, {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}sumula/${sumulaFiltrada[0]._id}`, {
           method: 'DELETE',
         });
     

@@ -51,7 +51,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
     
   
     try {
-      const response = await fetch(' http://0.tcp.sa.ngrok.io:12599/campeonatos/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`, {
         method: 'POST',
         body: formData,
       });

@@ -11,6 +11,8 @@ const fields = ModalAdicionarJogoFields;
 let fieldsState = {
     timeCasa: '',
     timeFora: '',
+    campoId: '',
+    grupoId: '',
 };
 
 fields.forEach((field) => (fieldsState[field.id] = ''));
@@ -22,6 +24,8 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
   const [errorMessage, setErrorMessage] = useState("");
   const [userOptions, setUserOptions] = useState([]);
   const [campeonato, setCampeonato] = useState([]);
+  const [campos, setCampos] = useState([]);
+  const [grupos, setGrupos] = useState([]);
   const navigate = useNavigate();
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
@@ -33,7 +37,7 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
   useEffect(() => {
     const fetchCampeonatos = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/campeonatos/${campeonatoId}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}campeonatos/${campeonatoId}`);
         const data = await response.json();
         console.log('Dados: ', data);
         setCampeonato(data.data); 
@@ -49,13 +53,13 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
   useEffect(() => {
     const fetchUserIds = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/inscricoes/campeonato/${campeonatoId}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}inscricoes/campeonato/${campeonatoId}`);
         const result = await response.json();
         console.log('result', result);
   
         if (response.ok && result.data && Array.isArray(result.data)) {
           const teamNamesPromises = result.data.map(async (item) => {
-            const userResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${item.userId}`);
+            const userResponse = await fetch(` ${process.env.REACT_APP_API_URL}users/${item.userId}`);
             const userData = await userResponse.json();
             console.log('Times: ', userData)
             if (userResponse.ok) {
@@ -79,6 +83,38 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
   
     fetchUserIds();
   }, [campeonatoId]);
+
+
+  useEffect(() => {
+    const fetchCampos = async () => {
+      try {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}campos`);
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setCampos(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchCampos();
+  }, []);
+
+  useEffect(() => {
+    const fetchGrupos = async () => {
+      try {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}grupos/campeonato/${campeonatoId}`);
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setGrupos(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchGrupos();
+  }, []);
+
   
 
   const handleSubmit= async (e)=>{
@@ -94,14 +130,14 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
         tipo: modalFieldsState.tipo,
         data: modalFieldsState.data,
         hora: modalFieldsState.hora,
-        local: modalFieldsState.local,
         campeonatoId: campeonatoId,
-        grupoId:grupoId,
+        grupoId: modalFieldsState.grupoId,
+        campoId: modalFieldsState.campoId,
     }
 
     console.log('payload: ', payload)
     try {
-      const response = await fetch('http://0.tcp.sa.ngrok.io:12599/jogos', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}jogos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +173,7 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
         <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
           <HeaderModal title={`Cadastre novo Jogo do ${campeonato.name}`} heading='Preencha todos os dados' />
           <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
-              {errorMessage && 
+            {errorMessage && 
               <div 
                 style={{
                   backgroundColor: 'red', 
@@ -151,36 +187,38 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
                 {errorMessage}
               </div>
             }
-            <div className='-space-y-px'>
-            {userOptions.length > 0 && (
-                <div className="mt-4">
-                    <select
-                        id="timeCasa"
-                        value={modalFieldsState.timeCasa}
-                        onChange={handleChange}
-                        required
-                        >
-                        <option value="">Selecione Time Casa</option>
-                        {userOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                            {option.label}
-                            </option>
-                        ))}
-                        </select>
+            <div className='space-y-4'>
+              {userOptions.length > 0 && (
+                <>
+                  <select
+                    id="timeCasa"
+                    value={modalFieldsState.timeCasa}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Selecione Time Casa</option>
+                    {userOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
 
-                        <select
-                        id="timeFora"
-                        value={modalFieldsState.timeFora}
-                        onChange={handleChange}
-                        required
-                        >
-                        <option value="">Selecione Time Fora</option>
-                        {userOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                            {option.label}
-                            </option>
-                        ))}
-                    </select>
+                  <select
+                    id="timeFora"
+                    value={modalFieldsState.timeFora}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Selecione Time Fora</option>
+                    {userOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </>
+                )}
                     {fields.map((field, index) => (
                         <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
                         {field.type === 'dropdown' ? (
@@ -223,11 +261,46 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
                         )}
                         </div>
                     ))}
-                </div>
-                )}
-              <FormAction currentColor={currentColor} text='Cadastrar' />
-            </div>
-            
+                  <div>
+                    {grupos.length > 0 && (
+                      <div className="mt-4">
+                        <select
+                          id="grupoId"
+                          value={modalFieldsState.grupoId}
+                          onChange={handleChange}
+                          required
+                        >
+                          <option value="">Selecione o Grupo da Partida</option>
+                          {grupos.map((grupo) => (
+                            <option key={grupo._id} value={grupo._id}>
+                              {grupo.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {campos.length > 0 && (
+                      <div className="mt-4">
+                        <select
+                          id="campoId"
+                          value={modalFieldsState.campoId}
+                          onChange={handleChange}
+                          required
+                        >
+                          <option value="">Selecione o Local da Partida</option>
+                          {campos.map((campo) => (
+                            <option key={campo._id} value={campo._id}>
+                              {campo.nome}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    <FormAction currentColor={currentColor} text='Cadastrar' />
+                  </div>
+           </div> 
           </form>
         </div>
       </div>
