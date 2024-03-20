@@ -4,7 +4,7 @@ import Input from "./Input";
 import LoginAction from './LoginAction';
 import FormExtra from './FormExtra';
 import { useNavigate } from 'react-router-dom';
-require('dotenv').config()
+
 
 
 const fields = loginFields;
