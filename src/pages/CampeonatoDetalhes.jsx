@@ -334,7 +334,7 @@ const CampeonatoDetalhes = () => {
           <ModalTimeGrupo
             isVisible={showModalTimeGrupo} 
             currentColor={currentColor} 
-            grupoId ='65f99983fc29d1963e73c429'
+            grupoId =''
             campeonatoId = {id} 
             onClose={() => {
               setShowModalTimeGrupo(false);
@@ -344,7 +344,7 @@ const CampeonatoDetalhes = () => {
           <ModalAdicionarJogo
             isVisible={showModalAdicionarJogo} 
             currentColor={currentColor} 
-            grupoId ='65f99983fc29d1963e73c429'
+            grupoId =''
             campeonatoId = {id} 
             onClose={() => {
               setShowModalAdicionarJogo(false);

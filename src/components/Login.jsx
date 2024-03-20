@@ -22,7 +22,7 @@ const LoginComponent = () => {
 
   const authenticateUser = async () => {
     try {
-      const response = await fetch("http://0.tcp.sa.ngrok.io:12599/users/login", {
+      const response = await fetch("http://0.tcp.sa.ngrok.io:19685/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const LoginComponent = () => {
     }
   
     try {
-      const response = await fetch(`http://0.tcp.sa.ngrok.io:12599/users/${userId}`, {
+      const response = await fetch(`http://0.tcp.sa.ngrok.io:19685/users/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

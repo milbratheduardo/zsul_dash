@@ -27,7 +27,7 @@ const Home = () => {
       const fetchUserInfo = async () => {
         const userId = user.data.id;
         try {
-          const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${userId}`);
+          const response = await fetch(` http://0.tcp.sa.ngrok.io:19685/users/${userId}`);
          
           if (response.ok) {
             const data = await response.json();
@@ -51,7 +51,7 @@ const Home = () => {
       const fetchProximasPartidas = async () => {
         const userId = user.data.id;
         try {
-          const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/jogos/team/${userId}`);
+          const response = await fetch(` http://0.tcp.sa.ngrok.io:19685/jogos/team/${userId}`);
     
           if (response.ok) {
             const data = await response.json();
@@ -84,13 +84,13 @@ const Home = () => {
     }, [user.data.id]);
 
     const fetchAdditionalInfo = async (jogo) => {
-      const campeonatoResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/campeonatos/${jogo.campeonatoId}`);
+      const campeonatoResponse = await fetch(` http://0.tcp.sa.ngrok.io:19685/campeonatos/${jogo.campeonatoId}`);
       const campeonatoData = await campeonatoResponse.json();
     
-      const userCasaResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${jogo.userIdCasa}`);
+      const userCasaResponse = await fetch(` http://0.tcp.sa.ngrok.io:19685/users/${jogo.userIdCasa}`);
       const userCasaData = await userCasaResponse.json();
     
-      const userForaResponse = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/${jogo.userIdFora}`);
+      const userForaResponse = await fetch(` http://0.tcp.sa.ngrok.io:19685/users/${jogo.userIdFora}`);
       const userForaData = await userForaResponse.json();
     
       const campeonatoName = campeonatoData?.data.name || 'Desconhecido';
@@ -151,7 +151,7 @@ const Home = () => {
     
     const generateUserPDF = async () => {
       try {
-        const response = await fetch(` http://0.tcp.sa.ngrok.io:12599/users/`);
+        const response = await fetch(` http://0.tcp.sa.ngrok.io:19685/users/`);
         if (!response.ok) throw new Error('Erro ao buscar dados dos usuários');
         const result = await response.json(); 
     
@@ -190,7 +190,7 @@ const Home = () => {
       const fetchUserAtletas = async () => {
         const userId = user.data.id;
         try {
-          const responseAtletas = await fetch(` http://0.tcp.sa.ngrok.io:12599/elenco/team/${userId}`);
+          const responseAtletas = await fetch(` http://0.tcp.sa.ngrok.io:19685/elenco/team/${userId}`);
   
           if (responseAtletas.ok) {
             const dataAtletas = await responseAtletas.json();
