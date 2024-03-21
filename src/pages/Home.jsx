@@ -19,8 +19,14 @@ const Home = () => {
     const [userInfo, setUserInfo] = useState({});
     const [proximasPartidas, setProximasPartidas] = useState([]);
     const [earningData, setEarningData] = useState([]);
+    const [hover, setHover] = useState(false);
 
     const permissao = localStorage.getItem('permissao');
+
+    const linkStyle = {
+      color: hover ? `${currentColor}` : 'inherit',
+      cursor: 'pointer',
+    };
 
 
     useEffect(() => {
@@ -84,24 +90,32 @@ const Home = () => {
     }, [user.data.id]);
 
     const fetchAdditionalInfo = async (jogo) => {
-      const campeonatoResponse = await fetch(` ${process.env.REACT_APP_API_URL}campeonatos/${jogo.campeonatoId}`);
+      const campeonatoResponse = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/${jogo.campeonatoId}`);
       const campeonatoData = await campeonatoResponse.json();
     
-      const userCasaResponse = await fetch(` ${process.env.REACT_APP_API_URL}users/${jogo.userIdCasa}`);
+      const userCasaResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${jogo.userIdCasa}`);
       const userCasaData = await userCasaResponse.json();
     
-      const userForaResponse = await fetch(` ${process.env.REACT_APP_API_URL}users/${jogo.userIdFora}`);
+      const userForaResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${jogo.userIdFora}`);
       const userForaData = await userForaResponse.json();
+    
+      // Adiciona uma nova busca para o campo baseado no campoId
+      const campoResponse = await fetch(`${process.env.REACT_APP_API_URL}campos/${jogo.campoId}`);
+      const campoData = await campoResponse.json();
     
       const campeonatoName = campeonatoData?.data.name || 'Desconhecido';
       const teamNameCasa = userCasaData?.data.teamName || 'Equipe Casa Desconhecida';
       const teamNameFora = userForaData?.data.teamName || 'Equipe Fora Desconhecida';
+      const campoNome = campoData?.data.nome || 'Local Desconhecido'; 
+      const campoMaps = campoData?.data.linkMaps || 'Link Desconhecido'; 
     
       return {
         ...jogo,
         campeonatoName,
         teamNameCasa,
-        teamNameFora
+        teamNameFora,
+        campoNome,
+        campoMaps
       };
     };
     
@@ -355,7 +369,16 @@ const Home = () => {
                         <p className='font-semibold'>{partida.teamNameCasa} vs {partida.teamNameFora}</p>
                         <p>Campeonato: {partida.campeonatoName}</p>
                         <p>Data: {partida.data}</p>
-                        <p>Local: {partida.local}</p>
+                        <a
+                          target="_blank" rel="noopener noreferrer"
+                          href={partida.campoMaps}
+                          className="text-gray-700 text-sm mb-4"
+                          style={linkStyle}
+                          onMouseEnter={() => setHover(true)}
+                          onMouseLeave={() => setHover(false)}
+                        >
+                          Local: {partida.campoNome}
+                        </a>
                       </div>
                     ))
                   ) : (

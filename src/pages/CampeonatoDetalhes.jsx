@@ -475,7 +475,7 @@ const CampeonatoDetalhes = () => {
                       tipo={jogo.tipo}
                       grupoId={jogo.grupoId}
                       data={jogo.data}
-                      local={jogo.local}
+                      local={jogo.campoId}
                       hora={jogo.hora}
                       currentColor={currentColor}
                       jogoId={jogo._id}

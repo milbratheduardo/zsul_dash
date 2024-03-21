@@ -18,7 +18,7 @@ let fieldsState = {
 fields.forEach((field) => (fieldsState[field.id] = ''));
 
 const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupoId, 
-  jogoId, timeCasa, timeFora }) => {
+  jogoId, timeCasa, timeFora, grupoName, campoName }) => {
   if (!isVisible) return null;
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
@@ -137,8 +137,36 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
   
     navigate(`/campeonatos/${campeonatoId}`);
   };
-  
-  
+
+  useEffect(() => {
+    const fetchCampos = async () => {
+      try {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}campos`);
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setCampos(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchCampos();
+  }, []);
+
+  useEffect(() => {
+    const fetchGrupos = async () => {
+      try {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}grupos/campeonato/${campeonatoId}`);
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setGrupos(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchGrupos();
+  }, []);
   
 
   return (
@@ -234,9 +262,40 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
                         </div>
                     ))}
                 </div>
-              <FormAction currentColor={currentColor} text='Editar' />
+                <div>       
+                    <div className="mt-4">
+                        <select
+                          id="grupoId"
+                          value={modalFieldsState.grupoId}
+                          onChange={handleChange}
+                        >
+                          <option value="">{grupoName}</option>
+                          {grupos.map((grupo) => (
+                            <option key={grupo._id} value={grupo._id}>
+                              {grupo.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="mt-4">
+                        <select
+                          id="campoId"
+                          value={modalFieldsState.campoId}
+                          onChange={handleChange}
+                        >
+                          <option value="">{campoName}</option>
+                          {campos.map((campo) => (
+                            <option key={campo._id} value={campo._id}>
+                              {campo.nome}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    
+                <FormAction currentColor={currentColor} text='Editar' />
+              </div>
             </div>
-            
           </form>
         </div>
       </div>

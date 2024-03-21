@@ -24,9 +24,11 @@ const Login = () => {
     backgroundColor: 'white'
   };
 
+  console.log('DOTENV: ', process.env.REACT_APP_API_URL)
+
   return (
     <div style={backgroundStyle}>
-      <div style={boxStyle}>
+      <div style={boxStyle}>      
         <HeaderLogin
           logo={logoZsul}
           title="ZSUL ESPORTES"

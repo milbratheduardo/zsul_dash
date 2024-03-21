@@ -43,16 +43,23 @@ const Calendario = () => {
   
     const userForaResponse = await fetch(` ${process.env.REACT_APP_API_URL}users/${jogo.userIdFora}`);
     const userForaData = await userForaResponse.json();
+
+    const campoResponse = await fetch(`${process.env.REACT_APP_API_URL}campos/${jogo.campoId}`);
+    const campoData = await campoResponse.json();
   
     const campeonatoName = campeonatoData?.data.name || 'Desconhecido';
     const teamNameCasa = userCasaData?.data.teamName || 'Equipe Casa Desconhecida';
     const teamNameFora = userForaData?.data.teamName || 'Equipe Fora Desconhecida';
+    const campoNome = campoData?.data.nome || 'Local Desconhecido'; 
+    const campoMaps = campoData?.data.linkMaps || 'Link Desconhecido'; 
   
     return {
       ...jogo,
       campeonatoName,
       teamNameCasa,
-      teamNameFora
+      teamNameFora,
+      campoNome,
+      campoMaps
     };
   };
   
@@ -69,7 +76,7 @@ const Calendario = () => {
         Subject: `${jogo.campeonatoName}: ${jogo.teamNameCasa} vs ${jogo.teamNameFora}`,
         StartTime: startTime,
         EndTime: endTime,
-        Location: jogo.local,
+        Location: jogo.campoNome,
         Description: `Fase: ${jogo.tipo}`
       };
     });

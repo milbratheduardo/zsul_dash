@@ -9,12 +9,19 @@ const CardCompetition = ({
   const [imageSrcCasa, setImageSrcCasa] = useState('');
   const [imageSrcFora, setImageSrcFora] = useState('');
   const [groups, setGroups] = useState([]);
+  const [hover, setHover] = useState(false);
   const [userCasaInfo, setUserCasaInfo] = useState({});
   const [userForaInfo, setUserForaInfo] = useState({});
   const endColor = chroma(currentColor).darken(1).css();
   const [showModalEditarJogo, setShowModalEditarJogo] = useState(false);
   const [showModalSumulaJogo, setShowModalSumulaJogo] = useState(false);
   const [jogoEstatisticas, setJogoEstatisticas] = useState(null);
+  const [campos, setCampos] = useState([]);
+
+  const linkStyle = {
+    color: hover ? `${currentColor}` : 'inherit',
+    cursor: 'pointer',
+  };
 
   
 
@@ -168,6 +175,22 @@ const CardCompetition = ({
     }
 }, [jogoId]);
 
+useEffect(() => {
+  const fetchCampos = async () => {
+    try {
+      const response = await fetch(` ${process.env.REACT_APP_API_URL}campos/${local}`);
+      const data = await response.json();
+      console.log('Dados: ', data);
+      setCampos(data.data); 
+    } catch (error) {
+      console.error("Erro ao buscar campeonatos:", error);
+    }
+  };
+
+  fetchCampos();
+}, []);
+
+  console.log('Campo: ', campos)
   return (
 
     <div style={{ zIndex: 1, position: 'relative' }} className="max-w-sm rounded overflow-hidden shadow-lg bg-white text-center mt-10">
@@ -181,6 +204,9 @@ const CardCompetition = ({
             campeonatoId={campeonatoId} 
             timeCasa={userCasaInfo.data?.teamName}
             timeFora={userForaInfo.data?.teamName}
+            campoId = {campos._id}
+            grupoName = {groups?.name}
+            campoName = {campos?.nome}
             onClose={() => {
               setShowModalEditarJogo(false);
           }}/>
@@ -241,9 +267,16 @@ const CardCompetition = ({
           <p className="text-gray-700 text-sm">
             Data: {data}
           </p>
-          <p className="text-gray-700 text-sm mb-4"> 
-            Local: {local}
-          </p>
+          <a
+            target="_blank" rel="noopener noreferrer"
+            href={campos.linkMaps}
+            className="text-gray-700 text-sm mb-4"
+            style={linkStyle}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+          >
+            Local: {campos.nome}
+          </a>
           <p className="text-gray-700 text-sm mb-4"> 
             Hora: {hora}
           </p>
