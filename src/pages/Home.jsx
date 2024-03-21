@@ -56,15 +56,6 @@ const Home = () => {
       console.log('Permission:', userInfo.data.permission);
       localStorage.setItem('permissao', userInfo.data.permission);
     
-      // Verifica se já recarregamos a página por causa da mudança de permissão
-      const isPageReloaded = localStorage.getItem('pageReloadedForPermissionChange');
-    
-      if (!isPageReloaded) {
-        localStorage.setItem('pageReloadedForPermissionChange', 'true'); // Marca que a página será recarregada
-    
-        // Recarrega a página para refletir a mudança de permissão
-        window.location.reload();
-      }
     }
     useEffect(() => {
       const fetchProximasPartidas = async () => {
