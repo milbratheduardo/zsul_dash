@@ -55,7 +55,7 @@ const Home = () => {
       
       if (shouldReload === '1') {
         localStorage.removeItem('reload');
-        setTimeout(() => window.location.reload(), 100); // Adiciona um delay de 100ms
+      // Adiciona um delay de 100ms
       }
     }, []);
     console.log('userInfo0000 : ', userInfo.data)
