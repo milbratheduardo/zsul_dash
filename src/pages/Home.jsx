@@ -51,15 +51,11 @@ const Home = () => {
       }
     }, [user.data.id]); 
     useEffect(() => {
-      // Verifica se o item 'reload' no localStorage é '1'
       const shouldReload = localStorage.getItem('reload');
       
       if (shouldReload === '1') {
-        // Remove o item 'reload' para evitar recarregamentos em loop
         localStorage.removeItem('reload');
-        
-        // Recarrega a página
-        window.location.reload();
+        setTimeout(() => window.location.reload(), 100); // Adiciona um delay de 100ms
       }
     }, []);
     console.log('userInfo0000 : ', userInfo.data)
