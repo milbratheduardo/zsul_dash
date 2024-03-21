@@ -14,14 +14,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Cabecalho } from './components';
 
-useEffect(() => {
-  const shouldReload = localStorage.getItem('reload');
-  
-  if (shouldReload === '1') {
-    localStorage.removeItem('reload');
-    window.location.reload();
-  }
-}, []);
 
 const App = () => {  
     return (
