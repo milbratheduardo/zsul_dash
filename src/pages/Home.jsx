@@ -50,20 +50,21 @@ const Home = () => {
         fetchUserInfo();
       }
     }, [user.data.id]); 
-    useEffect(() => {
-      const shouldReload = localStorage.getItem('reload');
-      
-      if (shouldReload === '1') {
-        localStorage.removeItem('reload');
-      // Adiciona um delay de 100ms
-      }
-    }, []);
+    
     console.log('userInfo0000 : ', userInfo.data)
     if (userInfo && userInfo.data && userInfo.data.permission) {
       console.log('Permission:', userInfo.data.permission);
-      localStorage.setItem('permissao',userInfo.data.permission )
-    } else {
-      console.error('Não foi possível encontrar o campo permission no objeto userInfo.data');
+      localStorage.setItem('permissao', userInfo.data.permission);
+    
+      // Verifica se já recarregamos a página por causa da mudança de permissão
+      const isPageReloaded = localStorage.getItem('pageReloadedForPermissionChange');
+    
+      if (!isPageReloaded) {
+        localStorage.setItem('pageReloadedForPermissionChange', 'true'); // Marca que a página será recarregada
+    
+        // Recarrega a página para refletir a mudança de permissão
+        window.location.reload();
+      }
     }
     useEffect(() => {
       const fetchProximasPartidas = async () => {

@@ -11,7 +11,8 @@ import logoZsul from '../img/logo_zsul.png';
 const Sidebar = () => {
   
   const { activeMenu, setActiveMenu, screenSize, currentColor } = useStateContext();
-  
+  const [permissao, setPermissao] = useState(localStorage.getItem('permissao'));
+
   const handleCloseSideBar = () => {
     if(activeMenu && screenSize <= 900) {
       setActiveMenu(false);
@@ -22,21 +23,25 @@ const Sidebar = () => {
   
   const activeLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-white text-md m-2';
   const normalLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-2';
-  const [permissao, setPermissao] = useState(localStorage.getItem('permissao'));
+  
+
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setPermissao(localStorage.getItem('permissao'));
+    // Função para verificar a permissão
+    const verificarPermissao = () => {
+      const permissaoAtual = localStorage.getItem('permissao');
+      if (permissao !== permissaoAtual) {
+        setPermissao(permissaoAtual);
+      }
     };
 
-    // Adicionando um listener para o evento 'storage' para detectar mudanças em outras abas
-    window.addEventListener('storage', handleStorageChange);
+    // Configurando o intervalo para verificar a permissão a cada 1 segundo
+    const intervalId = setInterval(verificarPermissao, 1000);
 
-    // Removendo o listener quando o componente for desmontado
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
+    // Limpando o intervalo quando o componente é desmontado
+    return () => clearInterval(intervalId);
+  }, [permissao]);
+
 
 
   
