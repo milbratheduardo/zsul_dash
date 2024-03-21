@@ -50,9 +50,25 @@ const Home = () => {
         fetchUserInfo();
       }
     }, [user.data.id]); 
-
-    console.log('userInfo: ', userInfo)
-
+    useEffect(() => {
+      // Verifica se o item 'reload' no localStorage é '1'
+      const shouldReload = localStorage.getItem('reload');
+      
+      if (shouldReload === '1') {
+        // Remove o item 'reload' para evitar recarregamentos em loop
+        localStorage.removeItem('reload');
+        
+        // Recarrega a página
+        window.location.reload();
+      }
+    }, []);
+    console.log('userInfo0000 : ', userInfo.data)
+    if (userInfo && userInfo.data && userInfo.data.permission) {
+      console.log('Permission:', userInfo.data.permission);
+      localStorage.setItem('permissao',userInfo.data.permission )
+    } else {
+      console.error('Não foi possível encontrar o campo permission no objeto userInfo.data');
+    }
     useEffect(() => {
       const fetchProximasPartidas = async () => {
         const userId = user.data.id;

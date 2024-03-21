@@ -40,9 +40,9 @@ const LoginComponent = () => {
         localStorage.setItem('user', JSON.stringify(data)); // Salva todas as informações do usuário
         console.log('Login successful. User ID:', data.data.id); // Exibe o ID do usuário no console
         localStorage.setItem('Login atual', data.data.id); // Grava o ID do usuário no campo "Login atual" no localStorage
-        
+        localStorage.setItem('reload', 1)
         // Chama fetchUserData sem passar userId como argumento
-        await fetchUserData();
+        await fetchUserData();  
         
         navigate('/home'); 
       } else {
@@ -78,6 +78,7 @@ const LoginComponent = () => {
         // Ajuste para acessar o campo permission corretamente, considerando a estrutura de dados
         console.log('User permission:', userData.data.permission); // Exibe a permissão do usuário no console
         localStorage.setItem('permissao', userData.data.permission); // Salva a permissão do usuário no localStorage
+     
       } else {
         console.error('Erro ao buscar dados do usuário:', userData.message);
       }
