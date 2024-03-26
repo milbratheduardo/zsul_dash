@@ -402,18 +402,6 @@ const CampeonatoDetalhes = () => {
                     />
                   </>
                 )}
-                {permissao !== 'admin' && (
-                <Button 
-                  color='white'
-                  bgColor='green'
-                  text='Inscrever-se'
-                  borderRadius='10px'
-                  size='sm'
-                  onClick={() => {
-                    inscreverTime();
-                  }}
-                />
-                )}
               </div>
               </div>
               <div>        

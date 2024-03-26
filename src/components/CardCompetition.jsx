@@ -1,15 +1,51 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components';
+import { toast } from 'react-toastify';
 
 const CardCompetition = ({
-  image, title, type, participants, vacancies, city, category, date, currentColor, id, onInscribeClick, showInscribeButton, showViewDetailsButton
+  image, title, type, participants, vacancies, city, category, date, teamId, currentColor, id, permissao, showViewDetailsButton
 }) => {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
   
   const handleViewDetails = () => { 
     navigate(`/campeonatos/${id}`);
   };
+
+  const inscreverTime = async () => {
+    const payload = {
+      userId: teamId, 
+      campeonatoId: id 
+    };
+  
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await response.json();
+      if (data.status === 200) {
+        toast.success('Equipe Inscrita com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => navigate('/sumulas') 
+        });
+      } else if (data.status === 400 || data.status === 500) {
+        setErrorMessage(data.msg); 
+      } else {
+        console.log('Error:', data.msg);
+      }
+  
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    }
+  }  
 
   return (
     <div className="max-w-sm rounded overflow-hidden shadow-lg text-center">
@@ -44,22 +80,18 @@ const CardCompetition = ({
           onClick={handleViewDetails} 
         />
         )}
-         {showInscribeButton && (
-        <button
-          onClick={onInscribeClick}
-          style={{
-            cursor: 'pointer',
-            backgroundColor: currentColor, 
-            color: '#0000FF',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '8px 16px',
-            margin: '10px 0', 
-          }}
-        >
-          Inscrever
-        </button>
-      )}
+         {permissao !== 'admin' && (
+            <Button 
+              color='white'
+              bgColor='green'
+              text='Inscrever-se'
+              borderRadius='10px'
+              size='sm'
+              onClick={() => {
+                inscreverTime();
+              }}
+            />
+            )}
       </div>
     </div>
   );

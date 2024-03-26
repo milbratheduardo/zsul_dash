@@ -13,6 +13,8 @@ const Campeonatos = () => {
   const [showModal, setShowModal] =   useState(false);
   const [campeonatos, setCampeonatos] = useState([]);
   const [permissao, setPermissao] = useState(localStorage.getItem('permissao'));
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+
 
   useEffect(() => {
     const fetchCampeonatos = async () => {
@@ -99,9 +101,11 @@ const Campeonatos = () => {
                       vacancies={campeonato.vagas}
                       date={campeonato.dataInicio}
                       city={campeonato.cidade}
+                      teamId = {user.data.id}
                       currentColor={currentColor}
                       id={campeonato._id}
                       showViewDetailsButton={true}
+                      permissao={permissao}
                     />
                   ))}
                 </div>

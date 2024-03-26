@@ -173,6 +173,11 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
                         placeholder={field.placeholder}
                         mask={field.mask}
                       />
+                      {field.id === 'documentNumber' && (
+                        <p className="text-gray-600 text-xs" style={{marginTop: '-10px', marginLeft: '5px', fontSize: '10px'}}>
+                          Caso o atleta NÃO possua RG, colocar CPF.
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>

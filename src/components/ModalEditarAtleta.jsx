@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ModalAtletaFields } from '../constants/formFields';
 import Input from './Input';
 import FormAction from './FormAction';
@@ -54,6 +54,7 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
       await enviarImagem('RGFrente');
       await enviarImagem('RGVerso');
       await enviarImagem('fotoAtleta');
+      await editarAtleta();
   
    
       localStorage.removeItem('fotoAtleta');
@@ -105,6 +106,51 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
     }
   }
 
+
+  const editarAtleta = async () => {
+    const changes = Object.keys(modalFieldsState).reduce((acc, field) => {
+      if (modalFieldsState[field] !== (initialData[field] || '')) {
+        acc.push({ field, value: modalFieldsState[field] });
+      }
+      return acc;
+    }, []);
+  
+    const changesAll = changes.filter(change => change.field !== "" && change.value !== "");
+  
+    if (changesAll.length === 0) {
+      toast.info('Não houve mudanças!');
+      return;
+    }
+  
+    for (const change of changesAll) {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/${atletaId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(change)
+        });
+  
+        const data = await response.json();
+        if (response.ok) {
+          toast.success(`Campo ${change.field} editado com sucesso!`, {
+            position: "top-center",
+            autoClose: 5000
+          });
+        } else {
+          console.error('Error:', data.msg);
+          toast.error(data.msg || 'Erro desconhecido.');
+        }
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        toast.error("Houve um problema ao conectar com o servidor.");
+      }
+    }
+  
+    navigate(`/clubes/elenco/${teamId}`);
+  };
+
   
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -130,48 +176,46 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
               </div>
             }
             <div className='-space-y-px'>
-              {fields.map((field, index) => (
-                <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
-                  {field.type === 'dropdown' ? (
-                    <div>
-                      <select
-                        id={field.id}
-                        name={field.name}
-                        value={modalFieldsState[field.id]}
-                        onChange={handleChange}
-                        className='mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
-                      >
-                        <option value='' disabled>
-                          Selecione a Categoria
-                        </option>
-                        {field.options.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  ) : (
-                    <div>
-                      {field.type === 'file' ? (
-                        <label className='block text-sm font-medium text-gray-700 mt-4 ml-3'>{field.labelText}</label>
-                      ) : null}
-                      <Input
-                        handleChange={handleChange}
-                        value={modalFieldsState[field.id]}
-                        labelText={field.labelText}
-                        labelFor={field.labelFor}
-                        id={field.id}
-                        name={field.name}
-                        type={field.type}
-                        isRequired={field.isRequired}
-                        placeholder={field.placeholder}
-                        mask={field.mask}
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
+            {fields.map((field, index) => (
+              <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''}`}>
+                   {field.type === 'file' && (
+                      <div className="text-sm mt-3 ml-2">
+                        {field.placeholder}
+                      </div>
+                    )}
+                {field.type === 'dropdown' ? (
+                  <select
+                    id={field.id}
+                    name={field.name}
+                    value={modalFieldsState[field.id]}
+                    onChange={handleChange}
+                    className='mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                  >
+                    <option value='' disabled>
+                      Selecione a Categoria
+                    </option>
+                    {field.options.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <Input
+                    handleChange={handleChange}
+                    value={modalFieldsState[field.id]}
+                    labelText={field.labelText}
+                    labelFor={field.labelFor}
+                    id={field.id}
+                    name={field.name}
+                    type={field.type}
+                    isRequired={field.isRequired}
+                    placeholder={field.id === 'documentNumber' ? (modalFieldsState[field.id] === '' ? (initialData['RG'] || initialData['CPF']) : '') : modalFieldsState[field.id] === '' ? initialData[field.id] : ''}
+                    mask={field.mask}
+                  />                
+                )}
+              </div>
+            ))}
               <FormAction currentColor={currentColor} text='Editar' />
             </div>
             
