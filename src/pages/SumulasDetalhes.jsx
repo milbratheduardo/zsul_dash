@@ -226,7 +226,7 @@ const SumulasDetalhes = () => {
           onChange={(e) => handleStatusChange(atleta, e.target.value)}
         >
           <option value="ativo">Ativo</option>
-          <option value="banco">Banco</option>
+          <option value="banco">{atleta.status === 'banco' ? 'Fora da Súmula' : 'Banco'}</option>
         </select>
       ),
     },
