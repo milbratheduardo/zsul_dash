@@ -175,6 +175,7 @@ const Clubes = () => {
 
           
           <ModalClubeOpcoes 
+            currentColor={currentColor}          
             isVisible={showClubesOpcoes}
             teamId={selectedClube?._id}
             picture={selectedClube?.pictureBase64}

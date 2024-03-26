@@ -8,7 +8,7 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   Campos,
   ControleAtletas,
   Documentos,
-  Estatísticas} from './pages';
+  Estatísticas, ClubesElenco} from './pages';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -43,6 +43,7 @@ const App = () => {
               {/* Administrador */}
               <Route path='/transferencias' element={<Transferencias />} />
               <Route path='/clubes' element={<Clubes />} />
+              <Route path='/clubes/elenco/:teamId' element={<ClubesElenco />} />
               <Route path='/campos' element={<Campos />} />
               <Route path='/controleAtletas' element={<ControleAtletas />} />
               <Route path='/documentos' element={<Documentos />} />

@@ -15,3 +15,4 @@ export { default as Campos } from './Campos';
 export { default as ControleAtletas } from './ControleAtletas';
 export { default as Documentos } from './Documentos';
 export { default as Estatísticas } from './Estatísticas';
+export { default as ClubesElenco } from './ClubesElenco';

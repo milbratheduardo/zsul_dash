@@ -3,9 +3,10 @@ import HeaderModal from './HeaderModal';
 import FormAction from './FormAction';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../components';
 
 
-const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
+const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId, currentColor }) => {
     if (!isVisible) return null;
     const [imageSrc, setImageSrc] = useState('');
     const [userInfo, setUserInfo] = useState({});
@@ -16,6 +17,10 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
     const handleClose = (e) => {
         if (e.target.id === 'wrapper') onClose();
       };
+
+      const handleVerElenco = () => { 
+        navigate(`/clubes/elenco/${teamId}`);
+      };  
 
     useEffect(() => {
        const imageData = {
@@ -175,39 +180,51 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId }) => {
                   Email da Equipe
                 </h3>
                 <div className="text-blueGray-600">
-                  {userInfo.data?.email || 'Carregando...'}
+                  {userInfo.data?.email || '0'}
                 </div>
                 <div className='w-full' aria-hidden='true'></div>
                 <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
                   Cidade
                 </h3>
                 <div className="text-blueGray-600">
-                  {userInfo.data?.city || 'Carregando...'}
+                  {userInfo.data?.city || '0'}
                 </div>
                 <div className='w-full' aria-hidden='true'></div>
                 <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
                   Estado
                 </h3>
                 <div className="text-blueGray-600">
-                  {userInfo.data?.state || 'Carregando...'}
+                  {userInfo.data?.state || '0'}
                 </div>
                 <div className='w-full' aria-hidden='true'></div>
                 <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
                   Quantidade de Atletas
                 </h3>
                 <div className="text-blueGray-600">
-                  {userAtletas.data?.length || 'Carregando...'}
+                  {userAtletas.data?.length || '0'}
                 </div>
                 <div className='w-full' aria-hidden='true'></div>
                 <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
                   Quantidade de Membros da Comissão Técnica
                 </h3>
                 <div className="text-blueGray-600">
-                  {userStaff.data?.length || 'Carregando...'}
-                </div>
-                <FormAction currentColor='red' text='Deletar Equipe' />
-              </div>    
-                
+                {userStaff.data?.length || '0'}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Button 
+                  color='white'
+                  bgColor={currentColor}
+                  text='Ver Elenco'
+                  borderRadius='10px'
+                  size='sm'
+                  onClick={handleVerElenco}
+                />
+                <FormAction 
+                  currentColor='red' 
+                  text='Deletar Equipe'
+                />
+              </div>
+              </div>  
               </form>
             </div>
           </div>

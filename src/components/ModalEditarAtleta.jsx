@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { ModalEditarAtletaFields } from '../constants/formFields';
+import { ModalAtletaFields } from '../constants/formFields';
 import Input from './Input';
 import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const fields = ModalEditarAtletaFields;
+const fields = ModalAtletaFields;
 let fieldsState = {};
 fields.forEach((field) => (fieldsState[field.id] = ''));
 
@@ -15,6 +15,7 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
   const [errorMessage, setErrorMessage] = useState("");
+  const [initialData, setInitialData] = useState([]);
   const navigate = useNavigate();
 
   const handleClose = (e) => {
@@ -22,6 +23,27 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
   };
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${atletaId}`);
+        const data = await response.json();
+        if (data.status === 200 && data.data) {
+          setInitialData(data.data);
+        } else {
+          toast.error('Failed to fetch groups');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('An error occurred while fetching groups');
+      }
+    };
+    fetchInitialData();
+  }, [atletaId]);
+
+  console.log('initial: ', initialData)
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
