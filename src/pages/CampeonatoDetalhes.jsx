@@ -332,7 +332,7 @@ const CampeonatoDetalhes = () => {
           <ModalTimeGrupo
             isVisible={showModalTimeGrupo} 
             currentColor={currentColor} 
-            grupoId =''
+            grupoId ={selectedGroupId}
             campeonatoId = {id} 
             onClose={() => {
               setShowModalTimeGrupo(false);
