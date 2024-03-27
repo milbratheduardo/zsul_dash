@@ -60,6 +60,7 @@ const Documentos = () => {
             throw new Error('Network response was not ok');
           }
           const data = await response.json();
+
     
           const atletasWithTeamName = await Promise.all(
             data.data.map(async (atleta) => {
@@ -73,7 +74,8 @@ const Documentos = () => {
               return { ...atleta, teamName };
             })
           );
-      
+          
+          
           setAtletas(atletasWithTeamName);
         } catch (error) {
           console.error('Fetch error:', error);
@@ -139,7 +141,7 @@ const Documentos = () => {
     { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
   ];
   
-
+  
 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>

@@ -45,7 +45,7 @@ const ModalCampos = ({ isVisible, onClose, currentColor }) => {
     }
 
     try {
-      const response = await fetch('${process.env.REACT_APP_API_URL}campos/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}campos/`, {
         method: 'POST',
         body: formData,
       });
