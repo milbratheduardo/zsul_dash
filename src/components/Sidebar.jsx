@@ -49,14 +49,24 @@ const Sidebar = () => {
     <div className='ml-3 h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10'>
       {activeMenu && (
         <>
-          <div className='flex justify-between items-center'>
-            <Link to='/' onClick={handleCloseSideBar}
-            className='items-center gap-3 ml-3 mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900'>
-              <img src={logoZsul} alt="Logo"  style={{           
-                width: '80%', 
-                maxHeight: '150px', 
-              }} />
-            </Link>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%', 
+              marginLeft: '-10px'
+            }}>
+              <Link to="/" onClick={handleCloseSideBar}>
+                <img 
+                  src={logoZsul} 
+                  alt="Logo" 
+                  style={{ 
+                    maxWidth: '100%', 
+                    maxHeight: '180px', 
+                    height: 'auto' 
+                  }} 
+                />
+              </Link>
             <TooltipComponent content="Menu" position='BottomCenter'>
               <button type='button' onClick={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)}              
               className='text-xl rounded-full p-3 hover:bg-light-gray mt-4 block md:hidden'>
@@ -65,41 +75,55 @@ const Sidebar = () => {
             </TooltipComponent>
           </div>
           <div className='mt-10'>
-            {links.map((item) => (
-              <div key={item.title}>
-                <p className='text-gray-400 m-3 mt-4 uppercase'>
-                  {item.title}
-                </p>
-                {item.links.map((link) => {
-                 
-                 if(permissao === 'admin' && (link.name === 'elenco' || link.name === 'staff' || link.name === 'calendario' || link.name === 'sumulas')) {
-                  return null;
-                }
+            {links.map((item) => {
+              // Se a permissão for 'admin' e o título for 'Administração', não renderiza o item
+              if (permissao === 'admin' && item.title === 'Administração') {
+                return null;
+              }
+              if (permissao === 'TEquipe' && item.title === 'Administrador') {
+                return null;
+              }
 
-                if(permissao === 'TEquipe' && (link.name === 'Transferencias' || link.name === 'Clubes' || link.name === 'Campos' || link.name === 'ControleAtletas' || link.name === 'Documentos')) {
-                  return null;
-                }
-              
-                  return (
-                    <NavLink
-                      to={`/${link.name}`}
-                      key={link.name}
-                      onClick={handleCloseSideBar}
-                      style={({ isActive }) => ({
-                        backgroundColor: isActive ? currentColor : ''
-                      })}
-                      className={({ isActive }) => isActive ? activeLink : normalLink}
-                    >
-                      {link.icon}
-                      <span className='capitalize'>{link.name === 'staff' ? 'Comissão Técnica' : 
-                      link.name === 'ControleAtletas' ? 'Controle de Atletas' : 
-                      link.name === 'Clubes' ? 'Usuários' : link.name}</span>
-                    </NavLink>
-                  );
-                })}
-              </div>
-            ))}
+              return (
+                <div key={item.title}>
+                  <p className='text-gray-400 m-3 mt-4 uppercase'>
+                    {item.title}
+                  </p>
+                  {item.links.map((link) => {
+                    // Condições existentes para não renderizar certos links com base na permissão
+                    if (permissao === 'admin' && (link.name === 'elenco' || link.name === 'staff' || link.name === 'calendario' || link.name === 'Sumulas')) {
+                      return null;
+                    }
+
+                    if (permissao === 'TEquipe' && (link.name === 'Transferencias' || link.name === 'Clubes' || link.name === 'Campos' || link.name === 'ControleAtletas' || link.name === 'Documentos')) {
+                      return null;
+                    }
+
+                    // Renderiza o NavLink se as condições acima não forem verdadeiras
+                    return (
+                      <NavLink
+                        to={`/${link.name}`}
+                        key={link.name}
+                        onClick={handleCloseSideBar}
+                        style={({ isActive }) => ({
+                          backgroundColor: isActive ? currentColor : ''
+                        })}
+                        className={({ isActive }) => isActive ? activeLink : normalLink}
+                      >
+                        {link.icon}
+                        <span className='capitalize'>
+                          {link.name === 'staff' ? 'Comissão Técnica' : 
+                          link.name === 'ControleAtletas' ? 'Controle de Atletas' : 
+                          link.name === 'Clubes' ? 'Usuários' : link.name}
+                        </span>
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
+
         </>
       )}
     </div>

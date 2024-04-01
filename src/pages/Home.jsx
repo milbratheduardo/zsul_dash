@@ -61,7 +61,7 @@ const Home = () => {
       const fetchProximasPartidas = async () => {
         const userId = user.data.id;
         try {
-          const response = await fetch(` ${process.env.REACT_APP_API_URL}jogos/team/${userId}`);
+          const response = await fetch(`${process.env.REACT_APP_API_URL}jogos/team/${userId}`);
     
           if (response.ok) {
             const data = await response.json();
@@ -70,11 +70,10 @@ const Home = () => {
                 ...partida,
                 dataParsed: new Date(partida.data.split('/').reverse().join('-') + 'T' + partida.hora)
               }))
-              .filter(partida => partida.dataParsed > new Date())
-              .sort((a, b) => a.dataParsed - b.dataParsed)
-              .slice(0, 3);
+              .filter(partida => partida.dataParsed <= new Date()) 
+              .sort((a, b) => b.dataParsed - a.dataParsed) 
+              .slice(0, 3); 
     
-            
             const partidasComInfo = await Promise.all(partidasComDataParsed.map(async partida => {
               return await fetchAdditionalInfo(partida);
             }));

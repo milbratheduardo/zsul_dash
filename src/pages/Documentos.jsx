@@ -29,58 +29,71 @@ const Documentos = () => {
 
   const handleAtletaClick = (atleta) => {
     console.log('Dados do Atleta:', atleta); 
+    const documentoIdentificacao = atleta.RG ? atleta.RG : atleta.CPF;
+  
     const atletaDados = {
       Nome: atleta.name,
       FotoBase64: atleta.fotoAtletaBase64,
       RGFrenteBase64: atleta.RGFrenteBase64,
       RGVersoBase64: atleta.RGVersoBase64,
-      CPF: atleta.CPF,
-      Id:atleta._id
+      RG: documentoIdentificacao,
+      Id: atleta._id
     };
+  
     setSelectedAtletaData({
-        Nome: atleta.name,
-        FotoBase64: atleta.fotoAtletaBase64,
-        RGFrenteBase64: atleta.RGFrenteBase64,
-        RGVersoBase64: atleta.RGVersoBase64,
-        CPF: atleta.CPF,
+      Nome: atleta.name,
+      FotoBase64: atleta.fotoAtletaBase64,
+      RGFrenteBase64: atleta.RGFrenteBase64,
+      RGVersoBase64: atleta.RGVersoBase64,
+      RG: documentoIdentificacao,
     });
+  
     setSelectedAtleta(atleta);
     setShowModalDocumentos(true);
     console.log(atletaDados)
     localStorage.setItem('selectedAtletaId', atleta._id);
-    localStorage.setItem('selectedTeamId', teamId); 
+    localStorage.setItem('selectedTeamId', atleta.teamId); 
   };
+  
 
 
   useEffect(() => {
     const fetchAtletas = async () => {
-        try {
-          const response = await fetch(` ${process.env.REACT_APP_API_URL}elenco/`);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-
-    
-          const atletasWithTeamName = await Promise.all(
-            data.data.map(async (atleta) => {
-              const teamResponse = await fetch(` ${process.env.REACT_APP_API_URL}users/${atleta.teamId}`);
-              if (!teamResponse.ok) {
-                throw new Error('Error fetching team data');
-              }
-              const teamData = await teamResponse.json();
-              console.log('teamNAme: ', teamData)
-              const teamName = teamData.data.teamName || 'Nome do Time Desconhecido'; 
-              return { ...atleta, teamName };
-            })
-          );
-          
-          
-          setAtletas(atletasWithTeamName);
-        } catch (error) {
-          console.error('Fetch error:', error);
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      };     
+        const data = await response.json();
+  
+        const atletasWithTeamName = await Promise.all(data.data.map(async (atleta) => {
+          try {
+            const teamResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${atleta.teamId}`);
+            if (!teamResponse.ok) {
+              console.error(`Error fetching team data for teamId ${atleta.teamId}: ${teamResponse.statusText}`);
+              return null; 
+            }
+            const teamData = await teamResponse.json();
+            if (!teamData || Object.keys(teamData).length === 0) {
+              console.error(`No team data returned for teamId ${atleta.teamId}`);
+              return null; 
+            }
+            const teamName = teamData.data.teamName; 
+            return { ...atleta, teamName }; 
+          } catch (error) {
+            console.error(`Failed to process team data for teamId ${atleta.teamId}:`, error);
+            return null; 
+          }
+        }));
+  
+        
+        const filteredAtletasWithTeamName = atletasWithTeamName.filter(atleta => atleta !== null);
+  
+        setAtletas(filteredAtletasWithTeamName);
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };   
   
   
     const loadData = async () => {
@@ -91,10 +104,11 @@ const Documentos = () => {
   
     if (teamId) {
       loadData();
+    }  else {
+      console.log('teamId is not defined');
     }
   }, [teamId]);
   
-
   const formatCPF = (cpf) => {
     if (typeof cpf === 'string') {
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
@@ -130,7 +144,7 @@ const Documentos = () => {
       headerText: 'Documento',
       width: '150',
       textAlign: 'Center',
-      template: (props) => <span>{formatCPF(props.CPF)}</span>,
+      template: (props) => <span>{props.RG || formatCPF(props.CPF)}</span>,
     },
     {
       field: 'teamName',

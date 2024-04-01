@@ -76,31 +76,48 @@ const ThemeSettings = () => {
         <div className='flex-col border-t-1 border-color 
           p-4 ml-4'>
           <p className='font-semibold text-lg'>Cores do Sistema</p>
-          <div className='flex gap-3'>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+            gap: '1rem',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '2rem'
+          }}>
             {themeColors.map((item, index) => (
-              <TooltipComponent key={index} 
+              <TooltipComponent key={index}
                 content={item.name}
                 position='TopCenter'
               >
-                <div className='relative mt-2 cursor-pointer 
-                flex gap-5 items-center'>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
                   <button
                     type='button'
-                    className='h-10 w-10 rounded-full 
-                    cursor-pointer'
-                    style={{ backgroundColor: item.color }}
+                    style={{
+                      height: '40px',
+                      width: '40px',
+                      borderRadius: '50%',
+                      backgroundColor: item.color,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
                     onClick={() => setColor(item.color)}
                   >
-                    <BsCheck className={`ml-2 
-                    text-2xl text-white 
-                    ${item.color === currentColor ? 'block' : 
-                    'hidden'}`} />
-
+                    <BsCheck style={{
+                      color: 'white',
+                      fontSize: '24px',
+                      display: item.color === currentColor ? 'block' : 'none'
+                    }} />
                   </button>
                 </div>
               </TooltipComponent>
             ))}
           </div>
+
         </div>  
       </div>
     </div>
