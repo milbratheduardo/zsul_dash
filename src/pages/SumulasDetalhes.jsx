@@ -212,7 +212,7 @@ const SumulasDetalhes = () => {
       headerText: 'Documento',
       width: '150',
       textAlign: 'Center',
-      template: (props) => <span>{formatCPF(props.CPF)}</span>,
+      template: (props) => <span>{props.RG || formatCPF(props.CPF)}</span>,
     },
     { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
     {
@@ -280,7 +280,7 @@ const SumulasDetalhes = () => {
     const tableRows = atletasAtivo.map(atleta => [
       "",
       atleta.name, // Adjust according to your data structure
-      atleta.CPF, // Adjust according to your data structure
+      atleta.RG || atleta.CPF, // Adjust according to your data structure
       atleta.category// Add more fields as needed
     ]);
   

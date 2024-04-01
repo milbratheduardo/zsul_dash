@@ -15,6 +15,9 @@ const ControleAtletas = () => {
     const [campeonatos, setCampeonatos] = useState([]);
     const [selectedCampeonatoId, setSelectedCampeonatoId] = useState('');
     const [inscricoes, setInscricoes] = useState([]);
+    const [clubes, setClubes] = useState([]);
+    const [selectedClubeId, setSelectedClubeId] = useState('');
+    const [totalInscricoes, setTotalInscricoes] = useState(0);
 
     useEffect(() => {
       const fetchCampeonatos = async () => {
@@ -50,53 +53,104 @@ const ControleAtletas = () => {
     const handleCampeonatoChange = (event) => {
       setSelectedCampeonatoId(event.target.value);
     };
+
+    useEffect(() => {
+      const fetchClubes = async () => {
+        if (selectedCampeonatoId) {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/campeonato/${selectedCampeonatoId}`);
+            const data = await response.json();
+            setClubes(data.data); 
+          } catch (error) {
+            console.error("Erro ao buscar clubes:", error);
+          }
+        } else {
+          setClubes([]); 
+        }
+      };
+  
+      fetchClubes();
+    }, [selectedCampeonatoId]); 
+  
+    const handleClubeChange = (event) => {
+      setSelectedClubeId(event.target.value);
+    };
+
+
+    useEffect(() => {
+      const fetchSumulas = async () => {
+        
+        if (selectedClubeId && selectedCampeonatoId) {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}sumula/team/${selectedClubeId}`);
+            const data = await response.json();
+            
+            
+            const sumulasFiltradas = data.data.filter(sumula => sumula.campeonatoId === selectedCampeonatoId);
+    
+            setInscricoes(sumulasFiltradas);
+            setTotalInscricoes(sumulasFiltradas.length * 35);
+          } catch (error) {
+            console.error("Erro ao buscar súmulas:", error);
+            setInscricoes([]); 
+          }
+        } else {
+          setInscricoes([]); 
+        }
+      };
+    
+      fetchSumulas();
+    }, [selectedClubeId, selectedCampeonatoId]);
+    
+    
+
+    console.log('Jogadores: ', inscricoes)
+
   
 
     const ControleGrid = [
       {
-        field: 'userName',
-        headerText: 'Time',
-        width: '200',
+        headerText: 'Foto',
+        template: ({ fotoAtletaBase64 } = {}) => ( 
+        <div className='text-center'>
+          {fotoAtletaBase64 ? 
+            <img src={fotoAtletaBase64} alt="Foto Atleta" style={{ width: '50px', height: '50px', borderRadius: '50%' }} /> :
+            <span>Sem foto</span> 
+          }
+        </div>
+      ),
         textAlign: 'Center',
+        width: '100'
       },
       {
-        field: 'atletasInscritos', 
-        headerText: 'Atletas Inscritos',
-        width: '200',
+        field: 'elencoName', 
+        headerText: 'Atleta', 
+        width: '150', 
         textAlign: 'Center',
+        template: (rowData) => (
+          rowData ? <span>{rowData.elencoName}</span> : <span>--</span> 
+        )
       },
       {
-        field: '19-30',
-        headerText: '19-30',
-        width: '200',
-        textAlign: 'Center',
-      },
-      {
-        field: 'troca', 
-        headerText: 'Troca',
+        field: 'elencoDocumento',
+        headerText: 'Documento',
         width: '150',
         textAlign: 'Center',
       },
-      {
-        field: 'valorpagar', 
-        headerText: 'Valor a Pagar',
-        width: '150',
+      { 
+        field: 'category', 
+        headerText: 'Categoria', 
+        width: '150', 
         textAlign: 'Center',
       },
       {
-        field: 'valorpago', 
-        headerText: 'Valor Pago',
+        field: 'status',
+        headerText: 'Status',
         width: '150',
         textAlign: 'Center',
       },
-      {
-        field: 'faltam', 
-        headerText: 'Faltam',
-        width: '150',
-        textAlign: 'Center',
-      },
-      
     ];
+
     
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
@@ -134,15 +188,22 @@ const ControleAtletas = () => {
           {themeSettings && <ThemeSettings />}
             <div className='m-2 md:m-10 mt-24 p-2 
             md:p-10 bg-white rounded-3xl'>
-              <Header category="Administrador" title="Controle de Atletas"/>
+              <Header category="Administrador" title="Controle de Atletas" subtitle={`(Valor a ser Pago pela Equipe: R$ ${totalInscricoes})`}/>
               <select onChange={handleCampeonatoChange} value={selectedCampeonatoId} className='mb-4'>
                 <option value=''>Selecione um campeonato</option>
                 {campeonatos.map((campeonato) => (
                   <option key={campeonato._id} value={campeonato._id}>{campeonato.name}</option>
                 ))}
               </select>
+
+              <select onChange={handleClubeChange} value={selectedClubeId} className='mb-4'>
+                <option value=''>Selecione um clube</option>
+                {clubes.map((clube) => (
+                  <option key={clube.userId} value={clube.userId}>{clube.userName}</option>
+                ))}
+              </select>
               <GridComponent
-                dataSource={inscricoes}
+                 dataSource={selectedClubeId && selectedCampeonatoId && inscricoes ? inscricoes : []}
                 allowPaging
                 allowSorting
                 toolbar={['Search']}

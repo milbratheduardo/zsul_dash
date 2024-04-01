@@ -174,9 +174,15 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
                         mask={field.mask}
                       />
                       {field.id === 'documentNumber' && (
-                        <p className="text-gray-600 text-xs" style={{marginTop: '-10px', marginLeft: '5px', fontSize: '10px'}}>
+                        <div>
+                          <p className="text-gray-600 text-xs" style={{marginTop: '-10px', marginLeft: '5px', fontSize: '10px'}}>
                           Caso o atleta NÃO possua RG, colocar CPF.
                         </p>
+                        <p className="text-gray-600 text-xs" style={{marginTop: '-5px', marginLeft: '5px', fontSize: '10px'}}>
+                          Caso o atleta NÃO possua RG NEM CPF, colocar Certidão de Nascimento.
+                        </p>
+                        </div>
+                        
                       )}
                     </div>
                   )}

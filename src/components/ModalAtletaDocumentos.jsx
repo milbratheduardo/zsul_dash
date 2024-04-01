@@ -33,11 +33,6 @@ const ModalAtletaDocumentos = ({ isVisible, onClose, atleta, atletaNome, teamId,
     }
   }, [atleta._id]);
 
-  // Função para formatar o CPF
-  const formatCPF = (cpf) => {
-    const cpfRegex = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
-    return cpf.replace(cpfRegex, '$1.$2.$3-$4');
-  };
 
   console.log('time: ', times )
 
@@ -62,9 +57,9 @@ const ModalAtletaDocumentos = ({ isVisible, onClose, atleta, atletaNome, teamId,
                 RG Frente
               </h3>
               <div className="text-blueGray-600">
-                {atleta?.RGVersoBase64 ? (
+                {atleta?.RGFrenteBase64 ? (
                   <div className='text-center' style={{ display: 'flex', justifyContent: 'center', objectFit: 'cover' }}>
-                    <img src={atleta?.RGFrenteBase64} alt="RG Verso" style={{ width: '150px', height: '150px', borderRadius: '50%' }} />
+                    <img src={atleta?.RGFrenteBase64} alt="RG Frente" style={{ width: '150px', height: '150px', borderRadius: '50%' }} />
                   </div>
                 ) : (
                   <div style={{ textAlign: 'center' }}>Nenhuma imagem disponível</div>
@@ -85,10 +80,10 @@ const ModalAtletaDocumentos = ({ isVisible, onClose, atleta, atletaNome, teamId,
               </div>
               <div className='w-full' aria-hidden='true'></div>
               <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
-                CPF
+                Documento
               </h3>
               <div className="text-blueGray-600">
-                {atleta ? formatCPF(atleta.CPF) : 'Carregando...'}
+                {atleta ? atleta.RG : 'Carregando...'}
               </div>
               <div className='w-full' aria-hidden='true'></div>
             </div>
