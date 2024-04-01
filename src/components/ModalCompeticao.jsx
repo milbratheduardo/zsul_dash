@@ -27,7 +27,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const requestData = {
       name: modalFieldsState['nome'],
       categoria: modalFieldsState['categoria'],
@@ -38,28 +38,13 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
       cidade: modalFieldsState['cidade'],
       tipoGrupo: modalFieldsState['tipoGrupo'],
       tipoMataMata: modalFieldsState['tipoMataMata'],
-      vagas: modalFieldsState['participantes'],
-      file: '', // Inicializa com uma string vazia
-      fileType: '' // Inicializa com uma string vazia
+      vagas: modalFieldsState['participantes']
     };
-
-    
-    const fileField = document.querySelector("input[type='file']");
-  if (fileField && fileField.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function () {
-      const imageData = reader.result;
-      console.log('Base64 da imagem:', imageData);
-      console.log('Tipo de arquivo:', fileField.files[0].type);
-      requestData.file = imageData;
-      requestData.fileType = fileField.files[0].type; 
-      sendRequest(requestData);
-    };
-    reader.readAsDataURL(fileField.files[0]);
-  } else {
+  
+   
     sendRequest(requestData);
-  }
-};
+  };
+  
   const sendRequest = async (data) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`, {
@@ -69,23 +54,87 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
         },
         body: JSON.stringify(data),
       });
-
+  
       const responseData = await response.json();
-      if (responseData.status === 200) {
-        toast.success('Campeonato Cadastrado com sucesso!', {
-          position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate('/campeonatos') 
-        });
-        console.log('Dados: ', responseData);
+      console.log('ResponseDATA: ', responseData)
+      if (response.ok && responseData.data._id) {
+  
+        const fileField = document.querySelector("input[type='file']");
+        if (fileField && fileField.files[0]) {
+          
+          uploadImage(responseData.data._id, fileField.files[0]);
+        } else {
+          
+          toast.success('Campeonato cadastrado com sucesso!', {
+            position: "top-center",
+            autoClose: 5000,
+            onClose: () => navigate('/campeonatos')
+          });
+        }
       } else {
-        setErrorMessage(responseData.msg)
-        console.error('Erro ao cadastrar campeonato ' + errorMessage);
+        throw new Error(responseData.msg || 'Erro ao cadastrar campeonato');
       }
     } catch (error) {
       console.error(error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+      toast.error(error.message, {
+        position: "top-center",
+        autoClose: 5000,
+      });
     }
   };
+
+  const convertFileToBase64 = (file, callback) => {
+    const reader = new FileReader();
+    reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
+    reader.readAsDataURL(file);
+  }; 
+  
+  
+  const uploadImage = async (campeonatoId, file) => {
+    convertFileToBase64(file, async (base64String) => {
+      const jsonData = {
+        userId: campeonatoId,
+        file: base64String,
+        fileName: file.name,
+        fileType: file.type.split('/')[1],
+        userType:'campeonato',
+        imageField: 'picture',
+      };
+
+      console.log('CampeonatoId: ', campeonatoId)
+      console.log('CampeonatoId: ', jsonData)
+  
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        });
+  
+        if (response.ok) {
+          toast.success('Campeonato e imagem associada salvos com sucesso!', {
+            position: "top-center",
+            autoClose: 5000,
+            onClose: () => navigate('/campeonatos')
+          });
+        } else {
+          const data = await response.json();
+          throw new Error(data.msg || 'Erro ao enviar imagem.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar imagem:', error);
+        toast.error('Erro ao enviar imagem.', {
+          position: "top-center",
+          autoClose: 5000,
+        });
+      }
+    });
+  };
+  
+  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
