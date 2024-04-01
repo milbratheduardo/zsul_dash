@@ -39,24 +39,27 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
       tipoGrupo: modalFieldsState['tipoGrupo'],
       tipoMataMata: modalFieldsState['tipoMataMata'],
       vagas: modalFieldsState['participantes'],
+      file: '', // Inicializa com uma string vazia
+      fileType: '' // Inicializa com uma string vazia
     };
 
     
     const fileField = document.querySelector("input[type='file']");
-    if (fileField && fileField.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function () {
-        const imageData = reader.result; 
-        console.log('Base64 da imagem:', imageData); 
-        requestData.file = imageData;
-        sendRequest(requestData);
-      };
-      reader.readAsDataURL(fileField.files[0]);
-    } else {
+  if (fileField && fileField.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const imageData = reader.result;
+      console.log('Base64 da imagem:', imageData);
+      console.log('Tipo de arquivo:', fileField.files[0].type);
+      requestData.file = imageData;
+      requestData.fileType = fileField.files[0].type; 
       sendRequest(requestData);
-    }
-  };
-
+    };
+    reader.readAsDataURL(fileField.files[0]);
+  } else {
+    sendRequest(requestData);
+  }
+};
   const sendRequest = async (data) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`, {
