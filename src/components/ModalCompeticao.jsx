@@ -14,7 +14,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
   if (!isVisible) return null;
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
-  const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleClose = (e) => {
@@ -27,52 +27,62 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
-    const formData = new FormData();
-    formData.append('name', modalFieldsState['nome']);
-    formData.append('categoria', modalFieldsState['categoria']);
-    formData.append('tipoCompeticao', modalFieldsState['tipoCompeticao']);
-    formData.append('participantes', modalFieldsState['participantes']);
-    formData.append('quantidadeGrupos', modalFieldsState['quantidadeGrupos']);
-    formData.append('dataInicio', modalFieldsState['dataInicio']);
-    formData.append('cidade', modalFieldsState['cidade']);
-    formData.append('tipoGrupo', modalFieldsState['tipoGrupo']);
-    formData.append('tipoMataMata', modalFieldsState['tipoMataMata']);
-    formData.append('vagas', modalFieldsState['participantes']);
-  
+
+    const requestData = {
+      name: modalFieldsState['nome'],
+      categoria: modalFieldsState['categoria'],
+      tipoCompeticao: modalFieldsState['tipoCompeticao'],
+      participantes: modalFieldsState['participantes'],
+      quantidadeGrupos: modalFieldsState['quantidadeGrupos'],
+      dataInicio: modalFieldsState['dataInicio'],
+      cidade: modalFieldsState['cidade'],
+      tipoGrupo: modalFieldsState['tipoGrupo'],
+      tipoMataMata: modalFieldsState['tipoMataMata'],
+      vagas: modalFieldsState['participantes'],
+    };
+
+    
     const fileField = document.querySelector("input[type='file']");
     if (fileField && fileField.files[0]) {
-      formData.append('file', fileField.files[0]);
+      const reader = new FileReader();
+      reader.onload = function () {
+        const imageData = reader.result; 
+        console.log('Base64 da imagem:', imageData); 
+        requestData.file = imageData;
+        sendRequest(requestData);
+      };
+      reader.readAsDataURL(fileField.files[0]);
+    } else {
+      sendRequest(requestData);
     }
+  };
 
-    for (let [key, value] of formData.entries()) { 
-      console.log(key, value);
-    }
-    
-  
+  const sendRequest = async (data) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`, {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
       });
-  
-      const data = await response.json();
-      if (data.status === 200) {
+
+      const responseData = await response.json();
+      if (responseData.status === 200) {
         toast.success('Campeonato Cadastrado com sucesso!', {
           position: "top-center",
           autoClose: 5000,
           onClose: () => navigate('/campeonatos') 
         });
-        console.log('Dados: ', data);
+        console.log('Dados: ', responseData);
       } else {
-        setErrorMessage(data.msg)
+        setErrorMessage(responseData.msg)
         console.error('Erro ao cadastrar campeonato ' + errorMessage);
       }
     } catch (error) {
       console.error(error);
     }
   };
-  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -83,7 +93,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
         <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
           <HeaderModal title='Cadastre nova Competição' heading='Preencha todos os dados' />
           <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
-          {errorMessage && 
+            {errorMessage && 
               <div 
                 style={{
                   backgroundColor: 'red', 
