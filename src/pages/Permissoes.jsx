@@ -11,81 +11,70 @@ import { toast } from 'react-toastify';
 const Permissoes = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
     currentColor, currentMode } = useStateContext();
-  const [transferencias, setTransferencias] = useState([]);
+  const [permissoes, setPermissoes] = useState([]);
 
   useEffect(() => {
-    const fetchTransferencias = async () => {
+    const fetchPermissoes = async () => {
       try {
-        const response = await fetch(` ${process.env.REACT_APP_API_URL}transferencia/`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}sumulaPermissao/`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        
-        const promises = data.data.map(async (transferencia) => {
-          const responseTime = await fetch(` ${process.env.REACT_APP_API_URL}users/${transferencia.novoTimeId}`);
-          if (!responseTime.ok) {
-            console.error('Erro ao buscar nome do time para o ID:', transferencia.novoTimeId);
-            return transferencia; 
-          }
-          const dataTime = await responseTime.json();
-          console.log('Time: ', dataTime)
-          return { ...transferencia, novoTimeNome: dataTime.data.teamName }; 
-        });
-
-        const transferenciasComNomes = await Promise.all(promises);
-  
-        setTransferencias(transferenciasComNomes);
-        console.log('Transferencias com nomes dos times: ', transferenciasComNomes);
+        console.log('Permissoes: ', data)
+        setPermissoes(data.data);
       } catch (error) {
         console.error('Fetch error:', error);
       }
     };
   
-    fetchTransferencias();
+    fetchPermissoes();
   }, []);
   
 
     const TransferenciasGrid = [
       {
-        field: 'jogadorNome',
+        field: 'elencoName',
         headerText: 'Nome do Jogador',
         width: '200',
         textAlign: 'Center',
       },
       {
-        field: 'nomeTime',
+        field: 'elencoCategoria', 
+        headerText: 'Categoria do Atleta',
+        width: '200',
+        textAlign: 'Center',
+        template:(atleta) => (<a>Sub-{atleta.elencoCategoria}</a>)
+      },
+      {
+        field: 'userName',
         headerText: 'Time Atual',
         width: '150',
         textAlign: 'Center',
       },
       {
-        field: 'novoTimeNome', 
-        headerText: 'Time de Destino',
+        field: 'campeonatoName', 
+        headerText: 'Campeonato',
         width: '200',
         textAlign: 'Center',
       },
       {
-        field: 'motivo',
-        headerText: 'Motivo da Transferência',
+        field: 'campeonatoCategoria',
+        headerText: 'Categoria do Campeonato',
         width: '200',
         textAlign: 'Center',
+        template:(atleta) => (<a>Sub-{atleta.campeonatoCategoria}</a>)
       },
-      {
-        field: 'dataDeSolicitacao', 
-        headerText: 'Data da Solicitação',
-        width: '200',
-        textAlign: 'Center',
-      },
+      
       {
         headerText: 'Ações',
         width: '200',
         textAlign: 'Center',
-        template: (rowData) => <ActionButtonTemplate transferencia={rowData} />
+        template: (rowData) => <ActionButtonTemplate permissao={rowData} />
       }
     ];
 
-    const ActionButtonTemplate = ({ transferencia }) => (
+    const ActionButtonTemplate = ({ permissao }) => (
       <div style={{ textAlign: 'center' }}>
         <Button
           color='white'
@@ -94,7 +83,7 @@ const Permissoes = () => {
           borderRadius='10px'
           size='sm'
           style={{ marginRight: '10px' }}
-          onClick={() => AprovarTransferencia(transferencia._id)}
+          onClick={() => AprovarPermissao(permissao._id)}
         >
           Aceitar
         </Button>
@@ -104,7 +93,7 @@ const Permissoes = () => {
           text='Reprovar'
           borderRadius='10px'
           size='sm'
-          onClick={() => ReprovarTransferencia(transferencia._id)}
+          onClick={() => ReprovarPermissao(permissao._id)}
         >
           Reprovar
         </Button>
@@ -113,30 +102,30 @@ const Permissoes = () => {
     
     
 
-    const ReprovarTransferencia = async (transferenciaId) => {
+    const ReprovarPermissao = async (permissaoId) => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}transferencia/reprovar/${transferenciaId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}sumulaPermissao/reprovar/${permissaoId}`, {
           method: 'DELETE',
         });
         if (!response.ok) {
-          throw new Error('Erro ao reprovar transferência');
+          throw new Error('Erro ao reprovar inscrição');
         }
-        toast.success('Transferência reprovada com sucesso!');
+        toast.success('Inscrição reprovada com sucesso!');
       } catch (error) {
-        console.error('Erro ao reprovar transferência:', error);
+        console.error('Erro ao reprovar inscrição:', error);
         toast.error(error.message);
       }
     };
 
-    const AprovarTransferencia = async (transferenciaId) => {
+    const AprovarPermissao = async (permissaoId) => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}transferencia/aprovar/${transferenciaId}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}sumulaPermissao/aprovar/${permissaoId}`);
         if (!response.ok) {
-          throw new Error('Erro ao aprovar transferência');
+          throw new Error('Erro ao aprovar inscrição');
         }
-        toast.success('Transferência Aprovada com sucesso!');
+        toast.success('Inscrição Aprovada com sucesso!');
       } catch (error) {
-        console.error('Erro ao Aprovar transferência:', error);
+        console.error('Erro ao Aprovar inscrição:', error);
         toast.error(error.message);
       }
     };
@@ -180,7 +169,7 @@ const Permissoes = () => {
             md:p-10 bg-white rounded-3xl'>
               <Header category="Administrador" title="Permissões"/>
               <GridComponent
-                dataSource={transferencias}
+                dataSource={permissoes}
                 allowPaging
                 allowSorting
                 toolbar={['Search']}
