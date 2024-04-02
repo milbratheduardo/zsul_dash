@@ -329,7 +329,7 @@ const Home = () => {
                   />
                 ) : (
                   
-                <div style={{ marginTop: '20px' }}>
+                <div>
                   <Button 
                     color='white' 
                     bgColor={currentColor}
