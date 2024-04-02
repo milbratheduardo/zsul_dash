@@ -311,7 +311,7 @@ const Home = () => {
                   </div>
                 )}
                 </div>
-                <div className='mt-6'>
+                <div style={{ marginTop: '-6px' }}>
                 {permissao === 'admin' && (
                   <div>
                     <p className='font-bold text-gray-400'>Número de Usuários</p>
