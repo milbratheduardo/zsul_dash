@@ -405,7 +405,7 @@ const CampeonatoDetalhes = () => {
               </div>
               </div>
               <div>        
-                <Swiper
+                <Swiper style={{ zIndex: 0}}
                   spaceBetween={25}
                   slidesPerView={1}
                   onSlideChange={(swiper) => {
