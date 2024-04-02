@@ -52,9 +52,6 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
               <form className='mt-4 space-y-4'>    
                 
                 <div className='flex flex-wrap justify-center gap-2'>
-                  <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{
-                    backgroundColor: currentColor}}>Gerar Carteirinha</button>
-                  <div className='w-full' aria-hidden='true'></div>
                   <button
                     className='text-white py-2 px-4 rounded w-full sm:w-1/2'
                     style={{ backgroundColor: endColor }}
