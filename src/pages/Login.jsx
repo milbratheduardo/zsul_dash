@@ -38,6 +38,7 @@ const Login = () => {
           linkUrl="/signup"
         />
         <LoginComponent />
+        
       </div>
     </div>
   );

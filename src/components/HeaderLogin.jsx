@@ -19,6 +19,7 @@ const HeaderLogin = ({ logo, heading, paragraph, linkName, linkUrl, title }) => 
         <Link to={linkUrl} className="font-medium text-yellow-700 hover:text-yellow-800">
           {linkName}
         </Link>
+        
       </p>
     </div>
   );

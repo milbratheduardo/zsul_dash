@@ -87,6 +87,10 @@ const LoginComponent = () => {
     }
   };
 
+  const handleForgotPassword = () => {
+    navigate('/recuperar');
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     authenticateUser();
@@ -106,8 +110,10 @@ const LoginComponent = () => {
           >
             {errorMessage}
           </div>
+          
         }
       <div className="-space-y-px">
+        
         {fields.map(field => (
           <Input
             key={field.id}
@@ -122,7 +128,16 @@ const LoginComponent = () => {
             placeholder={field.placeholder}
           />
         ))}
+          <button 
+            className="forgot-password-button" 
+            type="button" 
+            onClick={handleForgotPassword}
+          >
+            <span className="forgot-password-text">Esqueceu a senha?</span>
+            <span className="recovery-text"> Recuperar</span>
+          </button>
       </div>
+      
       <LoginAction text='Login'/>
     </form>
   );
