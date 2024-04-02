@@ -9,6 +9,7 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   ControleAtletas,
   Documentos,
   Estatísticas, ClubesElenco} from './pages';
+import Recovery from './pages/recovery'
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,7 +31,7 @@ const App = () => {
                 <PrivateRoute component={Elenco} /> // Use PrivateRoute aqui
               } />
               <Route path='/staff' element={<PrivateRoute component={ComissaoTecnica} />} />
-              
+              <Route path='/recuperar' element={<Recovery></Recovery>}></Route>
               <Route path='/campeonatos' element={<Campeonatos />} />
               <Route path="/campeonatos/:id" element={<CampeonatoDetalhes />} />
               <Route path="/estatísticas" element={<Estatísticas />} />
