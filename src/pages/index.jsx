@@ -16,3 +16,4 @@ export { default as ControleAtletas } from './ControleAtletas';
 export { default as Documentos } from './Documentos';
 export { default as Estatísticas } from './Estatísticas';
 export { default as ClubesElenco } from './ClubesElenco';
+export { default as Permissoes } from './Permissoes';

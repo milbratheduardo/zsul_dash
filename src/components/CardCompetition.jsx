@@ -4,7 +4,7 @@ import { Button } from '../components';
 import { toast } from 'react-toastify';
 
 const CardCompetition = ({
-  image, title, type, participants, vacancies, city, category, date, teamId, currentColor, id, permissao, showViewDetailsButton
+  image, title, type, participants, vacancies, city, category, date, teamId, currentColor, id, permissao, status, showViewDetailsButton
 }) => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
@@ -65,6 +65,11 @@ const CardCompetition = ({
           Vagas Restantes: {vacancies}
         </p>
         <p className="text-gray-700 text-base">
+        Status: {status === 'aberto' ? 'Aberto para Inscrições' : 
+          status === 'fechado' ? 'Fechado para Inscrições' : 
+          status === 'finalizado' ? 'Campeonato Finalizado' : status}
+        </p>
+        <p className="text-gray-700 text-base">
           Data de Início: {date}
         </p>
         <p className="text-gray-700 text-base mb-4"> 
@@ -80,7 +85,7 @@ const CardCompetition = ({
           onClick={handleViewDetails} 
         />
         )}
-         {permissao !== 'admin' && (
+         {permissao !== 'admin' && status === 'aberto' && (
             <Button 
               color='white'
               bgColor='green'

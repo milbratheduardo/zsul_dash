@@ -105,7 +105,7 @@ const ModalEditarCampo = ({ isVisible, onClose, currentColor, campoId }) => {
                             </div>
                         }
                         <div className='-space-y-px'>
-                            {fields.map((field, index) => (
+                            {fields.filter(field => field.type !== 'file').map((field, index) => (
                                 <Input
                                     key={field.id}
                                     handleChange={handleChange}

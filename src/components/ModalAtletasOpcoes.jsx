@@ -9,6 +9,7 @@ import ModalEditarAtleta from './ModalEditarAtleta';
 import ModalEstatisticaAtleta from './ModalEstatisticaAtleta';
 import { useNavigate } from 'react-router-dom';
 import fundo_carteirinha from '../img/carteirinha.png';
+import { toast } from 'react-toastify';
 
 const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atleta, teamId }) => {
     if (!isVisible) return null;
@@ -73,12 +74,33 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
       const gerarCarteirinhaPDF = (event, atleta) => {
         event.preventDefault()        
         try {
-        const { name, dateOfBirth, fotoAtletaBase64, RG, RGFrenteBase64, RGVersoBase64, category} = atleta; 
-        console.log('atleta: ', atleta)
-        if (!name || !dateOfBirth || !fotoAtletaBase64 || !RGFrenteBase64 || !RGVersoBase64) {
-          console.error('Dados incompletos do atleta para gerar a carteirinha.');
-          return;
-        }
+          let { 
+            name, 
+            dateOfBirth, 
+            fotoAtletaBase64, 
+            RG, 
+            CPF,
+            RGFrenteBase64, 
+            RGVersoBase64, 
+            category 
+          } = atleta; 
+      
+          
+          name = name || "Nulo";
+          dateOfBirth = dateOfBirth || "Nulo";
+          fotoAtletaBase64 = fotoAtletaBase64 || "Nulo";
+          RG = RG || "Nulo";
+          CPF = CPF || "Nulo";
+          RGFrenteBase64 = RGFrenteBase64 || "Nulo";
+          RGVersoBase64 = RGVersoBase64 || "Nulo";
+          category = category || "Nulo";
+      
+          
+          if (name === "Nulo" || dateOfBirth === "Nulo" || fotoAtletaBase64 === "Nulo" || RG === "Nulo" || RGFrenteBase64 === "Nulo" || RGVersoBase64 === "Nulo") {
+            console.error('Dados incompletos do atleta para gerar a carteirinha.');
+            toast.error('Dados incompletos do atleta para gerar a carteirinha.');
+            return;
+          }
       
         const doc = new jsPDF({
           orientation: 'landscape',
@@ -115,23 +137,25 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         const textYStart = 28;
         doc.setFontSize(10);
 
+        const documentoExibido = RG === "Nulo" ? CPF : RG;
+
         
         doc.setTextColor(0, 0, 0); 
         tamanhoFonte = ajustarTamanhoFonte(doc, name.toUpperCase(), larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
         doc.text(capitalize(`${name}`), textX + 8, textYStart - 16);
-        tamanhoFonte = ajustarTamanhoFonte(doc, RG, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        tamanhoFonte = ajustarTamanhoFonte(doc, documentoExibido, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
-        doc.text(`${RG}`, textX + 6, textYStart - 3);
-        tamanhoFonte = ajustarTamanhoFonte(doc, name.toUpperCase(), larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.text(documentoExibido, textX + 6, textYStart - 3);
+        tamanhoFonte = ajustarTamanhoFonte(doc, documentoExibido, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
-        doc.text(capitalize(`${timeInfo.data?.teamName}`), textX + 40, textYStart - 3);
-        tamanhoFonte = ajustarTamanhoFonte(doc, dateOfBirth, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.text(capitalize(`${timeInfo.data?.teamName}`), textX + 35, textYStart - 3);
+        tamanhoFonte = ajustarTamanhoFonte(doc, documentoExibido, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
         doc.text(`${dateOfBirth}`, textX + 6, textYStart + 11);
-        tamanhoFonte = ajustarTamanhoFonte(doc, category, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        tamanhoFonte = ajustarTamanhoFonte(doc, documentoExibido, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
-        doc.text(capitalize(`${category}`), textX + 40, textYStart + 11);
+        doc.text(capitalize(`Sub-${category}`), textX + 40, textYStart + 11);
 
         const pdfBlob = doc.output('blob');
 

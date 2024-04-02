@@ -106,6 +106,7 @@ const Campeonatos = () => {
                       id={campeonato._id}
                       showViewDetailsButton={true}
                       permissao={permissao}
+                      status={campeonato.status}
                     />
                   ))}
                 </div>

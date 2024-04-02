@@ -5,8 +5,8 @@ import { GridComponent, ColumnsDirective, ColumnDirective,
   Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
-
+import { Navbar, Footer, Sidebar, ThemeSettings, Button } from '../components';
+import { toast } from 'react-toastify';
 
 const Transferencias = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
@@ -74,20 +74,73 @@ const Transferencias = () => {
       {
         field: 'dataDeSolicitacao', 
         headerText: 'Data da Solicitação',
-        width: '150',
+        width: '200',
         textAlign: 'Center',
-        template: (props) => <span>{props.dataDeSolicitcao}</span>, 
       },
       {
         headerText: 'Ações',
-        width: '150',
+        width: '200',
         textAlign: 'Center',
-        template: (rowData) => (
-          <div className="actions">
-          </div>
-        ),
-      },
+        template: (rowData) => <ActionButtonTemplate transferencia={rowData} />
+      }
     ];
+
+    const ActionButtonTemplate = ({ transferencia }) => (
+      <div style={{ textAlign: 'center' }}>
+        <Button
+          color='white'
+          bgColor='green'
+          text='Aceitar'
+          borderRadius='10px'
+          size='sm'
+          style={{ marginRight: '10px' }}
+          onClick={() => AprovarTransferencia(transferencia._id)}
+        >
+          Aceitar
+        </Button>
+        <Button
+          color='white'
+          bgColor='red'
+          text='Reprovar'
+          borderRadius='10px'
+          size='sm'
+          onClick={() => ReprovarTransferencia(transferencia._id)}
+        >
+          Reprovar
+        </Button>
+      </div>
+    );
+    
+    
+
+    const ReprovarTransferencia = async (transferenciaId) => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}transferencia/reprovar/${transferenciaId}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Erro ao reprovar transferência');
+        }
+        toast.success('Transferência reprovada com sucesso!');
+      } catch (error) {
+        console.error('Erro ao reprovar transferência:', error);
+        toast.error(error.message);
+      }
+    };
+
+    const AprovarTransferencia = async (transferenciaId) => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}transferencia/aprovar/${transferenciaId}`);
+        if (!response.ok) {
+          throw new Error('Erro ao aprovar transferência');
+        }
+        toast.success('Transferência Aprovada com sucesso!');
+      } catch (error) {
+        console.error('Erro ao Aprovar transferência:', error);
+        toast.error(error.message);
+      }
+    };
+    
     
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>

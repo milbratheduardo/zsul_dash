@@ -73,7 +73,7 @@ const Home = () => {
               .filter(partida => partida.dataParsed <= new Date()) 
               .sort((a, b) => b.dataParsed - a.dataParsed) 
               .slice(0, 3); 
-    
+              
             const partidasComInfo = await Promise.all(partidasComDataParsed.map(async partida => {
               return await fetchAdditionalInfo(partida);
             }));
@@ -102,9 +102,14 @@ const Home = () => {
       const userForaResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${jogo.userIdFora}`);
       const userForaData = await userForaResponse.json();
     
-      // Adiciona uma nova busca para o campo baseado no campoId
+
       const campoResponse = await fetch(`${process.env.REACT_APP_API_URL}campos/${jogo.campoId}`);
       const campoData = await campoResponse.json();
+
+      console.log('Dados do Campeonato:', campeonatoData);
+      console.log('Dados do Time Casa:', userCasaData);
+      console.log('Dados do Time Fora:', userForaData);
+
     
       const campeonatoName = campeonatoData?.data.name || 'Desconhecido';
       const teamNameCasa = userCasaData?.data.teamName || 'Equipe Casa Desconhecida';
@@ -259,7 +264,7 @@ const Home = () => {
       }
     }, [userInfo]);
 
-
+    console.log('JOGOS: ', proximasPartidas)
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -360,15 +365,15 @@ const Home = () => {
               </div>
             </div>
 
-            <div className='flex gap-10 flex-wrap justify-center'>
+            {/*<div className='flex gap-10 flex-wrap justify-center'>
               <div className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-4 m-3 rounded-2xl md:w-780'>
                 <div className='flex justify-between'>
                   <p className='font-semibold text-xl'>Próximas Partidas</p>
                 </div>
-                <div className='mt-5 flex flex-row flex-wrap justify-center gap-4'> {/* Modificação aqui */}
+                <div className='mt-5 flex flex-row flex-wrap justify-center gap-4'> 
                   {proximasPartidas.length > 0 ? (
                     proximasPartidas.map((partida) => (
-                      <div key={partida._id} className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-4 mb-4 rounded-2xl w-1/3'> {/* Ajustes aqui */}
+                      <div key={partida._id} className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-4 mb-4 rounded-2xl w-1/3'>
                         <p className='font-semibold'>{partida.teamNameCasa} vs {partida.teamNameFora}</p>
                         <p>Campeonato: {partida.campeonatoName}</p>
                         <p>Data: {partida.data}</p>
@@ -390,6 +395,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
+                  */}
           </div>
         </div>
       </div>

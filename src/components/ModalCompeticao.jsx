@@ -30,7 +30,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
         e.preventDefault();
 
         const requestData = {
-            name: modalFieldsState['nome'],
+            name: modalFieldsState['name'],
             categoria: modalFieldsState['categoria'],
             tipoCompeticao: modalFieldsState['tipoCompeticao'],
             participantes: modalFieldsState['participantes'],
@@ -82,7 +82,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
 
     const compressImage = async (file) => {
         const options = {
-            maxSizeMB: 0.02, 
+            maxSizeMB: 0.015, 
             maxWidthOrHeight: 1920,
             useWebWorker: true
         };
@@ -170,7 +170,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
                             </div>
                         )}
                         <div className='-space-y-px'>
-                            {fields.map((field, index) => (
+                        {fields.filter(field => field.id !== 'status').map((field, index) => (
                                 <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
                                     {field.type === 'dropdown' ? (
                                         <div>

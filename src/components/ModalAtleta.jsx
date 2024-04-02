@@ -71,7 +71,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
   const compressImage = async (file) => {
     const options = {
-      maxSizeMB: 0.02,
+      maxSizeMB: 0.015,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
     };

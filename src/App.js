@@ -8,7 +8,7 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   Campos,
   ControleAtletas,
   Documentos,
-  Estatísticas, ClubesElenco} from './pages';
+  Estatísticas, ClubesElenco, Permissoes} from './pages';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -47,6 +47,7 @@ const App = () => {
               <Route path='/campos' element={<Campos />} />
               <Route path='/controleAtletas' element={<ControleAtletas />} />
               <Route path='/documentos' element={<Documentos />} />
+              <Route path='/permissoes' element={<Permissoes />} />
           </Routes>
                
         </BrowserRouter>

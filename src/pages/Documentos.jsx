@@ -152,7 +152,7 @@ const Documentos = () => {
       width: '150',
       textAlign: 'Center'
     },
-    { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
+    { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center', template:(atleta) => (<a>Sub-{atleta.category}</a>)},
   ];
   
   
