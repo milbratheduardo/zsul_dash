@@ -30,7 +30,7 @@ const App = () => {
                 <PrivateRoute component={Elenco} /> // Use PrivateRoute aqui
               } />
               <Route path='/staff' element={<PrivateRoute component={ComissaoTecnica} />} />
-              
+              <Route path='/recuperar' element={<Recovery></Recovery>}></Route>
               <Route path='/campeonatos' element={<Campeonatos />} />
               <Route path="/campeonatos/:id" element={<CampeonatoDetalhes />} />
               <Route path="/estatísticas" element={<Estatísticas />} />

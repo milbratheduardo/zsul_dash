@@ -1,0 +1,77 @@
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    height: 450px;
+  }
+  
+  .logo {
+    text-align: center;
+    margin-bottom: 20px;
+    width: 353px;
+  }
+.boxStyle{
+    
+    width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: -30px;
+   
+    height: 3%;
+}
+
+  
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    margin-bottom: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .links {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+
+.h1{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.button{
+    width: 100%;
+    background-color: rgb(161 98 7 );
+}
+.Back{
+    box-shadow: #000;
+    color: rgb(161 98 7 );
+}
