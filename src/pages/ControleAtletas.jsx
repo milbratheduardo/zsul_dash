@@ -137,13 +137,6 @@ const ControleAtletas = () => {
         width: '150',
         textAlign: 'Center',
       },
-      { 
-        field: 'category', 
-        headerText: 'Categoria', 
-        width: '200', 
-        textAlign: 'Center',
-        template:(rowData) => (<a>Sub-{rowData.category}</a>)
-      },
       {
         field: 'status',
         headerText: 'Status',
