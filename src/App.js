@@ -9,6 +9,9 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   ControleAtletas,
   Documentos,
   Estatísticas, ClubesElenco, Permissoes} from './pages';
+import Recovery from './pages/recovery'
+
+
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
