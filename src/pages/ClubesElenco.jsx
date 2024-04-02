@@ -152,7 +152,7 @@ const ClubesElenco = () => {
       textAlign: 'Center',
       template: (props) => <span>{props.RG || formatCPF(props.CPF)}</span>,
     },
-    { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center' },
+    { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center', template:(atleta) => (<a>Sub-{atleta.category}</a>)},
   ];
 
 

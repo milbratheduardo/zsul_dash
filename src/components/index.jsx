@@ -40,3 +40,4 @@ export { default as ModalAtletaDocumentos } from './ModalAtletaDocumentos';
 export { default as ModalCampoOpcoes } from './ModalCampoOpcoes';
 export { default as ModalEstatisticaAtleta } from './ModalEstatisticaAtleta';
 export { default as Cabecalho } from './Cabecalho';
+export { default as ModalEditarCampeonato } from './ModalEditarCampeonato';

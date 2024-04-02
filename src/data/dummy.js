@@ -9,6 +9,7 @@ import { MdOutlineSupervisorAccount, MdSpaceDashboard, MdAccountCircle } from 'r
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { FaPeopleGroup, FaTrophy, FaCalendarDay, FaCircleCheck,
 FaHandshakeSimple } from "react-icons/fa6";
+import { FaUserCheck } from "react-icons/fa";
 import { IoIosPeople } from "react-icons/io";
 import { IoIosStats } from "react-icons/io";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -243,6 +244,10 @@ export const links = [
       {
         name: 'Transferencias',
         icon: <BiTransfer />,
+      },
+      {
+        name: 'Permissoes',
+        icon: <FaUserCheck />,
       },
       {
         name: 'Clubes',

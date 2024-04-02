@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Inject } from '@syncfusion/ej2-react-grids';
 import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo, ModalTimeGrupo, 
-  ModalAdicionarJogo, CardJogos } from '../components';
+  ModalAdicionarJogo, CardJogos, ModalEditarCampeonato } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -26,12 +26,14 @@ const CampeonatoDetalhes = () => {
   const [showModalGrupo, setShowModalGrupo] = useState(false);
   const [showModalTimeGrupo, setShowModalTimeGrupo] = useState(false);
   const [showModalAdicionarJogo, setShowModalAdicionarJogo] = useState(false);
+  const [showModalEditarCampeonato, setShowModalEditarCampeonato] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState('');
   const [jogos, setJogos] = useState([]);
   const [estatisticas, setEstatisticas] = useState([]);
   const permissao = localStorage.getItem('permissao') || '';
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
+  const endColor2 = chroma(currentColor).darken(2).css();
   
 
   
@@ -124,42 +126,7 @@ const CampeonatoDetalhes = () => {
   
     fetchTimeGroupsAndStats();
   }, [selectedGroupId]);
-  
-  
-
-  const inscreverTime = async () => {
-    const payload = {
-      userId: teamId, 
-      campeonatoId: id 
-    };
-  
-    try {
-      const response = await fetch(' ${process.env.REACT_APP_API_URL}inscricoes/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      const data = await response.json();
-      if (data.status === 200) {
-        toast.success('Equipe Inscrita com sucesso!', {
-          position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate('/sumulas') 
-        });
-      } else if (data.status === 400 || data.status === 500) {
-        setErrorMessage(data.msg); 
-      } else {
-        console.log('Error:', data.msg);
-      }
-  
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-      setErrorMessage("Houve um problema ao conectar com o servidor.");
-    }
-  }  
+    
   
 
   const ActionButtonTemplate = (teamId) => (
@@ -349,7 +316,15 @@ const CampeonatoDetalhes = () => {
               setSelectedGroupId('');
           }}/>
 
-          {!showModalGrupo && !showModalTimeGrupo && !showModalAdicionarJogo && (
+          <ModalEditarCampeonato
+            isVisible={showModalEditarCampeonato} 
+            currentColor={currentColor} 
+            campeonatoId = {id} 
+            onClose={() => {
+              setShowModalEditarCampeonato(false);
+            }}/>
+
+          {!showModalGrupo && !showModalTimeGrupo && !showModalAdicionarJogo && !showModalEditarCampeonato && (
           <div className='m-2 md:m-10 mt-16 p-2 md:p-10 bg-white rounded-3xl'>
             <div className='flex flex-wrap md:flex-nowrap justify-between items-center'>
                 <Header category='Clube' title={campeonato.name} />
@@ -388,6 +363,16 @@ const CampeonatoDetalhes = () => {
                       size='sm'
                       onClick={() => {
                         setShowModalAdicionarJogo(true);
+                      }}
+                    />
+                    <Button 
+                      color='white'
+                      bgColor={endColor2}
+                      text='Editar Campeonato'
+                      borderRadius='10px'
+                      size='sm'
+                      onClick={() => {
+                        setShowModalEditarCampeonato(true);
                       }}
                     />
                     <Button 

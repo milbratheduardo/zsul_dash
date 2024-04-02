@@ -26,7 +26,7 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
   
   const compressImage = async (file) => {
     const options = {
-        maxSizeMB: 0.02,
+        maxSizeMB: 0.015,
         maxWidthOrHeight: 1920,
         useWebWorker: true
     };

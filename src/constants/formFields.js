@@ -283,9 +283,9 @@ const ModalGrupoFields = [
 const ModalCompeticaoFields = [
     {
         labelText:"Nome da Competição",
-        labelFor:"nome",
-        id:"nome",
-        name:"nome",
+        labelFor:"name",
+        id:"name",
+        name:"name",
         type:"text",
         autoComplete:"nome",
         isRequired:true,
@@ -310,15 +310,15 @@ const ModalCompeticaoFields = [
         type: "dropdown",
         isRequired: true,
         options: [
-        { value: "sub9", label: "Sub-9" },
-        { value: "sub10", label: "Sub-10" },
-        { value: "sub11", label: "Sub-11" },
-        { value: "sub12", label: "Sub-12" },
-        { value: "sub13", label: "Sub-13" },
-        { value: "sub14", label: "Sub-14" },
-        { value: "sub15", label: "Sub-15" },
-        { value: "sub16", label: "Sub-16" },
-        { value: "sub17", label: "Sub-17" },
+        { value: "9", label: "Sub-9" },
+        { value: "10", label: "Sub-10" },
+        { value: "11", label: "Sub-11" },
+        { value: "12", label: "Sub-12" },
+        { value: "13", label: "Sub-13" },
+        { value: "14", label: "Sub-14" },
+        { value: "15", label: "Sub-15" },
+        { value: "16", label: "Sub-16" },
+        { value: "17", label: "Sub-17" },
         ],
         placeholder: "Categoria",
     },
@@ -360,6 +360,20 @@ const ModalCompeticaoFields = [
         { value: "Apenas Ida", label: "Apenas Ida" }
         ],
         placeholder: "Tipo Fase de Eliminação",
+    },
+    {
+        labelText: "Status",
+        labelFor: "status",
+        id: "status",
+        name: "status",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "aberto", label: "Aberto para Inscrições" },
+        { value: "fechado", label: "Fechado para Inscrições" },
+        { value: "finalizado", label: "Campeonato Finalizado" }
+        ],
+        placeholder: "Status da Competição",
     },
     {
         labelText:"Cidade da Competição",
