@@ -7,6 +7,7 @@ import axios from 'axios';
 const Recovery = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -19,7 +20,8 @@ const Recovery = () => {
       const response = await axios.get(`https://zsul-api.onrender.com/users/recuperar/${email}`);
       const userData = response.data.data;
       const userPassword = userData.password;
-      console.log('Senha do usuário:', userPassword);
+      setPassword(userPassword);
+      setShowPassword(true);
     } catch (error) {
       console.error('Erro ao recuperar senha do usuário:', error);
       if (error.response) {
@@ -31,7 +33,6 @@ const Recovery = () => {
       }
     }
   };
-  
 
   const backgroundStyle = {
     backgroundImage: `url(${maracana})`,
@@ -62,7 +63,7 @@ const Recovery = () => {
         </div>
         <h1 className="h1">Recuperar Senha</h1>
         <p>
-          Digite o email cadastrado em sua conta para recuperar a senha.
+          Digite o email para recuperar a senha.
         </p>
         <form onSubmit={handleSubmit}>
           <input
@@ -73,9 +74,14 @@ const Recovery = () => {
           />
           <button type="submit">Enviar</button>
         </form>
+        {showPassword && (
+          <p>
+            Senha: <strong>{password}</strong>
+          </p>
+        )}
         <button className="button" onClick={handleGetPassword}>Recuperar Senha</button>
         <div className="links">
-          <a href="/">Voltar ao Login</a>
+          <a className="Back" href="/">Voltar ao Login</a>
         </div>
       </div>
     </div>
