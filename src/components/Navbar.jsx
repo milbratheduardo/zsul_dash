@@ -25,6 +25,30 @@ const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const userId = user.data.id || null;
   const [imageSrc, setImageSrc] = useState('');
+  const [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userId = user.data.id;
+      try {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}users/${userId}`);
+       
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data);
+          console.log('Dados: ', data);
+        } else {
+          console.error('Erro ao buscar dados do usuário');
+        }
+      } catch (error) {
+        console.error('Erro na solicitação:', error);
+      }
+    };
+
+    if (user.data.id) {
+      fetchUserInfo();
+    }
+  }, [user.data.id]); 
 
   useEffect(() => {
     const imageData = {
@@ -81,7 +105,7 @@ const Navbar = () => {
       {screenSize > 900 && (
         <TooltipComponent content='Profile' position='BottomCenter'>
           <div className='flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg'>
-            <img className='rounded-full w-12 h-12' src={imageSrc} alt='Profile'/>
+            <img className='rounded-full w-12 h-12' src={userInfo.data?.pictureBase64} alt='Profile'/>
             <p>
               <span className='text-gray-400 font-bold ml-1 text-14'>{user.data.teamName}</span>
             </p>

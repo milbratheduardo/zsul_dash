@@ -14,6 +14,7 @@
     "@syncfusion/ej2-react-popups": "^19.4.52",
     "@syncfusion/ej2-react-richtexteditor": "^19.4.50",
     "@syncfusion/ej2-react-schedule": "^19.4.50",
+    "browser-image-compression": "^2.0.2",
     "chroma-js": "^2.4.2",
     "date-fns": "^3.5.0",
     "dotenv": "^16.4.5",

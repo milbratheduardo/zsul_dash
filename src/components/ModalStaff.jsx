@@ -5,6 +5,7 @@ import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import imageCompression from 'browser-image-compression';
 
 const fields = ModalStaffFields;
 let fieldsState = {};
@@ -30,42 +31,100 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
     formData.append('dateOfBirth', modalFieldsState['dateOfBirth']);
     formData.append('documentNumber', modalFieldsState['documentNumber']);
     formData.append('cargo', modalFieldsState['cargo']);
-  
-    const fileField = document.querySelector("input[type='file']");
-    if (fileField && fileField.files[0]) {
-      formData.append('file', fileField.files[0]);
-    }
-
-    for (let [key, value] of formData.entries()) { 
-      console.log('Data: ',key, value);
-    }
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}staff/`, {
         method: 'POST',
         body: formData,
       });
-  
-      const data = await response.json();      
-      if (data.status === 200) {
-        toast.success('Membro do Staff Cadastrado com sucesso!', {
-          position: "top-center",
-          autoClose: 3000,
-          onClose: () => {
-            window.location.reload(); 
-          }
-        });
-      } else if (data.status === 400 || data.status === 500) {
-        setErrorMessage(data.msg); 
-      } else {
-        console.log('Error:', data.msg);
-      }
+      
+      const responseData = await response.json();
+      if (response.ok && responseData.data._id) {
+        const fileField = document.querySelector("input[type='file']");
+        if (fileField && fileField.files[0]) {
+            uploadImage(responseData.data._id, fileField.files[0]);
+        } else {
+            toast.success('Membro do Staff cadastrado com sucesso!', {
+                position: "top-center",
+                autoClose: 5000,
+                onClose: () => navigate('/staff')
+            });
+        }
+    } else {
+        throw new Error(responseData.msg || 'Erro ao cadastrar campeonato');
+    }
   
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   };
+
+  const compressImage = async (file) => {
+    const options = {
+        maxSizeMB: 0.02, 
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+    };
+
+    try {
+        const compressedFile = await imageCompression(file, options);
+        return compressedFile;
+    } catch (error) {
+        console.error(error);
+        return file; 
+    }
+};
+
+const convertFileToBase64 = (file, callback) => {
+    const reader = new FileReader();
+    reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
+    reader.readAsDataURL(file);
+};
+
+const uploadImage = async (staffId, file) => {
+    compressImage(file).then(compressedFile => {
+        convertFileToBase64(compressedFile, async (base64String) => {
+            const jsonData = {
+                userId: staffId,
+                file: base64String,
+                fileType: file.type.split('/')[1],
+                userType: 'staff',
+                imageField: 'picture',
+            };
+
+            console.log('staffId: ', staffId)
+            console.log('JSON: ', jsonData)
+
+            try {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jsonData),
+                });
+
+                if (response.ok) {
+                    toast.success('Staff e imagem associada salvos com sucesso!', {
+                        position: "top-center",
+                        autoClose: 5000,
+                        onClose: () => navigate('/staff')
+                    });
+                } else {
+                    const data = await response.json();
+                    throw new Error(data.msg || 'Erro ao enviar imagem.');
+                }
+            } catch (error) {
+                console.error('Erro ao enviar imagem:', error);
+                toast.error('Erro ao enviar imagem.', {
+                    position: "top-center",
+                    autoClose: 5000,
+                });
+            }
+        });
+    });
+};
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>

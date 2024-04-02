@@ -70,10 +70,12 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
       }, [teamId]);
 
       console.log('time Info: ', timeInfo)
-      const gerarCarteirinhaPDF = (atleta) => {
-        const { name, dateOfBirth, fotoAtletaBase64, CPF, RGFrenteBase64, RGVersoBase64, category} = atleta; 
-      
-        if (!name || !dateOfBirth || !fotoAtletaBase64 || !CPF || !RGFrenteBase64 || !RGVersoBase64) {
+      const gerarCarteirinhaPDF = (event, atleta) => {
+        event.preventDefault()        
+        try {
+        const { name, dateOfBirth, fotoAtletaBase64, RG, RGFrenteBase64, RGVersoBase64, category} = atleta; 
+        console.log('atleta: ', atleta)
+        if (!name || !dateOfBirth || !fotoAtletaBase64 || !RGFrenteBase64 || !RGVersoBase64) {
           console.error('Dados incompletos do atleta para gerar a carteirinha.');
           return;
         }
@@ -118,16 +120,16 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         tamanhoFonte = ajustarTamanhoFonte(doc, name.toUpperCase(), larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
         doc.text(capitalize(`${name}`), textX + 8, textYStart - 16);
-        tamanhoFonte = ajustarTamanhoFonte(doc, CPF, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        tamanhoFonte = ajustarTamanhoFonte(doc, RG, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
-        doc.text(`${CPF}`, textX + 6, textYStart - 3);
-        tamanhoFonte = ajustarTamanhoFonte(doc, CPF, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.text(`${RG}`, textX + 6, textYStart - 3);
+        tamanhoFonte = ajustarTamanhoFonte(doc, name.toUpperCase(), larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
-        doc.text(capitalize(`${timeInfo.data.teamName}`), textX + 40, textYStart - 3);
-        tamanhoFonte = ajustarTamanhoFonte(doc, CPF, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        doc.text(capitalize(`${timeInfo.data?.teamName}`), textX + 40, textYStart - 3);
+        tamanhoFonte = ajustarTamanhoFonte(doc, dateOfBirth, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
         doc.text(`${dateOfBirth}`, textX + 6, textYStart + 11);
-        tamanhoFonte = ajustarTamanhoFonte(doc, CPF, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
+        tamanhoFonte = ajustarTamanhoFonte(doc, category, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
         doc.text(capitalize(`${category}`), textX + 40, textYStart + 11);
 
@@ -140,6 +142,9 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         window.open(pdfUrl);
       
         console.log('PDF aberto em uma nova aba com sucesso!');
+      } catch(error) {
+        console.error('Erro ao gerar carteirinha:', error);
+      }
       };
       
     return (
@@ -169,7 +174,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                 <button
                   className='text-white py-2 px-4 rounded w-full sm:w-1/2'
                   style={{ backgroundColor: startColor }}
-                  onClick={() => gerarCarteirinhaPDF(atleta)} 
+                  onClick={(event) => gerarCarteirinhaPDF(event, atleta)} 
                 >
                   Gerar Carteirinha
                 </button>

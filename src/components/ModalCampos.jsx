@@ -5,11 +5,12 @@ import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { Data } from '@syncfusion/ej2-react-grids';
 
 
 const fields = ModalCamposFields;
 let fieldsState = [];
-
+//const [imageBase64, setImageBase64] = useState('')
 fields.forEach((field) => (fieldsState[field.id] = ''));
 
 const ModalCampos = ({ isVisible, onClose, currentColor }) => {
@@ -29,46 +30,57 @@ const ModalCampos = ({ isVisible, onClose, currentColor }) => {
   const handleSubmit= async (e)=>{
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('nome', modalFieldsState['nome']);
-    formData.append('cidade', modalFieldsState['cidade']);
-    formData.append('endereco', modalFieldsState['endereco']);
-    formData.append('linkMaps', modalFieldsState['linkMaps']);
-  
     const fileField = document.querySelector("input[type='file']");
+
+    const convertFileToBase64 = (file, callback) => {
+      const reader = new FileReader();
+      reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
+      reader.readAsDataURL(file);
+    };
+
     if (fileField && fileField.files[0]) {
-      formData.append('file', fileField.files[0]);
-    }
+      convertFileToBase64(fileField.files[0], async (base64String) => {
+        try {
+          const jsonData = {
+            ...modalFieldsState,
+            fileBase64: base64String,
+            fileName: fileField.files[0].name,
+            fileType: fileField.files[0].type.split('/')[1],
+            
+          };
+          console.log('jsonData',jsonData)
+          const response = await fetch(`${process.env.REACT_APP_API_URL}campos/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+          });
 
-    for (let [key, value] of formData.entries()) { 
-      console.log(key, value);
-    }
+          const data = await response.json();
 
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}campos/`, {
-        method: 'POST',
-        body: formData,
+          if (data.status === 200) {
+            console.log('LALALAALAAAA', data )
+            toast.success(`Estádio cadastrado com sucesso!`, {
+              
+              position: "top-center",
+              autoClose: 5000,
+              onClose: () => navigate(`/campos`),
+            });
+          } else if (data.status === 400 || data.status === 500) {
+            setErrorMessage(data.msg);
+          } else {
+            console.log('Error:', data.msg);
+          }
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+          setErrorMessage("Houve um problema ao conectar com o servidor.");
+        }
       });
-      
-      const data = await response.json();
-      if (data.status === 200) {
-        toast.success(`Estádio  Cadastrado com sucesso!`, {
-          position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate(`/campos`) 
-        });
-      } else if (data.status === 400 || data.status === 500) {
-        setErrorMessage(data.msg); 
-      } else {
-        console.log('Error:', data.msg);
-      }
-  
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    } else {
+      console.log("Nenhum arquivo selecionado ou suportado.");
     }
-  }
-
+  };
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
       <div className='w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex flex-col' style={{ height: '100%', maxHeight: '600px' }}>

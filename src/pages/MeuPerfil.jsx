@@ -185,7 +185,7 @@ const MeuPerfil = () => {
                   <div className="flex flex-wrap justify-center text-center">
                     <div className="w-full px-4 flex justify-center">
                     <div className="relative">
-                    <img alt="Perfil" src={imageSrc}  className="h-90 w-90 rounded-full object-cover object-center"  />
+                    <img alt="Perfil" src={userInfo.data?.pictureBase64}  className="h-90 w-90 rounded-full object-cover object-center"  />
                     </div>
                     </div>
                   </div>

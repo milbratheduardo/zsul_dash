@@ -52,9 +52,9 @@ const Campos = () => {
   const camposGrid = [
     {
       headerText: 'Imagem',
-      template: ({ fotoCampoBase64 }) => (
+      template: ({ fileBase64 }) => (
         <div className='text-center'>
-          <img src={fotoCampoBase64} alt="Imagem" style={{ width: '150px', height: '50px', borderRadius: '50%' }} />
+          <img src={fileBase64} alt="Imagem" style={{ width: '150px', height: '50px', borderRadius: '50%' }} />
         </div>
       ),
       textAlign: 'Center',

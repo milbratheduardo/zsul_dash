@@ -5,6 +5,7 @@ import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import imageCompression from 'browser-image-compression';
 
 const fields = ModalPerfilFields;
 let fieldsState = {};
@@ -23,51 +24,79 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
   
-  const handleSubmit = (e) => {
+  const compressImage = async (file) => {
+    const options = {
+        maxSizeMB: 0.02,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+    };
+
+    try {
+        const compressedFile = await imageCompression(file, options);
+        return compressedFile;
+    } catch (error) {
+        console.error(error);
+        return file;
+    }
+};
+
+const convertFileToBase64 = (file, callback) => {
+    const reader = new FileReader();
+    reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
+    reader.readAsDataURL(file);
+};
+
+const handleSubmit = (e) => {
     e.preventDefault();
-  
-    const formData = new FormData();
-    formData.append('userId', userId);
-    formData.append('userType', 'user');
-    formData.append('imageField', 'picture');
-  
-    
+
     const fileInput = document.getElementById('logo');
     if (fileInput && fileInput.files[0]) {
-      formData.append('file', fileInput.files[0]);
-    }
-  
-    editPerfil(formData);
-  };
+        compressImage(fileInput.files[0]).then(compressedFile => {
+            convertFileToBase64(compressedFile, (base64String) => {
+                const jsonData = {
+                    userId: userId,
+                    file: base64String,
+                    fileType: fileInput.files[0].type.split('/')[1],
+                    userType: 'user',
+                    imageField: 'picture',
+                };
 
-  const editPerfil = async (formData) => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
-        method: 'POST',
-        body: formData, 
-      });
-  
-      const data = await response.json(); 
-  
-      if (response.ok) {
-        
-        toast.success('Perfil atualizado com sucesso!', {
-          position: "top-center",
-          autoClose: 5000,
-          onClose: () => navigate('/perfil') 
+                editPerfil(jsonData);
+            });
         });
-      } else {
-        setErrorMessage(data.msg || 'Erro ao atualizar o perfil.');
-      }
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-      setErrorMessage("Houve um problema ao conectar com o servidor.");
-      toast.error('Erro ao atualizar o perfil.', {
-        position: "top-center",
-        autoClose: 5000,
-      });
     }
-  }
+};
+
+const editPerfil = async (jsonData) => {
+    try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            toast.success('Perfil atualizado com sucesso!', {
+                position: "top-center",
+                autoClose: 5000,
+                onClose: () => navigate('/perfil')
+            });
+        } else {
+            setErrorMessage(data.msg || 'Erro ao atualizar o perfil.');
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        setErrorMessage("Houve um problema ao conectar com o servidor.");
+        toast.error('Erro ao atualizar o perfil.', {
+            position: "top-center",
+            autoClose: 5000,
+        });
+    }
+};
   
 
   return (

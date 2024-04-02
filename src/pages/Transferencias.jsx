@@ -72,7 +72,7 @@ const Transferencias = () => {
         textAlign: 'Center',
       },
       {
-        field: 'dataDeSolicitcao', 
+        field: 'dataDeSolicitacao', 
         headerText: 'Data da Solicitação',
         width: '150',
         textAlign: 'Center',

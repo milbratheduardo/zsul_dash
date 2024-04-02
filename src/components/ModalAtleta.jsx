@@ -5,6 +5,7 @@ import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import imageCompression from 'browser-image-compression'; // Certifique-se de instalar esta biblioteca
 
 const fields = ModalAtletaFields;
 let fieldsState = {};
@@ -16,6 +17,8 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const data = Date() 
+  const ano = data.split(" ")[3]
 
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
@@ -25,91 +28,125 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const userId = await adcAtleta(); 
-    if (userId) {
-   
-      await enviarImagem('RGFrente');
-      await enviarImagem('RGVerso');
-      await enviarImagem('fotoAtleta');
-  
-   
-      localStorage.removeItem('fotoAtleta');
-    }
-  }
 
-  const enviarImagem = async (imageField) => {
-    const userId = localStorage.getItem('fotoAtleta'); 
-    if (!userId) {
-      console.error('UserID não encontrado no localStorage.');
-      return;
-    }
-  
-    const file = document.getElementById(imageField).files[0];
-    if (!file) {
-      console.error('Nenhum arquivo selecionado para o campo:', imageField);
-      return;
-    }
-  
-    const formData = new FormData();
-    formData.append('userId', userId);
-    formData.append('userType', 'elenco');
-    formData.append('imageField', imageField);
-    formData.append('file', file); 
-  
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}image`, {
-        method: 'POST',
-        body: formData,
-      });
-  
-      if (response.ok) {
-        console.log(`${imageField} enviado com sucesso`);
-      } else {
-        const data = await response.json();
-        console.error(`Erro ao enviar ${imageField}`, data.message);
-      }
-    } catch (error) {
-      console.error(`Erro ao enviar ${imageField}`, error);
-    }
-  }
+    const requestData = {
+      name: modalFieldsState['name'],
+      dateOfBirth: modalFieldsState['dateOfBirth'],
+      documentNumber: modalFieldsState['documentNumber'],
+      school: modalFieldsState['school'],
+      currentDate: ano
+    };
 
-  const adcAtleta = async () => {
+    adcAtleta(requestData);
+  };
+
+  const adcAtleta = async (data) => {
     const payload = {
-      ...modalFieldsState,
+      ...data,
       teamId,
-    }
+    };
+
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
-      if (response.ok) {
-        
-        toast.success('Atleta Cadastrado com sucesso!', {
-          position: "top-center",
-          autoClose: 2000,
-          onClose: () => {
-            window.location.reload(); 
-          } 
-        });
-        localStorage.setItem('fotoAtleta', data.msg._id);
-        return data.msg._id; 
+      const responseData = await response.json();
+
+      if (response.ok && responseData.data._id) {
+        const elencoId = responseData.data._id;
+        handleImageUpload(elencoId); 
       } else {
-        setErrorMessage(data.message);
-        return null; 
+        throw new Error(responseData.msg || 'Erro ao cadastrar atleta');
       }
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
-      return null; 
     }
-  }
+  };
+
+  const compressImage = async (file) => {
+    const options = {
+      maxSizeMB: 0.02,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      return compressedFile;
+    } catch (error) {
+      console.error(error);
+      return file;
+    }
+  };
+
+  const convertFileToBase64 = (file, callback) => {
+    const reader = new FileReader();
+    reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageUpload = async (elencoId) => {
+    const imageFields = fields.filter(field => field.type === 'file');
+    
+    for (let field of imageFields) {
+      const fileInput = document.getElementById(field.id);
+      if (fileInput && fileInput.files[0]) {
+        try {
+          const compressedFile = await compressImage(fileInput.files[0]);
+          convertFileToBase64(compressedFile, async (base64String) => {
+            await uploadImage(elencoId, base64String, compressedFile.type.split('/')[1], field.id);
+          });
+        } catch (error) {
+          console.error('Error processing image:', error);
+        }
+      }
+    }
+  };
+  
+  const uploadImage = async (elencoId, base64String, fileType, imageField) => {
+    const jsonData = {
+      userId: elencoId,
+      file: base64String,
+      fileType: fileType,
+      userType: 'elenco',
+      imageField: imageField 
+    };
+  
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      });
+  
+      if (response.ok) {
+        toast.success(`${imageField} enviada com sucesso!`, {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => navigate('/elenco')
+        });
+      } else {
+        const data = await response.json();
+        throw new Error(data.msg || `Erro ao enviar ${imageField}.`);
+      }
+    } catch (error) {
+      console.error(`Erro ao enviar ${imageField}:`, error);
+      toast.error(`Erro ao enviar ${imageField}.`, {
+        position: "top-center",
+        autoClose: 5000,
+      });
+    }
+  };
+  
+  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -174,9 +211,15 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
                         mask={field.mask}
                       />
                       {field.id === 'documentNumber' && (
-                        <p className="text-gray-600 text-xs" style={{marginTop: '-10px', marginLeft: '5px', fontSize: '10px'}}>
+                        <div>
+                          <p className="text-gray-600 text-xs" style={{marginTop: '-10px', marginLeft: '5px', fontSize: '10px'}}>
                           Caso o atleta NÃO possua RG, colocar CPF.
                         </p>
+                        <p className="text-gray-600 text-xs" style={{marginTop: '-5px', marginLeft: '5px', fontSize: '10px'}}>
+                          Caso o atleta NÃO possua RG NEM CPF, colocar Certidão de Nascimento.
+                        </p>
+                        </div>
+                        
                       )}
                     </div>
                   )}

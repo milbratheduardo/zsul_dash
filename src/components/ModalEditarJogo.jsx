@@ -67,7 +67,7 @@ const ModalEditarJogo = ({ isVisible, onClose, currentColor, campeonatoId, grupo
             const userData = await userResponse.json();
             console.log('Times: ', userData)
             if (userResponse.ok) {
-              return { value: item.userId, label: `${userData.data.teamName}` };
+              return { value: item.userId, label: `${userData.data?.teamName}` };
             } else {
               throw new Error(`Failed to fetch team name for user ID: ${item.userId}`);
             }

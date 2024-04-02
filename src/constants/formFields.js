@@ -130,26 +130,6 @@ const ModalAtletaFields = [
         placeholder:"Escola"  
     },
     {
-        labelText: "Categoria",
-        labelFor: "categoria",
-        id: "category",
-        name: "category",
-        type: "dropdown",
-        isRequired: true,
-        options: [
-        { value: "sub9", label: "Sub-9" },
-        { value: "sub10", label: "Sub-10" },
-        { value: "sub11", label: "Sub-11" },
-        { value: "sub12", label: "Sub-12" },
-        { value: "sub13", label: "Sub-13" },
-        { value: "sub14", label: "Sub-14" },
-        { value: "sub15", label: "Sub-15" },
-        { value: "sub16", label: "Sub-16" },
-        { value: "sub17", label: "Sub-17" },
-        ],
-        placeholder: "Categoria",
-    },
-    {
         labelText:"RG Frente",
         labelFor:"rgfrente",
         id:"RGFrente",

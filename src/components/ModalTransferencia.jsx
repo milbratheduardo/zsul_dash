@@ -37,18 +37,18 @@ const ModalTransferencia = ({ isVisible, onClose, currentColor, atletaNome, atle
   useEffect(() => {
     const fetchClubes = async () => {
       try {
-        const response = await fetch(` ${process.env.REACT_APP_API_URL}users/`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}users/`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        
-        const clubesFiltrados = data.data.filter(clube => clube._id !== teamId);
-        
+  
+        const clubesFiltrados = data.data.filter(clube => clube._id !== teamId && clube.permission === "TEquipe");
+  
         setClubes(clubesFiltrados);
-        
+  
       } catch (error) {
-        console.error("Erro ao buscar campeonatos:", error);
+        console.error("Erro ao buscar clubes:", error);
       }
     };
   
@@ -67,7 +67,7 @@ const ModalTransferencia = ({ isVisible, onClose, currentColor, atletaNome, atle
       novoTimeId: selectedClubeId,
       jogadorId: atletaId,
       motivo: modalFieldsState['motivo'],
-      dataDeSolicitcao: modalFieldsState['data']
+      dataDeSolicitacao: modalFieldsState['data']
     };
   
     console.log("Body: ", requestBody);
@@ -176,13 +176,14 @@ const ModalTransferencia = ({ isVisible, onClose, currentColor, atletaNome, atle
                         type={field.type}
                         isRequired={field.isRequired}
                         placeholder={field.placeholder}
+                        mask={field.mask}
                       />
                     </div>
                   )}
                 </div>
               ))}
             </div>       
-            <FormAction currentColor={currentColor} text='Transferir' />
+            <FormAction currentColor={currentColor} text='Solicitar Transferência' />
             </div>            
           </form>
         </div>
