@@ -365,9 +365,9 @@ const Home = () => {
               </div>
             </div>
 
-            {/*<div className='flex gap-10 flex-wrap justify-center'>
+            <div className='flex gap-10 flex-wrap justify-center'>
               <div className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-4 m-3 rounded-2xl md:w-780'>
-                <div className='flex justify-between'>
+                {/*<div className='flex justify-between'>
                   <p className='font-semibold text-xl'>Próximas Partidas</p>
                 </div>
                 <div className='mt-5 flex flex-row flex-wrap justify-center gap-4'> 
@@ -393,9 +393,10 @@ const Home = () => {
                     <p>Nenhuma partida agendada.</p>
                   )}
                 </div>
+                      */}
               </div>
             </div>
-                  */}
+            
           </div>
         </div>
       </div>
