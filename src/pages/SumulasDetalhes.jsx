@@ -281,7 +281,7 @@ const SumulasDetalhes = () => {
       "",
       atleta.name, // Adjust according to your data structure
       atleta.RG || atleta.CPF, // Adjust according to your data structure
-      atleta.category// Add more fields as needed
+      `Sub-${atleta.category}`// Add more fields as needed
     ]);
   
     // Add the table to the PDF
