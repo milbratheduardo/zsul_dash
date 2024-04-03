@@ -22,7 +22,7 @@ const Clubes = () => {
         console.log('Response GET:', dataGet);  
 
         const body = {
-          userIdRequesting: "65f39396a540cfb413056b43",
+          userIdRequesting: "660c8847652b8d17fa2bf207",
           field: 'permission',
           value: newStatus,
         };
