@@ -75,7 +75,9 @@ const ModalEditarCampo = ({ isVisible, onClose, currentColor, campoId }) => {
                 if (response.ok) {
                     toast.success(`Campo ${change.field} editado com sucesso!`, {
                         position: "top-center",
-                        autoClose: 5000
+                        autoClose: 5000,
+                        onClose: (() => navigate('/campos'),
+                            window.location.reload())
                     });
                 } else {
                     console.error('Error:', data.message);

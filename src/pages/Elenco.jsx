@@ -57,7 +57,8 @@ const Elenco = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setAtletas(data.data);
+        console.log('data: ', data)
+        setAtletas(data.data[0]);
       } catch (error) {
         console.error('Fetch error:', error);
       }

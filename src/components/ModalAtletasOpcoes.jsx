@@ -23,6 +23,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
     const [isModalTransferenciaOpen, setIsModalTransferenciaOpen] = useState(false);
     const [isModalEditarOpen, setIsModalEditarOpen] = useState(false);
     const [isModalEstatisticaOpen, setIsModalEstatisticaOpen] = useState(false);
+    const [elencoStatus, setElencoStatus] = useState([]);
     const [timeInfo, setTimeInfo] = useState({});
     const navigate = useNavigate();
     const handleClose = (e) => {
@@ -32,6 +33,31 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
       const handleInscricaoClick = (event) => {
         event.preventDefault(); 
         setIsModalInscricaoOpen(true);
+      };
+
+      const handleExcluirClick = async (event) => {
+        event.preventDefault();
+        const atletaId = atleta._id; 
+      
+        try {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/${atletaId}`, {
+            method: 'DELETE', 
+          });
+      
+          if (!response.ok) {
+            throw new Error('Falha ao excluir atleta.');
+          }
+    
+          toast.success('Atleta Excluído com sucesso!', {
+            position: "top-center",
+            autoClose: 5000,
+            onClose: (() => navigate(`/elenco`),            
+              window.location.reload())
+          });
+      
+        } catch (error) {
+          console.error('Erro ao excluir atleta:', error);
+        }
       };
 
       const handleEditarClick = (event) => {
@@ -96,7 +122,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
           category = category || "Nulo";
       
           
-          if (name === "Nulo" || dateOfBirth === "Nulo" || fotoAtletaBase64 === "Nulo" || RG === "Nulo" || RGFrenteBase64 === "Nulo" || RGVersoBase64 === "Nulo") {
+          if (name === "Nulo" || dateOfBirth === "Nulo" || fotoAtletaBase64 === "Nulo"  || RGFrenteBase64 === "Nulo" || RGVersoBase64 === "Nulo") {
             console.error('Dados incompletos do atleta para gerar a carteirinha.');
             toast.error('Dados incompletos do atleta para gerar a carteirinha.');
             return;
@@ -170,6 +196,27 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         console.error('Erro ao gerar carteirinha:', error);
       }
       };
+
+      useEffect(() => {
+        const fetchElencoStatus = async () => {
+          try {
+            const responseElenco = await fetch(` ${process.env.REACT_APP_API_URL}elenco/`);
+    
+            if (responseElenco.ok) {
+              const dataElenco = await responseElenco.json();
+              setElencoStatus(dataElenco.data[1]);
+            } else {
+              console.error('Erro ao buscar status elenco');
+            }
+          } catch (error) {
+            console.error('Erro na solicitação:', error);
+          }
+        };
+    
+        
+          fetchElencoStatus();
+        
+      },);
       
     return (
         <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -208,6 +255,16 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
                   <button className='text-white py-2 px-4 rounded w-full sm:w-1/2' style={{ backgroundColor: currentColor }} onClick={(event) => handleEditarClick(event)}>
                     Editar Atleta
                 </button>
+                <div className='w-full' aria-hidden='true'></div>
+                  {elencoStatus[0]?.status !== 'inativo' && (
+                    <button 
+                      className='text-white py-2 px-4 rounded w-full sm:w-1/2' 
+                      style={{ backgroundColor: 'red' }} 
+                      onClick={(event) => handleExcluirClick(event)}
+                    >
+                      Excluir Atleta
+                    </button>
+                  )}
                   <button
                     className='text-white py-2 px-4 rounded w-full sm:w-1/2'
                     style={{ backgroundColor: endColor }}

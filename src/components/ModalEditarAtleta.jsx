@@ -29,8 +29,8 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
       try {
         const response = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${atletaId}`);
         const data = await response.json();
-        if (data.status === 200 && data.data) {
-          setInitialData(data.data);
+        if (data.status === 200 && data.data[0]) {
+          setInitialData(data.data[0]);
         } else {
           toast.error('Failed to fetch groups');
         }
@@ -179,7 +179,8 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
       }
     }
   
-    navigate(`/clubes/elenco/${teamId}`);
+    navigate(`/elenco`),
+    window.location.reload();
   };
 
   

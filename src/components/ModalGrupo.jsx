@@ -47,7 +47,8 @@ const ModalGrupo = ({ isVisible, onClose, currentColor, campeonatoId }) => {
         toast.success('Grupo Cadastrado com sucesso!', {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate(`/campeonatos/${campeonatoId}`) 
+          onClose: (() => navigate(`/campeonatos/${campeonatoId}`,
+            window.location.reload())) 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 

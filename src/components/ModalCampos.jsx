@@ -65,7 +65,8 @@ const ModalCampos = ({ isVisible, onClose, currentColor }) => {
               
               position: "top-center",
               autoClose: 5000,
-              onClose: () => navigate(`/campos`),
+              onClose: (() => navigate(`/campos`),
+                window.location.reload())
             });
           } else if (data.status === 400 || data.status === 500) {
             setErrorMessage(data.msg);

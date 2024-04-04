@@ -24,7 +24,7 @@ const ModalEstatisticaAtleta = ({ isVisible, onClose, currentColor, teamId, atle
         if (atletaResponse.ok && estatisticasResponse.ok) {
           const atletaData = await atletaResponse.json();
           const estatisticasData = await estatisticasResponse.json();
-          setAtletaInfo({ ...atletaData, estatisticas: estatisticasData, isLoading: false });
+          setAtletaInfo({ ...atletaData.data[0], estatisticas: estatisticasData.data, isLoading: false });
         } else {
           console.error('Erro ao buscar dados do atleta e estatísticas');
           toast.error('Erro ao carregar informações do atleta.');
@@ -57,11 +57,11 @@ const ModalEstatisticaAtleta = ({ isVisible, onClose, currentColor, teamId, atle
               <p>Carregando...</p>
             ) : (
               <>
-                <img alt="Perfil" src={atletaInfo.data?.fotoAtletaBase64} className="h-20 w-20 rounded-full object-cover" />
+                <img alt="Perfil" src={atletaInfo?.fotoAtletaBase64} className="h-20 w-20 rounded-full object-cover" />
                 <div className="text-center space-y-2">
-                  <div className="text-xl font-semibold">Gols: {atletaInfo.estatisticas.data?.[0].gols || '0'}</div>
-                  <div className="text-xl font-semibold">Cartões Amarelos: {atletaInfo.estatisticas.data?.[0].numeroCartoesAmarelo || '0'}</div>
-                  <div className="text-xl font-semibold">Cartões Vermelhos: {atletaInfo.estatisticas.data?.[0].numeroCartoesVermelho || '0'}</div>
+                  <div className="text-xl font-semibold">Gols: {atletaInfo.estatisticas?.[0].gols || '0'}</div>
+                  <div className="text-xl font-semibold">Cartões Amarelos: {atletaInfo.estatisticas?.[0].numeroCartoesAmarelo || '0'}</div>
+                  <div className="text-xl font-semibold">Cartões Vermelhos: {atletaInfo.estatisticas?.[0].numeroCartoesVermelho || '0'}</div>
                 </div>
               </>
             )}

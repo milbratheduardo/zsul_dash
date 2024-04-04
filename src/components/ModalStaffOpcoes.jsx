@@ -29,7 +29,8 @@ const ModalStaffOpcoes = ({ isVisible, onClose, staffNome, currentColor }) => {
               toast.success('Staff Demitido com Sucesso!', {
                 position: "top-center",
                 autoClose: 5000,
-                onClose: () => navigate('/staff') 
+                onClose: (() => navigate('/staff'),
+                  window.location.reload()) 
               });
               console.log('Dados: ', data);
             } else {

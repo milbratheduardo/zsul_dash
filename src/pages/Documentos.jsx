@@ -66,7 +66,7 @@ const Documentos = () => {
         }
         const data = await response.json();
   
-        const atletasWithTeamName = await Promise.all(data.data.map(async (atleta) => {
+        const atletasWithTeamName = await Promise.all(data.data[0].map(async (atleta) => {
           try {
             const teamResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${atleta.teamId}`);
             if (!teamResponse.ok) {

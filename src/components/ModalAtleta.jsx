@@ -59,7 +59,25 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
       if (response.ok && responseData.data._id) {
         const elencoId = responseData.data._id;
-        handleImageUpload(elencoId); 
+        const imageFields = fields.filter(field => field.type === 'file');
+          let shouldUploadImage = false;
+          for (let field of imageFields) {
+            const fileInput = document.getElementById(field.id);
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+              shouldUploadImage = true;
+              break;
+            }
+          }
+          if (shouldUploadImage && elencoId) {
+            handleImageUpload(elencoId);
+        } else if (!shouldUploadImage) {
+          toast.success(`Atleta cadastrado com sucesso!`, {
+            position: "top-center",
+            autoClose: 5000,
+            onClose: (() => navigate('/elenco'),
+            window.location.oreload())
+          });
+        }
       } else {
         throw new Error(responseData.msg || 'Erro ao cadastrar atleta');
       }
@@ -128,20 +146,23 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
       });
   
       if (response.ok) {
-        toast.success(`${imageField} enviada com sucesso!`, {
+        toast.success(`Atleta e ${imageField} enviada com sucesso!`, {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate('/elenco')
+          onClose: (() => navigate('/elenco'),
+          window.location.reload())
         });
       } else {
         const data = await response.json();
-        throw new Error(data.msg || `Erro ao enviar ${imageField}.`);
+        throw new Error(data.msg || `Atleta Cadastrado e Erro ao enviar ${imageField}.`);
       }
     } catch (error) {
-      console.error(`Erro ao enviar ${imageField}:`, error);
-      toast.error(`Erro ao enviar ${imageField}.`, {
+      console.error(`Atleta Cadastrado e Erro ao enviar ${imageField}.`, error);
+      toast.error(`Atleta Cadastrado e Erro ao enviar ${imageField}.`, {
         position: "top-center",
         autoClose: 5000,
+        onClose: (() => navigate('/elenco'),
+          window.location.reload())
       });
     }
   };

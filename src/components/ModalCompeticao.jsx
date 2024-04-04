@@ -33,7 +33,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
             name: modalFieldsState['name'],
             categoria: modalFieldsState['categoria'],
             tipoCompeticao: modalFieldsState['tipoCompeticao'],
-            participantes: modalFieldsState['participantes'],
+            participantes: '0',
             quantidadeGrupos: modalFieldsState['quantidadeGrupos'],
             dataInicio: modalFieldsState['dataInicio'],
             cidade: modalFieldsState['cidade'],
@@ -170,7 +170,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
                             </div>
                         )}
                         <div className='-space-y-px'>
-                        {fields.filter(field => field.id !== 'status').map((field, index) => (
+                        {fields.filter(field => field.id !== 'status' && field.id !== 'inscricoesAtletas').map((field, index) => (
                                 <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
                                     {field.type === 'dropdown' ? (
                                         <div>

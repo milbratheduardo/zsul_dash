@@ -4,7 +4,8 @@ import { Button } from '../components';
 import { toast } from 'react-toastify';
 
 const CardCompetition = ({
-  image, title, type, participants, vacancies, city, category, date, teamId, currentColor, id, permissao, status, showViewDetailsButton
+  image, title, type, participants, vacancies, city, category, date, teamId, currentColor, id, 
+  permissao, status, showViewDetailsButton, inscricaoAtletas
 }) => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
@@ -65,9 +66,13 @@ const CardCompetition = ({
           Vagas Restantes: {vacancies}
         </p>
         <p className="text-gray-700 text-base">
-        Status: {status === 'aberto' ? 'Aberto para Inscrições' : 
-          status === 'fechado' ? 'Fechado para Inscrições' : 
+        Status: {status === 'aberto' ? 'Aberto para Inscrições de Equipes' : 
+          status === 'fechado' ? 'Fechado para Inscrições de Equipes' : 
           status === 'finalizado' ? 'Campeonato Finalizado' : status}
+        </p>
+        <p className="text-gray-700 text-base">
+        Inscrição de Atletas: {inscricaoAtletas === 'aberto' ? 'Aberto para Inscrições de Atletas' : 
+          inscricaoAtletas === 'fechado' ? 'Fechado para Inscrições de Atletas' : status}
         </p>
         <p className="text-gray-700 text-base">
           Data de Início: {date}

@@ -100,6 +100,11 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
           position: "top-center",
           autoClose: 5000,
         });
+      } else if (data.status === 299){
+        toast.success(`Atleta Esperando Aprovação!`, {
+          position: "top-center",
+          autoClose: 5000,
+        });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg);
       } else {

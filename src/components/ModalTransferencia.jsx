@@ -86,6 +86,8 @@ const ModalTransferencia = ({ isVisible, onClose, currentColor, atletaNome, atle
         toast.success(`Solicitação Realizada com Sucesso!`, {
           position: "top-center",
           autoClose: 5000, 
+          onClose: (() => navigate('/elenco'),
+            window.location.reload())
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 

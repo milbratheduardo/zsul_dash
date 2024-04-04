@@ -376,6 +376,19 @@ const ModalCompeticaoFields = [
         placeholder: "Status da Competição",
     },
     {
+        labelText: "inscricaoAtletas",
+        labelFor: "inscricaoAtletas",
+        id: "inscricoesAtletas",
+        name: "inscricoesAtletas",
+        type: "dropdown",
+        isRequired: true,
+        options: [
+        { value: "aberto", label: "Aberto para Inscrições" },
+        { value: "fechado", label: "Fechado para Inscrições" },
+        ],
+        placeholder: "Status Inscrição de Atletas",
+    },
+    {
         labelText:"Cidade da Competição",
         labelFor:"cidade",
         id:"cidade",

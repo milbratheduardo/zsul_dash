@@ -225,7 +225,7 @@ useEffect(() => {
         <div className="flex justify-center items-center w-full px-6">
           {/* Container para o time de casa */}
           <div className="flex flex-col items-center">
-              <img alt="Home Team Logo" src={imageSrcCasa} className="h-16 w-16 object-cover" />
+              <img alt="Home Team Logo" src={userCasaInfo.data?.pictureBase64} className="h-16 w-16 object-cover" />
               <p className="text-gray-700 text-base mt-2">
                   {userCasaInfo.data?.teamName}
               </p>
@@ -250,7 +250,7 @@ useEffect(() => {
 
           {/* Container para o time de fora */}
           <div className="flex flex-col items-center">
-              <img alt="Away Team Logo" src={imageSrcFora} className="h-16 w-16 object-cover" />
+              <img alt="Away Team Logo" src={userForaInfo.data?.pictureBase64} className="h-16 w-16 object-cover" />
               <p className="text-gray-700 text-base mt-2">
                   {userForaInfo.data?.teamName}
               </p>

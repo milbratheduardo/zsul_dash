@@ -135,7 +135,7 @@ const ModalEditarCampeonato = ({ isVisible, onClose, currentColor, campeonatoId 
                           className='mt-3 p-2 block w-full border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
                       >
                           <option value='' disabled>
-                            {initialData[field.id] ? initialData[field.id] : field.placeholder}
+                             {field.placeholder}
                           </option>
                           {field.options.map((option) => (
                               <option key={option.value} value={option.value}>

@@ -174,7 +174,8 @@ const CampeonatoDetalhes = () => {
           toast.success('Equipe Deletada com sucesso!', {
             position: "top-center",
             autoClose: 5000,
-            onClose: () => navigate(`/campeonatos/${id}`)
+            onClose: () => navigate(`/campeonatos/${id}`,            
+              window.location.reload())
           });
         } else {
           
@@ -205,7 +206,8 @@ const CampeonatoDetalhes = () => {
         toast.success('Campeonato Deletado com sucesso!', {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate('/campeonatos') 
+          onClose: (() => navigate('/campeonatos'),
+          window.location.reload()) 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 

@@ -150,7 +150,8 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
         toast.success(`Jogo Cadastrado ao  com sucesso ao ${campeonato.name}!`, {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate(`/campeonatos/${campeonatoId}`) 
+          onClose: () => navigate(`/campeonatos/${campeonatoId}`,
+          window.location.reload()) 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 

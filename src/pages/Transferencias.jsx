@@ -121,7 +121,12 @@ const Transferencias = () => {
         if (!response.ok) {
           throw new Error('Erro ao reprovar transferência');
         }
-        toast.success('Transferência reprovada com sucesso!');
+        toast.success('Transferência reprovada com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: (() => navigate(`/transferencias`),            
+            window.location.reload())
+        });
       } catch (error) {
         console.error('Erro ao reprovar transferência:', error);
         toast.error(error.message);
@@ -134,7 +139,12 @@ const Transferencias = () => {
         if (!response.ok) {
           throw new Error('Erro ao aprovar transferência');
         }
-        toast.success('Transferência Aprovada com sucesso!');
+        toast.success('Transferência Aprovada com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: (() => navigate(`/transferencias`,            
+            window.location.reload()))
+        });
       } catch (error) {
         console.error('Erro ao Aprovar transferência:', error);
         toast.error(error.message);

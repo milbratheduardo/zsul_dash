@@ -70,7 +70,7 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
                     
                     if (elencoData.status === 200 && elencoData.data) {
                         console.log("Elenco Data for item:", item.elencoId, elencoData); 
-                        return { elencoId: item.elencoId, name: elencoData.data.name, teamId: timeCasa }; 
+                        return { elencoId: item.elencoId, name: elencoData.data[0].name, teamId: timeCasa }; 
                     } else {
                         return { elencoId: item.elencoId, name: 'Nome não encontrado', teamId: timeCasa };
                     }
@@ -107,7 +107,7 @@ useEffect(() => {
                   const elencoData = await elencoResponse.json();
                   
                   if (elencoData.status === 200 && elencoData.data) {
-                      return { elencoId: item.elencoId, name: elencoData.data.name, teamId: timeFora };
+                      return { elencoId: item.elencoId, name: elencoData.data[0].name, teamId: timeFora };
                   } else {
                       return { elencoId: item.elencoId, name: 'Nome não encontrado', teamId: timeFora };
                   }
@@ -126,8 +126,6 @@ useEffect(() => {
 
   fetchTimeFora();
 }, [timeFora, campeonatoId]);
-
-  
 
 
 const handleSubmit = async (e) => {
@@ -171,6 +169,7 @@ const handleSubmit = async (e) => {
       gols: select.gols || "0",
       numeroCartoesAmarelo: select.amarelos || "0",
       numeroCartoesVermelho: select.vermelhos || "0",
+      punicao: select.punicao || "0",
     };
 
     console.log('estatistica: ', estatisticaJogador)
@@ -314,6 +313,14 @@ const handleSubmit = async (e) => {
                     className='p-2 block w-1/6 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
                     min="0"
                     onChange={(e) => handleInputChange('vermelhos', index, e.target.value)}
+                  />
+
+                  <input
+                    type="number"
+                    placeholder="Punição"
+                    className='p-2 block w-1/6 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                    min="0"
+                    onChange={(e) => handleInputChange('punicao', index, e.target.value)}
                   />
                 </div>
               ))}

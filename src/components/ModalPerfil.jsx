@@ -83,7 +83,8 @@ const editPerfil = async (jsonData) => {
             toast.success('Perfil atualizado com sucesso!', {
                 position: "top-center",
                 autoClose: 5000,
-                onClose: () => navigate('/perfil')
+                onClose: (() => navigate('/perfil'),
+                window.location.reload())
             });
         } else {
             setErrorMessage(data.msg || 'Erro ao atualizar o perfil.');

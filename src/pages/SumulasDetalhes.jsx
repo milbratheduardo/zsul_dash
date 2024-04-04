@@ -133,7 +133,7 @@ const SumulasDetalhes = () => {
 
   useEffect(() => {
     const fetchAtletasIds = async () => {
-      try {
+      try {        
         const response = await fetch(` ${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
         const data = await response.json();
         console.log('Dados Time: ', data);
@@ -162,7 +162,7 @@ const SumulasDetalhes = () => {
             }
             const data = await response.json();
             const atletaComStatus = {
-              ...data.data,
+              ...data.data[0],
               status: elencoId.status,
             };
             

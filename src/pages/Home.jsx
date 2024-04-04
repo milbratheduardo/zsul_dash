@@ -19,6 +19,7 @@ const Home = () => {
     const [userInfo, setUserInfo] = useState({});
     const [proximasPartidas, setProximasPartidas] = useState([]);
     const [earningData, setEarningData] = useState([]);
+    const [elencoStatus, setElencoStatus] = useState([]);
     const [hover, setHover] = useState(false);
 
     const permissao = localStorage.getItem('permissao');
@@ -158,7 +159,7 @@ const Home = () => {
       // Define the table columns
       const tableColumn = ["Nome", "Documento", "Categoria"]; // Add more columns as needed
       // Define the table rows
-      const tableRows = userAtletas.data?.map(atleta => [
+      const tableRows = userAtletas.data[0]?.map(atleta => [
         atleta.name, // Adjust according to your data structure
         atleta.CPF, // Adjust according to your data structure
         `Sub-${atleta.category}`// Add more fields as needed
@@ -207,6 +208,28 @@ const Home = () => {
         toast.error("Erro ao buscar informações dos usuários para o PDF.");
       }
     };
+
+    useEffect(() => {
+      const fetchElencoStatus = async () => {
+        try {
+          const responseElenco = await fetch(` ${process.env.REACT_APP_API_URL}elenco/`);
+  
+          if (responseElenco.ok) {
+            const dataElenco = await responseElenco.json();
+            setElencoStatus(dataElenco.data[1]);
+          } else {
+            console.error('Erro ao buscar status elenco');
+          }
+        } catch (error) {
+          console.error('Erro na solicitação:', error);
+        }
+      };
+  
+      if (user.data.id) {
+        fetchElencoStatus();
+      }
+    }, [user.data.id]);
+
 
     useEffect(() => {
       const fetchUserAtletas = async () => {
@@ -264,7 +287,41 @@ const Home = () => {
       }
     }, [userInfo]);
 
-    console.log('JOGOS: ', proximasPartidas)
+    const trocarStatus = async () => {
+      if (!elencoStatus[0]?._id) return;
+    
+      const novoStatus = elencoStatus[0]?.status === 'ativo' ? 'inativo' : 'ativo';
+      console.log('VARIAVEIS: ', elencoStatus[0]._id, novoStatus)
+    
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/status/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: novoStatus
+          }),
+        });
+    
+        if (!response.ok) {
+          throw new Error('Algo deu errado ao tentar atualizar o status');
+        }
+    
+        toast.success('Status Atualizado com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: (() => navigate(`/home`),            
+            window.location.reload())
+        });
+        console.log('Status atualizado com sucesso');
+      } catch (error) {
+        console.error('Erro ao atualizar o status:', error);
+      }
+    }
+    
+
+    console.log('Elenco Status: ', elencoStatus)
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -314,7 +371,7 @@ const Home = () => {
                 <div style={{ marginTop: '-6px' }}>
                 {permissao === 'admin' && (
                   <div>
-                    <p className='font-bold text-gray-400'>Número de Usuários</p>
+                    <p className='font-bold text-gray-400'>Usuários || Status Exclusão Elenco</p>
            
                   </div>
                 )}
@@ -337,6 +394,15 @@ const Home = () => {
                     borderRadius='10px' 
                     size='md' 
                     onClick={generateUserPDF}
+                  />
+                  
+                  <Button 
+                    color='white' 
+                    bgColor="purple"
+                    text={<span style={{textTransform: 'capitalize'}}>{elencoStatus[0]?.status}</span>}
+                    borderRadius='10px' 
+                    size='md' 
+                    onClick={trocarStatus}
                   />
                 </div>
   

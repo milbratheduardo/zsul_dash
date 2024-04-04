@@ -47,7 +47,8 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
             toast.success('Membro do Staff cadastrado com sucesso!', {
                 position: "top-center",
                 autoClose: 5000,
-                onClose: () => navigate('/staff')
+                onClose: (() => navigate('/staff'),
+                window.location.reload())
             });
         }
     } else {
@@ -109,7 +110,8 @@ const uploadImage = async (staffId, file) => {
                     toast.success('Staff e imagem associada salvos com sucesso!', {
                         position: "top-center",
                         autoClose: 5000,
-                        onClose: () => navigate('/staff')
+                        onClose: (() => navigate('/staff'),
+                        window.location.reload())
                     });
                 } else {
                     const data = await response.json();

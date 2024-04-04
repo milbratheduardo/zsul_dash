@@ -8,7 +8,7 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   Campos,
   ControleAtletas,
   Documentos,
-  Estatísticas, ClubesElenco, Permissoes} from './pages';
+  Estatísticas, ClubesElenco, Permissoes, Punicoes} from './pages';
 import Recovery from './pages/recovery'
 
 
@@ -16,7 +16,19 @@ import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Cabecalho } from './components';
+import { useNavigate } from 'react-router-dom';
 
+
+const ExternalRedirect = ({ to }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.open(to, '_blank');
+    navigate(-1); 
+  }, [to, navigate]);
+
+  return null; 
+};
 
 const App = () => {  
     return (
@@ -37,8 +49,9 @@ const App = () => {
               <Route path='/campeonatos' element={<Campeonatos />} />
               <Route path="/campeonatos/:id" element={<CampeonatoDetalhes />} />
               <Route path="/estatísticas" element={<Estatísticas />} />
+              <Route path="/punicoes" element={<Punicoes />} />
               {/* Administração */}
-              <Route path='/calendario' element={<Calendario />} />
+              <Route path='/calendario' element={<ExternalRedirect to="https://www.google.com" />} />
               <Route path='/sumulas' element={<Sumulas />} />
               <Route path="/sumulas/:id" element={<SumulasDetalhes />} />
               {/* Meu Perfil */}

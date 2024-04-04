@@ -98,6 +98,7 @@ const Campeonatos = () => {
                       category={campeonato.categoria}
                       type={campeonato.tipoCompeticao}
                       participants={campeonato.participantes}
+                      inscricaoAtletas = {campeonato.inscricoesAtletas}
                       vacancies={campeonato.vagas}
                       date={campeonato.dataInicio}
                       city={campeonato.cidade}

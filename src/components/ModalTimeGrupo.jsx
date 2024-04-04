@@ -96,10 +96,11 @@ const ModalTimeGrupo = ({ isVisible, onClose, currentColor, campeonatoId, grupoI
       
       const data = await response.json();
       if (data.status === 200) {
-        toast.success(`Equipe Cadastrada ao  com sucesso ao ${grupo.name}!`, {
+        toast.success(`Equipe Cadastrada ao ${grupo.name} com sucesso!`, {
           position: "top-center",
           autoClose: 5000,
-          onClose: () => navigate(`/campeonatos/${campeonatoId}`) 
+          onClose: (() => navigate(`/campeonatos/${campeonatoId}`,
+            window.location.reload())) 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 
