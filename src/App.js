@@ -51,7 +51,7 @@ const App = () => {
               <Route path="/estatísticas" element={<Estatísticas />} />
               <Route path="/punicoes" element={<Punicoes />} />
               {/* Administração */}
-              <Route path='/calendario' element={<ExternalRedirect to="https://www.google.com" />} />
+              <Route path='/calendario' element={<ExternalRedirect to="https://docs.google.com/document/d/1NMkbIosEy2_PvUZT41fafTgEOtKZJSEo_ZME2rXt4Uc/edit?usp=sharing" />} />
               <Route path='/sumulas' element={<Sumulas />} />
               <Route path="/sumulas/:id" element={<SumulasDetalhes />} />
               {/* Meu Perfil */}
