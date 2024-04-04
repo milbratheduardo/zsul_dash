@@ -178,8 +178,6 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
         toast.error("Houve um problema ao conectar com o servidor.");
       }
     }
-  
-    navigate(`/elenco`),
     window.location.reload();
   };
 
