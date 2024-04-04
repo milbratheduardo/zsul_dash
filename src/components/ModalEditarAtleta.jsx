@@ -16,11 +16,30 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
   const [errorMessage, setErrorMessage] = useState("");
   const [initialData, setInitialData] = useState([]);
+  const [permissao, setPermissao] = useState(localStorage.getItem('permissao'));
   const navigate = useNavigate();
 
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
   };
+
+  useEffect(() => {
+    // Função para verificar a permissão
+    const verificarPermissao = () => {
+      const permissaoAtual = localStorage.getItem('permissao');
+      if (permissao !== permissaoAtual) {
+        setPermissao(permissaoAtual);
+      }
+    };
+
+    // Configurando o intervalo para verificar a permissão a cada 1 segundo
+    const intervalId = setInterval(verificarPermissao, 1000);
+
+    // Limpando o intervalo quando o componente é desmontado
+    return () => clearInterval(intervalId);
+  }, [permissao]);
+
+  console.log('Permissao: ', permissao)
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
 
@@ -188,10 +207,10 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
         <button className='text-white text-xl place-self-end' onClick={() => onClose()}>
           X
         </button>
-        <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
-          <HeaderModal title={`Edite o Atleta ${atletaNome}`}/>
+        <div className='bg-white p-2 rounded' style={{ maxHeight: '100%', overflowY: 'auto' }}>
+          <HeaderModal title={`Edite o Atleta ${atletaNome}`} />
           <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
-              {errorMessage && 
+            {errorMessage && 
               <div 
                 style={{
                   backgroundColor: 'red', 
@@ -206,49 +225,53 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
               </div>
             }
             <div className='-space-y-px'>
-            {fields.map((field, index) => (
-              <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''}`}>
-                   {field.type === 'file' && (
+              {fields.map((field, index) => {
+                if (permissao === 'TEquipe' && (field.id === 'name' || field.id === 'documentNumber')) {
+                  return null;
+                }
+                return (
+                  <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''}`}>
+                    {field.type === 'file' && (
                       <div className="text-sm mt-3 ml-2">
                         {field.placeholder}
                       </div>
                     )}
-                {field.type === 'dropdown' ? (
-                  <select
-                    id={field.id}
-                    name={field.name}
-                    value={modalFieldsState[field.id]}
-                    onChange={handleChange}
-                    className='mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
-                  >
-                    <option value='' disabled>
-                      Selecione a Categoria
-                    </option>
-                    {field.options.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <Input
-                    handleChange={handleChange}
-                    value={modalFieldsState[field.id]}
-                    labelText={field.labelText}
-                    labelFor={field.labelFor}
-                    id={field.id}
-                    name={field.name}
-                    type={field.type}
-                    isRequired={field.isRequired}
-                    placeholder={field.id === 'documentNumber' ? (modalFieldsState[field.id] === '' ? (initialData['RG'] || initialData['CPF']) : '') : modalFieldsState[field.id] === '' ? initialData[field.id] : ''}
-                    mask={field.mask}
-                  />                
-                )}
-              </div>
-            ))}
+                    {field.type === 'dropdown' ? (
+                      <select
+                        id={field.id}
+                        name={field.name}
+                        value={modalFieldsState[field.id]}
+                        onChange={handleChange}
+                        className='mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                      >
+                        <option value='' disabled>
+                          Selecione a Categoria
+                        </option>
+                        {field.options.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <Input
+                        handleChange={handleChange}
+                        value={modalFieldsState[field.id]}
+                        labelText={field.labelText}
+                        labelFor={field.labelFor}
+                        id={field.id}
+                        name={field.name}
+                        type={field.type}
+                        isRequired={field.isRequired}
+                        placeholder={field.placeholder}
+                        mask={field.mask}
+                      />
+                    )}
+                  </div>
+                );
+              })}
               <FormAction currentColor={currentColor} text='Editar' />
             </div>
-            
           </form>
         </div>
       </div>

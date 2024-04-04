@@ -9,6 +9,7 @@ import { MdOutlineSupervisorAccount, MdSpaceDashboard, MdAccountCircle } from 'r
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { FaPeopleGroup, FaTrophy, FaCalendarDay, FaCircleCheck,
 FaHandshakeSimple } from "react-icons/fa6";
+import { SlLogout } from "react-icons/sl";
 import { FaUserCheck } from "react-icons/fa";
 import { IoIosPeople } from "react-icons/io";
 import { IoIosStats } from "react-icons/io";
@@ -238,6 +239,10 @@ export const links = [
       {
         name: 'perfil',
         icon: <MdAccountCircle />,
+      },
+      {
+        name: 'sair',
+        icon: <SlLogout />,
       },
       
     ],

@@ -30,6 +30,7 @@ const ExternalRedirect = ({ to }) => {
   return null; 
 };
 
+
 const App = () => {  
     return (
         <BrowserRouter>
@@ -56,6 +57,7 @@ const App = () => {
               <Route path="/sumulas/:id" element={<SumulasDetalhes />} />
               {/* Meu Perfil */}
               <Route path='/perfil' element={<MeuPerfil />} />
+              <Route path='/sair' element={<Login/>} />
               {/* Administrador */}
               <Route path='/transferencias' element={<Transferencias />} />
               <Route path='/clubes' element={<Clubes />} />

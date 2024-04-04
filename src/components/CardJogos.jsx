@@ -190,7 +190,11 @@ useEffect(() => {
   fetchCampos();
 }, []);
 
-  console.log('Campo: ', campos)
+const linkMapsUrl = campos && campos.linkMaps 
+? (campos.linkMaps.startsWith('http://') || campos.linkMaps.startsWith('https://') ? campos.linkMaps : `https://${campos.linkMaps}`)
+: "#";
+
+
   return (
 
     <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white text-center mt-10">
@@ -269,7 +273,7 @@ useEffect(() => {
           </p>
           <a
             target="_blank" rel="noopener noreferrer"
-            href={campos.linkMaps}
+            href={linkMapsUrl}
             className="text-gray-700 text-sm mb-4"
             style={linkStyle}
             onMouseEnter={() => setHover(true)}
@@ -277,6 +281,7 @@ useEffect(() => {
           >
             Local: {campos.nome}
           </a>
+
           <p className="text-gray-700 text-sm mb-4"> 
             Hora: {hora}
           </p>
