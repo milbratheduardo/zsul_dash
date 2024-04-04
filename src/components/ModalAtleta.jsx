@@ -5,7 +5,7 @@ import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import imageCompression from 'browser-image-compression'; // Certifique-se de instalar esta biblioteca
+import imageCompression from 'browser-image-compression'; 
 
 const fields = ModalAtletaFields;
 let fieldsState = {};
@@ -75,7 +75,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
             position: "top-center",
             autoClose: 5000,
             onClose: (() => navigate('/elenco'),
-            window.location.oreload())
+            window.location.reload())
           });
         }
       } else {
