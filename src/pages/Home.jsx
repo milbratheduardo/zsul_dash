@@ -239,7 +239,7 @@ const Home = () => {
   
           if (responseAtletas.ok) {
             const dataAtletas = await responseAtletas.json();
-            setUserAtletas(dataAtletas);
+            setUserAtletas(dataAtletas.data[0]);
           } else {
             console.error('Erro ao buscar atletas do usuário');
           }
@@ -252,6 +252,8 @@ const Home = () => {
         fetchUserAtletas();
       }
     }, [user.data.id]);
+
+    console.log('USER ATLETAS: ', userAtletas)
 
     useEffect(() => {
       if (Object.keys(userInfo).length > 0) {
@@ -364,7 +366,7 @@ const Home = () => {
                 {permissao !== 'admin' && (
                   <div>
                     <p className='font-bold text-gray-400'>Número de Atletas</p>
-                    <p className='text-2xl'>{userAtletas.data?.length ? userAtletas.data?.length : '0'}</p>
+                    <p className='text-2xl'>{userAtletas?.length ? userAtletas?.length : '0'}</p>
                   </div>
                 )}
                 </div>
