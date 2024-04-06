@@ -144,24 +144,22 @@ const CampeonatoDetalhes = () => {
   const deletarTimeGrupo = async (teamId) => {
     try {
       const teamIdFetch = teamId.teamId;
-      const groupResponse =  await fetch(` ${process.env.REACT_APP_API_URL}grupos/team/${teamIdFetch}`);
+      const groupResponse = await fetch(`${process.env.REACT_APP_API_URL}grupos/team/${teamIdFetch}`);
       const groupData = await groupResponse.json();
-      console.log('teamID: ', groupData)
-      
+      console.log('teamID: ', groupData);
+  
       if (groupData.status === 200 && groupData.data) {
         console.log("Group data fetched successfully:", groupData.data);
-        const grupoId = groupData.data[0].grupoId; 
+        const grupoId = groupData.data[0].grupoId;
   
-        
         const payload = {
-          teamId: teamIdFetch, 
-          grupoId: grupoId, 
+          teamId: teamIdFetch,
+          grupoId: grupoId,
         };
   
         console.log("Payload for deletion:", payload);
   
-       
-        const deleteResponse = await fetch(` ${process.env.REACT_APP_API_URL}grupos/grupo`, {
+        const deleteResponse = await fetch(`${process.env.REACT_APP_API_URL}grupos/grupo`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -171,28 +169,46 @@ const CampeonatoDetalhes = () => {
   
         const deleteData = await deleteResponse.json();
         if (deleteData.status === 200) {
-          toast.success('Equipe Deletada com sucesso!', {
-            position: "top-center",
-            autoClose: 5000,
-            onClose: () => navigate(`/campeonatos/${id}`,            
-              window.location.reload())
-          });
+          const inscricaoResponse = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/campeonato/${id}`);
+          const inscricaoData = await inscricaoResponse.json();
+  
+          const inscricao = inscricaoData.data.find(inscricao => inscricao.userId === teamIdFetch);
+  
+          if (inscricao) {
+            const deleteInscricaoResponse = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/${inscricao._id}`, {
+              method: 'DELETE'
+            });
+  
+            if (deleteInscricaoResponse.ok) {
+              toast.success('Equipe Deletada com sucesso!', {
+                position: "top-center",
+                autoClose: 5000,
+                onClose: (() => navigate(`/campeonatos/${id}`),
+                window.location.reload()) 
+              });
+              
+            } else {
+              console.error('Erro ao deletar inscrição.');
+              toast.error('Erro ao deletar inscrição.');
+            }
+          } else {
+            console.error('Inscrição não encontrada para a equipe com ID:', teamIdFetch);
+            toast.error('Inscrição não encontrada');
+          }
         } else {
-          
-          console.error('Error during deletion:', deleteData.msg);
-          setErrorMessage(deleteData.msg);
+          console.error('Erro ao deletar do grupo:', deleteData.msg);
           toast.error(deleteData.msg);
         }
       } else {
-        
         console.error('Failed to fetch group data:', groupData.msg);
         toast.error('Failed to fetch group data');
       }
     } catch (error) {
-      console.error('Error fetching group data or deleting team:', error);
-      toast.error('An error occurred while processing your request');
+      console.error('Erro ao processar a requisição:', error);
+      toast.error('Ocorreu um erro ao processar sua requisição');
     }
   };
+  
   
 
   const deletarCampeonato = async () => {
@@ -206,8 +222,7 @@ const CampeonatoDetalhes = () => {
         toast.success('Campeonato Deletado com sucesso!', {
           position: "top-center",
           autoClose: 5000,
-          onClose: (() => navigate('/campeonatos'),
-          window.location.reload()) 
+          onClose: (() => navigate('/campeonatos')) 
         });
       } else if (data.status === 400 || data.status === 500) {
         setErrorMessage(data.msg); 
@@ -220,6 +235,34 @@ const CampeonatoDetalhes = () => {
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   }  
+
+  const deletarGrupo = async (groupId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}grupos/${groupId}`, {
+        method: 'DELETE',
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        toast.success('Grupo Deletado com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: () => {
+            navigate(`/campeonatos/${id}`); 
+            window.location.reload();
+          } 
+        });
+      } else {
+        console.error('Error:', data.msg);
+        setErrorMessage(data.msg || "Erro desconhecido.");
+      }
+  
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    }
+  };
+   
 
   useEffect(() => {
     const fetchJogos = async () => {
@@ -392,51 +435,47 @@ const CampeonatoDetalhes = () => {
               </div>
               </div>
               <div>        
-                <Swiper style={{ zIndex: 0}}
-                  spaceBetween={25}
-                  slidesPerView={1}
-                  onSlideChange={(swiper) => {
-                    const currentGroup = groups[swiper.activeIndex];
-                    if (currentGroup) {
-                      setSelectedGroupId(currentGroup._id);
-                    }
-                  }}
-                  onSwiper={(swiper) => console.log(swiper)}
-                >
-                  {groups.map((group, index) => (
-                    <SwiperSlide key={index}>                      
-                        <h2 style={{textAlign:'center', marginBottom:'10px', marginTop:'10px', fontWeight:'bold'}}>{group.name}</h2>
-                        <div>
-                        <GridComponent dataSource={timeGroups}>
-                          <ColumnsDirective>
-                            {gridColumns.map((col, idx) => (
-                              <ColumnDirective key={idx} {...col} />
-                            ))}
-                          </ColumnsDirective>
-                          <Inject services={[Page]} />
-                        </GridComponent>
-                        </div>
-                        <div style={{marginTop:'10px',marginBottom:'10px'}}>
-                        
-                        {permissao === 'admin' && (
-                          <Button 
-                              color={currentColor}
-                              bgColor='white'
-                              text='Cadastrar Equipe neste Grupo'
-                              borderRadius='10px'
-                              size='sm'
-                              onClick={() => {
-                                  setSelectedGroupId(group._id);
-                                  setShowModalTimeGrupo(true);
-                              }}
-                          />
-                        )}
-                        
-                        </div>                      
-                    </SwiperSlide>
+          {groups.map((group, index) => (
+            <div key={index} className="mb-8">
+              <h2 style={{ textAlign: 'center', marginBottom: '10px', marginTop: '10px', fontWeight: 'bold' }}>
+                {group.name}
+              </h2>
+              <GridComponent dataSource={timeGroups}>
+                <ColumnsDirective>
+                  {gridColumns.map((col, idx) => (
+                    <ColumnDirective key={idx} {...col} />
                   ))}
-                </Swiper>
+                </ColumnsDirective>
+                <Inject services={[Page]} />
+              </GridComponent>
+              {permissao === 'admin' && (
+                <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+                  <Button 
+                    color={currentColor}
+                    bgColor='white'
+                    text='Cadastrar Equipe neste Grupo'
+                    borderRadius='10px'
+                    size='sm'
+                    onClick={() => {
+                      setSelectedGroupId(group._id);
+                      setShowModalTimeGrupo(true);
+                    }}
+                  />
+                  <Button 
+                    color='white'
+                    bgColor='red'
+                    text='Deletar Grupo'
+                    borderRadius='10px'
+                    size='sm'
+                    onClick={() => {
+                        deletarGrupo(group._id);
+                    }}
+                  />
+                </div>
+              )}
             </div>
+          ))}
+        </div>
             <div style={{textAlign:'center', marginTop:'30px', fontWeight:'bold', fontSize:'26px'}}>
               <h1>Jogos do {campeonato.name}</h1>
             </div>

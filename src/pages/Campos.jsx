@@ -19,14 +19,18 @@ const Campos = () => {
           const response = await fetch(`${process.env.REACT_APP_API_URL}campos/`);
           const data = await response.json();
           setCampos(data.data);
-          console.log('Campos: ', campos);
         } catch (error) {
           console.error("Erro ao buscar campos:", error);
         } 
       };
-  
+    
       fetchCampos();
-    }, []);
+    }, []); 
+    
+    
+    useEffect(() => {
+      console.log('Campos atualizados: ', campos);
+    }, [campos]);
 
     const handleCampoClick = async (_id) => {
       console.log("Id Click: ", _id);    
@@ -47,6 +51,7 @@ const Campos = () => {
         console.error("Erro ao buscar campos:", error);
       }
     };
+    
 
 
   const camposGrid = [
@@ -67,7 +72,7 @@ const Campos = () => {
             handleCampoClick(campo._id);
         }}>{campo.nome}</a>) },
     { field: 'endereco', headerText: 'Endereço', width: '200', textAlign: 'Center' },
-    { field: 'city', headerText: 'Cidade', width: '150', textAlign: 'Center' },
+    { field: 'cidade', headerText: 'Cidade', width: '200', textAlign: 'Center' },
     {
       field: 'linkMaps', headerText: 'Google Maps', width: '150', textAlign: 'Center',
       template: (campo) => (
