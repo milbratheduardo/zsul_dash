@@ -58,17 +58,22 @@ const SumulasDetalhes = () => {
 
   const handleStatusChange = async (atleta, newStatus) => {
     try {
-      const responseGet = await fetch(` ${process.env.REACT_APP_API_URL}sumula/elenco/${atleta._id}`);
+      const responseGet = await fetch(`${process.env.REACT_APP_API_URL}sumula/elenco/${atleta._id}`);
       if (!responseGet.ok) {
         throw new Error('Erro ao obter o ID do atleta');
       }
       const dataGet = await responseGet.json();
       console.log('Response GET:', dataGet);
-      const idSumula = dataGet?.data?.[0]?._id;
+      
+      const entry = dataGet?.data?.find(entry => entry.campeonatoId === id);
+      if (!entry) {
+        throw new Error('Nenhuma entrada encontrada com o campeonatoId correspondente');
+      }
+      const idSumula = entry._id;
       console.log('idSumula:', idSumula);
 
-  
-      const responsePatch = await fetch(` ${process.env.REACT_APP_API_URL}sumula/${idSumula}`, {
+      
+      const responsePatch = await fetch(`${process.env.REACT_APP_API_URL}sumula/${idSumula}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +84,7 @@ const SumulasDetalhes = () => {
       if (!responsePatch.ok) {
         throw new Error('Erro ao atualizar o status do atleta');
       }
-  
+
       const updatedAtletas = atletas.map((a) => {
         if (a._id === atleta._id) {
           return { ...a, status: newStatus };
@@ -93,8 +98,9 @@ const SumulasDetalhes = () => {
       console.error('Erro ao atualizar o status do atleta:', error);
     }
   };
-  
 
+  
+  console.log("Atleta: ", atletas)
   useEffect(() => {
     const fetchCampeonato = async () => {
       try {

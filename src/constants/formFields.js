@@ -409,6 +409,16 @@ const ModalCompeticaoFields = [
         placeholder:"Número de Participantes" 
     },
     {
+        labelText:"vagas",
+        labelFor:"vagas",
+        id:"vagas",
+        name:"vagas",
+        type:"number",
+        autoComplete:"vagas",
+        isRequired:true,
+        placeholder:"Vagas Disponíveis" 
+    },
+    {
         labelText:"Quantidade de Grupos",
         labelFor:"numerogrupos",
         id:"quantidadeGrupos",
