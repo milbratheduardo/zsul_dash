@@ -286,7 +286,25 @@ const SumulasDetalhes = () => {
   
     // Add the table to the PDF
     doc.autoTable(tableColumn, tableRows, { startY: 80 }); // Adjust positioning as needed
-  
+    const spacingAfterTable = 10;
+    const positionAfterTable = doc.lastAutoTable.finalY + spacingAfterTable;
+
+    doc.setFontSize(16);
+    const assinaturaTitle = "Assinaturas C.Técnica";
+    doc.text(assinaturaTitle, teamNameXPosition, positionAfterTable, 'center');
+
+    doc.setFontSize(12);
+    const assinaturaM1 = "Assinatura C.Técnica 1";
+    doc.text(assinaturaM1, 40, positionAfterTable + 10, 'center');
+
+    doc.setFontSize(12);
+    const assinaturaM2 = "Assinatura C.Técnica 2";
+    doc.text(assinaturaM2, teamNameXPosition, positionAfterTable + 10, 'center');
+
+    doc.setFontSize(12);
+    const assinaturaM3 = "Assinatura C.Técnica 3";
+    doc.text(assinaturaM3, 170, positionAfterTable + 10, 'center');
+
     // Open the PDF in a new browser tab
     doc.output('dataurlnewwindow');
   };

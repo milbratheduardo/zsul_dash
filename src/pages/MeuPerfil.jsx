@@ -80,7 +80,7 @@ const MeuPerfil = () => {
 
         if (responseAtletas.ok) {
           const dataAtletas = await responseAtletas.json();
-          setUserAtletas(dataAtletas);
+          setUserAtletas(dataAtletas.data[0]);
         } else {
           console.error('Erro ao buscar atletas do usuário');
         }
@@ -213,7 +213,7 @@ const MeuPerfil = () => {
                             Atletas
                           </h4>
                           <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400">
-                            {userAtletas.data?.length ? userAtletas.data?.length : 'Carregando...'}
+                            {userAtletas?.length ? userAtletas?.length : '0'}
                           </div>
                         </div>
                         }
@@ -225,7 +225,7 @@ const MeuPerfil = () => {
                           </h4>
                           
                           <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 ">
-                            {userStaff.data?.length ? userStaff.data?.length : 'Carregando...'}
+                            {userStaff.data?.length ? userStaff.data?.length : '0'}
                           </div>
                           
                       </div>

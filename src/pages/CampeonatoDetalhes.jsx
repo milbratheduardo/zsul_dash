@@ -13,12 +13,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 
 
+
 const CampeonatoDetalhes = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
   const { id } = useParams();
   const [groups, setGroups] = useState([]);
   const [groupsTime, setGroupsTime] = useState([]);
   const [timeGroups, setTimeGroups] = useState([]);
+  const [gruposComTimes, setGruposComTimes] = useState([]);
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id;
   const [errorMessage, setErrorMessage] = useState("");
@@ -435,46 +437,63 @@ const CampeonatoDetalhes = () => {
               </div>
               </div>
               <div>        
-          {groups.map((group, index) => (
-            <div key={index} className="mb-8">
-              <h2 style={{ textAlign: 'center', marginBottom: '10px', marginTop: '10px', fontWeight: 'bold' }}>
-                {group.name}
-              </h2>
-              <GridComponent dataSource={timeGroups}>
-                <ColumnsDirective>
-                  {gridColumns.map((col, idx) => (
-                    <ColumnDirective key={idx} {...col} />
+              <Swiper style={{ zIndex: 0}}
+                  spaceBetween={25}
+                  slidesPerView={1}
+                  onSlideChange={(swiper) => {
+                    const currentGroup = groups[swiper.activeIndex];
+                    if (currentGroup) {
+                      setSelectedGroupId(currentGroup._id);
+                    }
+                  }}
+                  onSwiper={(swiper) => console.log(swiper)}
+                >
+                  {groups.map((group, index) => (
+                    <SwiperSlide key={index}>                      
+                        <h2 style={{textAlign:'center', marginBottom:'10px', marginTop:'10px', fontWeight:'bold'}}>{group.name}</h2>
+                        <div>
+                        <GridComponent dataSource={timeGroups}>
+                          <ColumnsDirective>
+                            {gridColumns.map((col, idx) => (
+                              <ColumnDirective key={idx} {...col} />
+                            ))}
+                          </ColumnsDirective>
+                          <Inject services={[Page]} />
+                        </GridComponent>
+                        </div>
+                        <div style={{marginTop:'10px',marginBottom:'10px'}}>
+                        
+                        {permissao === 'admin' && (
+                          <>
+
+                          <Button 
+                              color={currentColor}
+                              bgColor='white'
+                              text='Cadastrar Equipe neste Grupo'
+                              borderRadius='10px'
+                              size='sm'
+                              onClick={() => {
+                                  setSelectedGroupId(group._id);
+                                  setShowModalTimeGrupo(true);
+                              }}
+                          />
+                          <Button 
+                            color='white'
+                            bgColor='red'
+                            text='Deletar Grupo'
+                            borderRadius='10px'
+                            size='sm'
+                            onClick={() => {
+                                deletarGrupo(group._id);
+                            }}
+                          />
+                          </>
+                        )}
+                        
+                        </div>                      
+                    </SwiperSlide>
                   ))}
-                </ColumnsDirective>
-                <Inject services={[Page]} />
-              </GridComponent>
-              {permissao === 'admin' && (
-                <div style={{ marginTop: '10px', marginBottom: '10px' }}>
-                  <Button 
-                    color={currentColor}
-                    bgColor='white'
-                    text='Cadastrar Equipe neste Grupo'
-                    borderRadius='10px'
-                    size='sm'
-                    onClick={() => {
-                      setSelectedGroupId(group._id);
-                      setShowModalTimeGrupo(true);
-                    }}
-                  />
-                  <Button 
-                    color='white'
-                    bgColor='red'
-                    text='Deletar Grupo'
-                    borderRadius='10px'
-                    size='sm'
-                    onClick={() => {
-                        deletarGrupo(group._id);
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          ))}
+                </Swiper>
         </div>
             <div style={{textAlign:'center', marginTop:'30px', fontWeight:'bold', fontSize:'26px'}}>
               <h1>Jogos do {campeonato.name}</h1>

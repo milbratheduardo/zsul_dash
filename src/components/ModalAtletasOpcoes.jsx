@@ -37,26 +37,50 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
 
       const handleExcluirClick = async (event) => {
         event.preventDefault();
-        const atletaId = atleta._id; 
+        const atletaId = atleta._id;
       
         try {
+          
+          const sumulaResponse = await fetch(`${process.env.REACT_APP_API_URL}sumula/elenco/${atletaId}`);
+          if (!sumulaResponse.ok) {
+            throw new Error('Falha ao buscar registros da súmula.');
+          }
+      
+          const { data } = await sumulaResponse.json();
+      
+      
+          if (data && data.length > 0) {
+            for (const registro of data) {
+              const deleteResponse = await fetch(`${process.env.REACT_APP_API_URL}sumula/${registro._id}`, {
+                method: 'DELETE',
+              });
+      
+              if (!deleteResponse.ok) {
+                throw new Error('Falha ao excluir registro da súmula.');
+              }
+            }
+          }
+      
           const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/${atletaId}`, {
-            method: 'DELETE', 
+            method: 'DELETE',
           });
       
           if (!response.ok) {
             throw new Error('Falha ao excluir atleta.');
           }
-    
-          toast.success('Atleta Excluído com sucesso!', {
+      
+          toast.success('Atleta e registros da súmula excluídos com sucesso!', {
             position: "top-center",
             autoClose: 5000,
-            onClose: (() => navigate(`/elenco`),            
-              window.location.reload())
+            onClose: () => {
+              navigate(`/elenco`);
+              window.location.reload();
+            },
           });
       
         } catch (error) {
-          console.error('Erro ao excluir atleta:', error);
+          console.error('Erro:', error);
+          toast.error('Erro ao excluir atleta e registros da súmula.');
         }
       };
 

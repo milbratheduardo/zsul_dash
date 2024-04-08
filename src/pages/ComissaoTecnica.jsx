@@ -7,7 +7,10 @@ import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
-
+import chroma from 'chroma-js';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+import { toast } from 'react-toastify';
 
 const ComissaoTecnica = () => {
   const { activeMenu, themeSettings, setThemeSettings, 
@@ -19,6 +22,8 @@ const ComissaoTecnica = () => {
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const teamId = user.data.id || null;
   const [staff, setStaff] = useState([]);
+  const endColor = chroma(currentColor).darken(1).css();
+  const [userInfo, setUserInfo] = useState({});
   
   const handleStaffClick = (name, _id) => {
     console.log(`Staff ID: ${_id}`); // Mostra o ID no console
@@ -28,6 +33,27 @@ const ComissaoTecnica = () => {
     // Salva o ID no localStorage
     localStorage.setItem('selectedStaffId', _id);
   };
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}users/${teamId}`);
+       
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data);
+        } else {
+          console.error('Erro ao buscar dados do usuário');
+        }
+      } catch (error) {
+        console.error('Erro na solicitação:', error);
+      }
+    };
+
+    if (user.data.id) {
+      fetchUserInfo();
+    }
+  }, [user.data.id]);
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -82,6 +108,50 @@ const ComissaoTecnica = () => {
 
 
   ];
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    if (!staff || staff.length === 0) {
+      toast.error("Não há comissão técnica cadastrada para gerar o PDF.");
+      return; 
+    }
+   
+    const logo = userInfo.data?.pictureBase64; 
+    if (logo) {
+      doc.addImage(logo, 'PNG', 10, 0, 50, 50);
+    } else {
+      console.error("A imagem base64 está null.");
+      
+    }
+  
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const teamName = userInfo.data.teamName;
+    const teamNameXPosition = (pageWidth / 2);
+  
+    doc.setFontSize(26);
+    doc.text(teamName, teamNameXPosition, 30, 'center');
+  
+
+    doc.setFontSize(18);
+    const atletasTitle = "Comissão Técnica";
+    doc.text(atletasTitle, teamNameXPosition, 45, 'center'); 
+  
+    
+    const tableColumn = ["Nome", "Documento", "Cargo"]; 
+    
+    const tableRows = staff.map(staff => [
+      staff.name, 
+      staff.CPF, 
+      staff.cargo
+    ]);
+  
+    
+    doc.autoTable(tableColumn, tableRows, { startY: 50 }); 
+  
+    
+    doc.output('dataurlnewwindow');
+  };
+
 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
@@ -139,6 +209,9 @@ const ComissaoTecnica = () => {
             <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Header category='Clube' title='Comissão Técnica' />
+
+
+                <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 sm:mt-0'>
                 <Button 
                   color='white'
                   bgColor={currentColor}
@@ -149,6 +222,15 @@ const ComissaoTecnica = () => {
                     setShowModal(true);
                   }}
                 />
+                <Button 
+                      color='white'
+                      bgColor={endColor}
+                      text='Exportar C.Técnica'
+                      borderRadius='10px'
+                      size='sm'
+                      onClick={generatePDF}
+                    />
+                   </div> 
               </div>          
               
 
