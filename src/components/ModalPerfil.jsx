@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ModalPerfilFields } from '../constants/formFields';
 import Input from './Input';
 import FormAction from './FormAction';
@@ -16,6 +16,7 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
   const [errorMessage, setErrorMessage] = useState("");
+  const [initialData, setInitialData] = useState([]);
   const navigate = useNavigate();
 
   const handleClose = (e) => {
@@ -24,80 +25,144 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
   
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}users/${userId}`);
+        const data = await response.json();
+        if (data.status === 200 && data.data) {
+          setInitialData(data.data);
+        } else {
+          toast.error('Erro ao buscar perfil');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('An error occurred while fetching user');
+      }
+    };
+    fetchInitialData();
+  }, [userId]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const fileInput = document.getElementById('logo');
+    if (fileInput && fileInput.files[0]) {
+      try {
+        const compressedFile = await compressImage(fileInput.files[0]);
+        const fileType = compressedFile.type.split('/')[1];
+        convertFileToBase64(compressedFile, async (base64String) => {
+          await uploadImage(userId, base64String, fileType);
+          await editPerfil(); 
+        });
+      } catch (error) {
+        console.error('Error processing image:', error);
+      }
+    } else {
+      await editPerfil(); 
+    }
+  };
+
   const compressImage = async (file) => {
     const options = {
-        maxSizeMB: 0.015,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
+      maxSizeMB: 0.015,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
     };
 
     try {
-        const compressedFile = await imageCompression(file, options);
-        return compressedFile;
+      const compressedFile = await imageCompression(file, options);
+      return compressedFile;
     } catch (error) {
-        console.error(error);
-        return file;
+      console.error(error);
+      return file;
     }
-};
+  };
 
-const convertFileToBase64 = (file, callback) => {
+  const convertFileToBase64 = (file, callback) => {
     const reader = new FileReader();
     reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
     reader.readAsDataURL(file);
-};
+  };
 
-const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const fileInput = document.getElementById('logo');
-    if (fileInput && fileInput.files[0]) {
-        compressImage(fileInput.files[0]).then(compressedFile => {
-            convertFileToBase64(compressedFile, (base64String) => {
-                const jsonData = {
-                    userId: userId,
-                    file: base64String,
-                    fileType: fileInput.files[0].type.split('/')[1],
-                    userType: 'user',
-                    imageField: 'picture',
-                };
-
-                editPerfil(jsonData);
-            });
-        });
-    }
-};
-
-const editPerfil = async (jsonData) => {
+  const uploadImage = async (userId, base64String, fileType) => {
+    const jsonData = {
+      userId: userId,
+      file: base64String,
+      fileType: fileType,
+      userType: 'user',
+      imageField: 'picture',
+    };
+  
     try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsonData),
-        });
-
+      const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      });
+  
+      if (response.ok) {
+        toast.success('Imagem enviada com sucesso!');
+      } else {
         const data = await response.json();
-
-        if (response.ok) {
-            toast.success('Perfil atualizado com sucesso!', {
-                position: "top-center",
-                autoClose: 5000,
-                onClose: (() => navigate('/perfil'),
-                window.location.reload())
-            });
-        } else {
-            setErrorMessage(data.msg || 'Erro ao atualizar o perfil.');
-        }
+        throw new Error(data.msg || 'Erro ao enviar imagem.');
+      }
     } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        setErrorMessage("Houve um problema ao conectar com o servidor.");
-        toast.error('Erro ao atualizar o perfil.', {
-            position: "top-center",
-            autoClose: 5000,
-        });
+      console.error('Erro ao enviar imagem:', error);
+      toast.error('Erro ao enviar imagem.');
     }
-};
+  };
+
+  const editPerfil = async () => {
+    const changes = Object.keys(modalFieldsState).reduce((acc, field) => {
+      if (modalFieldsState[field] !== (initialData[field] || '')) {
+        acc.push({ field, value: modalFieldsState[field] });
+      }
+      return acc;
+    }, []);
+  
+    const changesAll = changes.filter(change => change.field !== "" && change.value !== "");
+  
+    if (changesAll.length === 0) {
+      toast.info('Não houve mudanças!');
+      return;
+    }
+  
+    for (const change of changesAll) {
+      try {
+        const requestBody = {
+          userIdRequesting: "660d5201f5dd731f1bd4c33c",
+          field: change.field,
+          value: change.value
+        };
+  
+        const response = await fetch(`${process.env.REACT_APP_API_URL}users/${userId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody) 
+        });
+  
+        const data = await response.json();
+        if (response.ok) {
+          toast.success(`Campo ${change.field} editado com sucesso!`, {
+            position: "top-center",
+            autoClose: 5000
+          });
+        } else {
+          console.error('Error:', data.msg);
+          toast.error(data.msg || 'Erro desconhecido.');
+        }
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        toast.error("Houve um problema ao conectar com o servidor.");
+      }
+    }
+    window.location.reload();
+  };
   
 
   return (
@@ -159,7 +224,7 @@ const editPerfil = async (jsonData) => {
                         name={field.name}
                         type={field.type}
                         isRequired={field.isRequired}
-                        placeholder={field.placeholder}
+                        placeholder={initialData.teamName}
                       />
                     </div>
                   )}

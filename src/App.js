@@ -8,7 +8,7 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   Campos,
   ControleAtletas,
   Documentos,
-  Estatísticas, ClubesElenco, Permissoes, Punicoes} from './pages';
+  Estatísticas, ClubesElenco, Permissoes, Punicoes, CamposTecnicos} from './pages';
 import Recovery from './pages/recovery'
 
 
@@ -51,6 +51,7 @@ const App = () => {
               <Route path="/campeonatos/:id" element={<CampeonatoDetalhes />} />
               <Route path="/estatísticas" element={<Estatísticas />} />
               <Route path="/punicoes" element={<Punicoes />} />
+              <Route path="/camposTecnicos" element={<CamposTecnicos />} />
               {/* Administração */}
               <Route path='/calendario' element={<ExternalRedirect to="https://docs.google.com/document/d/1NMkbIosEy2_PvUZT41fafTgEOtKZJSEo_ZME2rXt4Uc/edit?usp=sharing" />} />
               <Route path='/sumulas' element={<Sumulas />} />

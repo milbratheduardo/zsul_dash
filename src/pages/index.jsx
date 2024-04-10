@@ -18,3 +18,4 @@ export { default as Estatísticas } from './Estatísticas';
 export { default as ClubesElenco } from './ClubesElenco';
 export { default as Permissoes } from './Permissoes';
 export { default as Punicoes } from './Punicoes';
+export { default as CamposTecnicos } from './CamposTecnicos';

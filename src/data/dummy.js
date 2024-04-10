@@ -216,6 +216,10 @@ export const links = [
         name: 'punicoes',
         icon: <ImCross />,
       },
+      {
+        name: 'camposTecnicos',
+        icon: <GiSoccerField />,
+      },
     ],
   },
   {

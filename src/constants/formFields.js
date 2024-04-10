@@ -256,6 +256,16 @@ const ModalStaffFields = [
 
 const ModalPerfilFields = [
     {
+        labelText:"Nome da Equipe",
+        labelFor:"teamName",
+        id:"teamName",
+        name:"teamName",
+        type:"text",
+        autoComplete:"nome",
+        isRequired:true,
+        placeholder:"Nome da Equipe"   
+    },
+    {
         labelText:"Logo da Equipe",
         labelFor:"logo",
         id:"logo",

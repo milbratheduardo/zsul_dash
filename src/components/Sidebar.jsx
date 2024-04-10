@@ -91,7 +91,8 @@ const Sidebar = () => {
                   </p>
                   {item.links.map((link) => {
                     // Condições existentes para não renderizar certos links com base na permissão
-                    if (permissao === 'admin' && (link.name === 'elenco' || link.name === 'staff' || link.name === 'calendario' || link.name === 'Sumulas')) {
+                    if (permissao === 'admin' && (link.name === 'elenco' || link.name === 'staff' || link.name === 'calendario' 
+                    || link.name === 'Sumulas' || link.name === 'camposTecnicos')) {
                       return null;
                     }
 
@@ -116,7 +117,8 @@ const Sidebar = () => {
                           {link.name === 'staff' ? 'Comissão Técnica' : 
                           link.name === 'ControleAtletas' ? 'Controle de Atletas' :
                           link.name === 'punicoes' ? 'Punições' : 
-                          link.name === 'Clubes' ? 'Usuários' : link.name}
+                          link.name === 'Clubes' ? 'Usuários' : 
+                          link.name === 'camposTecnicos' ? 'Campos' : link.name}
                         </span>
                       </NavLink>
                     );
