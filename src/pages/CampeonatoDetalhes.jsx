@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,  useRef } from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Inject } from '@syncfusion/ej2-react-grids';
 import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo, ModalTimeGrupo, 
   ModalAdicionarJogo, CardJogos, ModalEditarCampeonato } from '../components';
@@ -36,6 +36,7 @@ const CampeonatoDetalhes = () => {
   const navigate = useNavigate();
   const endColor = chroma(currentColor).darken(1).css();
   const endColor2 = chroma(currentColor).darken(2).css();
+  const swiperRef = useRef(null);
   
 
   
@@ -57,6 +58,18 @@ const CampeonatoDetalhes = () => {
       width: '120'
     }] : [])
   ];
+
+  const goToNextGroup = () => {
+    console.log('Checking swiperRef:', swiperRef.current);
+    if (swiperRef.current?.swiper) {
+      const swiper = swiperRef.current.swiper;
+      const nextSlideIndex = (swiper.activeIndex + 1) % swiper.slides.length;
+      swiper.slideTo(nextSlideIndex);
+    } else {
+      console.log('Swiper not initialized');
+    }
+  };
+  
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -438,14 +451,16 @@ const CampeonatoDetalhes = () => {
               </div>
               <div>        
               <Swiper style={{ zIndex: 0}}
+                  ref={swiperRef}
                   spaceBetween={25}
                   slidesPerView={1}
                   onSlideChange={(swiper) => {
-                    const currentGroup = groups[swiper.activeIndex];
-                    if (currentGroup) {
-                      setSelectedGroupId(currentGroup._id);
-                    }
+                      const currentGroup = groups[swiper.activeIndex];
+                      if (currentGroup) {
+                          setSelectedGroupId(currentGroup._id);
+                      }
                   }}
+
                   onSwiper={(swiper) => console.log(swiper)}
                 >
                   {groups.map((group, index) => (
@@ -486,6 +501,14 @@ const CampeonatoDetalhes = () => {
                             onClick={() => {
                                 deletarGrupo(group._id);
                             }}
+                          />
+                          <Button 
+                            color='white'
+                            bgColor={endColor}
+                            text='Próximo Grupo'
+                            borderRadius='10px'
+                            size='sm'
+                            onClick={goToNextGroup}
                           />
                           </>
                         )}
