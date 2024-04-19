@@ -203,7 +203,10 @@ const ModalClubeOpcoes = ({ isVisible, onClose, clubeNome, teamId, currentColor 
                   Quantidade de Atletas
                 </h3>
                 <div className="text-blueGray-600">
-                  {userAtletas?.data[0].length || '0'}
+                <div className="text-blueGray-600">
+                  {userAtletas.data && Array.isArray(userAtletas.data[0]) ? userAtletas.data[0].length : '0'}
+                </div>
+
                 </div>
                 <div className='w-full' aria-hidden='true'></div>
                 <h3 className="text-xl font-semibold leading-normal text-blueGray-700">
