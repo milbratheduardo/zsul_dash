@@ -9,6 +9,7 @@ import { MdOutlineSupervisorAccount, MdSpaceDashboard, MdAccountCircle } from 'r
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { FaPeopleGroup, FaTrophy, FaCalendarDay, FaCircleCheck,
 FaHandshakeSimple } from "react-icons/fa6";
+import { IoNewspaper } from "react-icons/io5";
 import { SlLogout } from "react-icons/sl";
 import { FaUserCheck } from "react-icons/fa";
 import { IoIosPeople } from "react-icons/io";
@@ -278,6 +279,10 @@ export const links = [
       {
         name: 'Documentos',
         icon: <IoDocumentTextOutline />,
+      },
+      {
+        name: 'Blog',
+        icon: <IoNewspaper />,
       },
       
     ],

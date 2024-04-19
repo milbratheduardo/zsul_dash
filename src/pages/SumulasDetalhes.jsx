@@ -172,7 +172,11 @@ const SumulasDetalhes = () => {
               status: elencoId.status,
             };
             
-            allAtletas.push(atletaComStatus);
+            if (atletaComStatus.name) {
+              allAtletas.push(atletaComStatus);
+            } else {
+              console.error('Incomplete data:', atletaComStatus);
+            }
           }
   
           
@@ -281,17 +285,19 @@ const SumulasDetalhes = () => {
     doc.text(atletasTitle, teamNameXPosition, 75, 'center'); 
   
     
-    const tableColumn = ["Nº","Nome", "Documento", "Categoria"]; 
+    const tableColumn = ["Nº","Nome", "Documento", "Categoria", "Gols", "C.Vermelho"]; 
     
     const tableRows = atletasAtivo.map(atleta => [
       "",
-      atleta.name, // Adjust according to your data structure
-      atleta.RG || atleta.CPF, // Adjust according to your data structure
-      `Sub-${atleta.category}`// Add more fields as needed
+      atleta.name,
+      atleta.RG || atleta.CPF, 
+      `Sub-${atleta.category}`,
+      "",
+      "",
     ]);
   
     // Add the table to the PDF
-    doc.autoTable(tableColumn, tableRows, { startY: 80 }); // Adjust positioning as needed
+    doc.autoTable(tableColumn, tableRows, { startY: 80 }); 
     const spacingAfterTable = 10;
     const positionAfterTable = doc.lastAutoTable.finalY + spacingAfterTable;
 

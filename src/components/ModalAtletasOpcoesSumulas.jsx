@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 
-const ModalAtletasOpcoesSumulas = ({ isVisible, onClose, atletaNome, currentColor, atleta, teamId, campeonatoNome, campeonatoId }) => {
+const ModalAtletasOpcoesSumulas = ({ isVisible, onClose, currentColor, atleta, teamId, campeonatoId }) => {
   if (!isVisible) return null;
   
   const [sumulaFiltrada, setSumulaFiltrada] = useState([]);
+  const [campeonatos, setCampeonatos] = useState([]);
+  
 
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
@@ -17,6 +19,21 @@ const ModalAtletasOpcoesSumulas = ({ isVisible, onClose, atletaNome, currentColo
     }
   }, [isVisible, atleta, teamId, campeonatoId]);
 
+  useEffect(() => {
+    const fetchCampeonatos = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/${campeonatoId}`);
+        const data = await response.json();
+        console.log('Dados: ', data);
+        setCampeonatos(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchCampeonatos();
+  }, []);
+
   const buscarSumula = async () => {
     try {
       const response = await fetch(` ${process.env.REACT_APP_API_URL}sumula/`);
@@ -25,15 +42,16 @@ const ModalAtletasOpcoesSumulas = ({ isVisible, onClose, atletaNome, currentColo
       if (!response.ok) throw new Error('Erro ao buscar súmulas');
       
       const sumulas = resultado.data;
+      
   
       const filtrada = sumulas.filter(sumula => 
         sumula.campeonatoId === campeonatoId &&
-        sumula.elencoId === atleta._id &&
+        sumula.elencoId === atleta.id &&
         sumula.userId === teamId
       );
   
       setSumulaFiltrada(filtrada);
-  
+      console.log('resultado: ',filtrada)
       if (filtrada.length > 0) {
         console.log('Súmula encontrada:', filtrada[0]);
       } else {
@@ -57,6 +75,8 @@ const ModalAtletasOpcoesSumulas = ({ isVisible, onClose, atletaNome, currentColo
           toast.success('Atleta Excluído com Sucesso!', {
             position: "top-center",
             autoClose: 5000,
+            onClose: (() => navigate('/ControleAtletas'),
+            window.location.reload())
           });
           
         } else {
@@ -76,7 +96,7 @@ const ModalAtletasOpcoesSumulas = ({ isVisible, onClose, atletaNome, currentColo
           X
         </button>
         <div className='bg-white p-2 rounded' style={{ maxHeight: '100%', overflowY: 'auto' }}>
-          <HeaderModal title={`Opções para ${atletaNome} no ${campeonatoNome}`} heading='Escolha uma ação' />
+          <HeaderModal title={`Opções para ${atleta.name} no ${campeonatos.name}`} heading='Escolha uma ação' />
           <form className='mt-4 space-y-4' onSubmit={excluirSumula}> {/* Adicionado onSubmit para o formulário */}
             <div className='flex flex-wrap justify-center gap-2'>
               <button

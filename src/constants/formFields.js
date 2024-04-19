@@ -634,8 +634,95 @@ const ModalAdicionarJogoFields = [
         
     ]
 
+    const ModalAdicionarPostFields = [
+        {
+            labelText:"Título da Notícia",
+            labelFor:"titulo",
+            id:"titulo",
+            name:"titulo",
+            type:"text",
+            autoComplete:"titulo",
+            isRequired:true,
+            placeholder:"Título da Notícia"   
+        },      
+        {
+            labelText:"Descrição",
+            labelFor:"subtitulo",
+            id:"subtitulo",
+            name:"subtitulo",
+            type:"text",
+            autoComplete:"subtitulo",
+            isRequired:true,
+            placeholder:"Descrição" 
+        },
+        {
+            labelText:"texto",
+            labelFor:"texto",
+            id:"texto",
+            name:"texto",
+            type:"text-area",
+            autoComplete:"text",
+            isRequired:true,
+            placeholder:"Texto da Postagem" 
+        },
+        {
+            labelText:"Imagem da Postagem",
+            labelFor:"imagem",
+            id:"imagem",
+            name:"imagem",
+            type:"file",
+            autoComplete:"imagem",
+            isRequired:true,
+            placeholder:"Imagem da Postagem" 
+        }
+    ]
+
+    const ModalAdicionarFotoFields = [
+        {
+            labelText:"Título da Foto",
+            labelFor:"titulo",
+            id:"titulo",
+            name:"titulo",
+            type:"text",
+            autoComplete:"titulo",
+            isRequired:true,
+            placeholder:"Título da Foto"   
+        },      
+        {
+            labelText:"Nome do Fotógrafo",
+            labelFor:"nome",
+            id:"nome",
+            name:"nome",
+            type:"text",
+            autoComplete:"nome",
+            isRequired:true,
+            placeholder:"Nome do Fotógrafo" 
+        },
+        {
+            labelText:"Instagram do Fotógrafo",
+            labelFor:"instagram",
+            id:"instagram",
+            name:"instagram",
+            type:"text",
+            autoComplete:"instagram",
+            isRequired:true,
+            placeholder:"Instagram do Fotógrafo" 
+        },
+        {
+            labelText:"Imagem",
+            labelFor:"foto",
+            id:"foto",
+            name:"foto",
+            type:"file",
+            autoComplete:"foto",
+            isRequired:true,
+            placeholder:"Imagem" 
+        }
+    ]
+
 export {loginFields,signupFields,ModalAtletaFields,
     ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
     ModalGrupoFields, ModalAdicionarJogoFields, ModalSumulaJogoFields,
-    ModalAdmFields, ModalTransferenciaFields, ModalCamposFields, ModalEditarAtletaFields
+    ModalAdmFields, ModalTransferenciaFields, ModalCamposFields, ModalEditarAtletaFields,
+    ModalAdicionarPostFields, ModalAdicionarFotoFields
     }

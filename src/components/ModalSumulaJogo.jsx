@@ -56,41 +56,50 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
 
   useEffect(() => {
     const fetchTimeCasa = async () => {
-        try {
-            const url = `${process.env.REACT_APP_API_URL}sumula/campeonato/${campeonatoId}`;
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.status === 200) {         
-                const filteredData = data.data.filter(item => item.userId === timeCasa);
-                
-                const atletasDetailsPromises = filteredData.map(async (item) => {
-                    const elencoResponse = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${item.elencoId}`);
-                    const elencoData = await elencoResponse.json();
-                    
-                    if (elencoData.status === 200 && elencoData.data) {
-                        console.log("Elenco Data for item:", item.elencoId, elencoData); 
-                        return { elencoId: item.elencoId, name: elencoData.data[0].name, teamId: timeCasa }; 
-                    } else {
-                        return { elencoId: item.elencoId, name: 'Nome não encontrado', teamId: timeCasa };
-                    }
-                });
-                
-                const atletasDetails = await Promise.all(atletasDetailsPromises);
-                console.log("Final Time Casa: ", atletasDetails); 
-                setAtletasTimeCasa(atletasDetails); // Atualiza o estado com os detalhes dos atletas
-            } else {
-                console.error('Erro na resposta da API:', data.msg);
-                setAtletasTimeCasa([]);
+      try {
+        const url = `${process.env.REACT_APP_API_URL}sumula/campeonato/${campeonatoId}`;
+        const response = await fetch(url);
+        const data = await response.json();
+  
+        if (data.status === 200) {
+          const filteredData = data.data.filter(item => item.userId === timeCasa);
+  
+          const atletasDetailsPromises = filteredData.map(async (item) => {
+            try {
+              const elencoResponse = await fetch(`${process.env.REACT_APP_API_URL}elenco/${item.elencoId}`);
+              const elencoData = await elencoResponse.json();
+  
+              if (elencoData.status === 200 && elencoData.data && elencoData.data.length > 0) {
+                return { elencoId: item.elencoId, name: elencoData.data[0].name, teamId: timeCasa };
+              } else {
+                console.warn(`Data missing for elencoId: ${item.elencoId}`, elencoData);
+                return null;  
+              }
+            } catch (error) {
+              console.error(`Fetch error for elencoId: ${item.elencoId}`, error);
+              return null;  
             }
-        } catch (error) {
-            console.error("Erro ao buscar dados do time de casa:", error);
-            setAtletasTimeCasa([]);
+          });
+  
+          const atletasDetails = await Promise.all(atletasDetailsPromises);
+          const validAtletasDetails = atletasDetails.filter(atleta => atleta && atleta.name);  // Filter out null entries and entries without a name
+          console.log("Final Time Casa: ", validAtletasDetails);
+          setAtletasTimeCasa(validAtletasDetails);
+        } else {
+          console.error('Erro na resposta da API:', data.msg);
+          setAtletasTimeCasa([]);
         }
+      } catch (error) {
+        console.error("Erro ao buscar dados do time de casa:", error);
+        setAtletasTimeCasa([]);
+      }
     };
-
+  
     fetchTimeCasa();
-}, [timeCasa, campeonatoId]);  
+  }, [timeCasa, campeonatoId]);
+  ;  
+
+console.log("Atletas CAsa: ", atletasTimeCasa)
 
 useEffect(() => {
   const fetchTimeFora = async () => {
@@ -127,6 +136,7 @@ useEffect(() => {
   fetchTimeFora();
 }, [timeFora, campeonatoId]);
 
+console.log("Atletas Fora: ", atletasTimeFora)
 
 const handleSubmit = async (e) => {
   e.preventDefault();

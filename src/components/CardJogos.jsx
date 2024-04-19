@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Button, ModalEditarJogo, ModalSumulaJogo } from '../components';
 import chroma from 'chroma-js';
+import { toast } from 'react-toastify';
 
 const CardCompetition = ({ 
   campeonatoId, userIdCasa, userIdFora, tipo, grupoId, data, local, hora, currentColor,jogoId
@@ -23,7 +24,32 @@ const CardCompetition = ({
     cursor: 'pointer',
   };
 
+  const deletarJogo = async () => {
+    if (!jogoId) {
+      toast.error("ID do jogo não especificado.");
+      return;
+    }
   
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}jogos/${jogoId}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        toast.success("Jogo excluído com sucesso!", {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: (() =>
+          window.location.reload()) 
+        });
+      } else {
+        throw new Error('Falha ao excluir jogo.');
+      }
+    } catch (error) {
+      console.error("Erro ao excluir jogo:", error);
+      toast.error(`Erro ao excluir jogo: ${error.message}`);
+    }
+  };
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -303,6 +329,16 @@ const linkMapsUrl = campos && campos.linkMaps
           size='sm'
           onClick={() => {
             setShowModalEditarJogo(true);
+          }} 
+        />
+        <Button 
+          color='white'
+          bgColor='red'
+          text='Excluir Jogo'
+          borderRadius='10px'
+          size='sm'
+          onClick={() => {
+            deletarJogo();
           }} 
         />
         </div>

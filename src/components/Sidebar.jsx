@@ -97,7 +97,7 @@ const Sidebar = () => {
                     }
 
                     if (permissao === 'TEquipe' && (link.name === 'Transferencias' || link.name === 'Clubes' || link.name === 'Campos' || link.name === 'ControleAtletas' 
-                      || link.name === 'Documentos' || link.name === 'Permissoes')) {
+                      || link.name === 'Documentos' || link.name === 'Permissoes' || link.name === 'Blog')) {
                       return null;
                     }
 

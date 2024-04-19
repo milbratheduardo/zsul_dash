@@ -19,3 +19,4 @@ export { default as ClubesElenco } from './ClubesElenco';
 export { default as Permissoes } from './Permissoes';
 export { default as Punicoes } from './Punicoes';
 export { default as CamposTecnicos } from './CamposTecnicos';
+export { default as Blog } from './Blog';

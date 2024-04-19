@@ -8,7 +8,7 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   Campos,
   ControleAtletas,
   Documentos,
-  Estatísticas, ClubesElenco, Permissoes, Punicoes, CamposTecnicos} from './pages';
+  Estatísticas, ClubesElenco, Permissoes, Punicoes, CamposTecnicos, Blog} from './pages';
 import Recovery from './pages/recovery'
 
 
@@ -67,6 +67,7 @@ const App = () => {
               <Route path='/controleAtletas' element={<ControleAtletas />} />
               <Route path='/documentos' element={<Documentos />} />
               <Route path='/permissoes' element={<Permissoes />} />
+              <Route path='/blog' element={<Blog />} />
           </Routes>
                
         </BrowserRouter>

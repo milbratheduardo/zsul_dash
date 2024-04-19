@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import { Header } from '../components';
+import { Header, ModalAtletasOpcoesSumulas } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { GridComponent, ColumnsDirective, ColumnDirective,
   Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
+import { Navbar, Footer, Sidebar, ThemeSettings, Button } from '../components';
+import { toast } from 'react-toastify';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 
 
 const ControleAtletas = () => {
@@ -18,6 +21,33 @@ const ControleAtletas = () => {
     const [clubes, setClubes] = useState([]);
     const [selectedClubeId, setSelectedClubeId] = useState('');
     const [totalInscricoes, setTotalInscricoes] = useState(0);
+    const [showAtletasOpcoes, setShowAtletasOpcoes] = useState(false);
+    const [selectedAtleta, setSelectedAtleta] = useState(null);
+    const [clubInfo, setClubInfo] = useState({});
+    const [campeonatoName, setCampeonatoName] = useState('');
+
+
+    const [selectedAtletaData, setSelectedAtletaData] = useState({
+      name: '',
+    });
+
+    const handleAtletaClick = (inscricao) => {
+      console.log('Dados do Atleta:', inscricao);       
+      const atletaDados = {
+        Nome: inscricao.elencoName,
+        Id:inscricao.elencoId
+      };
+      setSelectedAtletaData({
+        name: inscricao.elencoName,
+        id: inscricao.elencoId,
+        documento: inscricao.elencoDocumento,
+        status: inscricao.status
+      });
+      setShowAtletasOpcoes(true);
+      setSelectedAtleta(inscricao);
+      console.log(atletaDados)
+      localStorage.setItem('selectedAtletaId', inscricao._id);
+    };
 
     useEffect(() => {
       const fetchCampeonatos = async () => {
@@ -79,17 +109,26 @@ const ControleAtletas = () => {
 
     useEffect(() => {
       const fetchSumulas = async () => {
-        
         if (selectedClubeId && selectedCampeonatoId) {
           try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}sumula/team/${selectedClubeId}`);
             const data = await response.json();
-            
-            
             const sumulasFiltradas = data.data.filter(sumula => sumula.campeonatoId === selectedCampeonatoId);
+        
+            const inscricoesWithCategory = await Promise.all(sumulasFiltradas.map(async (sumula) => {
+              const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/${sumula.elencoId}`);
+              const elencoData = await response.json();
+              if (elencoData.status === 200 && elencoData.data && elencoData.data.length > 0 && elencoData.data[0] !== null) {
+                return {...sumula, category: elencoData.data[0].category};
+              } else {
+                console.error('Incomplete or null data for elencoId:', sumula.elencoId, elencoData);
+                return null; 
+              }
+            }));
     
-            setInscricoes(sumulasFiltradas);
-            setTotalInscricoes(sumulasFiltradas.length * 35);
+            const validInscricoes = inscricoesWithCategory.filter(inscricao => inscricao !== null); // Filter out null entries
+            setInscricoes(validInscricoes);
+            setTotalInscricoes(validInscricoes.length * 35);
           } catch (error) {
             console.error("Erro ao buscar súmulas:", error);
             setInscricoes([]); 
@@ -103,10 +142,121 @@ const ControleAtletas = () => {
     }, [selectedClubeId, selectedCampeonatoId]);
     
     
+    
+    
 
     console.log('Jogadores: ', inscricoes)
 
-  
+    const exportList = async () => {
+      if (!selectedCampeonatoId || !selectedClubeId) {
+        toast.error("Selecione um campeonato e um clube antes de exportar a lista.");
+        return;
+      }
+      
+      const requestBody = {
+        teamId: selectedClubeId,
+        campeonatoId: selectedCampeonatoId
+      };
+    
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}sumula/export/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        });
+    
+        if (response.ok) {
+          toast.success("Lista exportada com sucesso!");
+        } else {
+          throw new Error('Falha ao exportar a lista.');
+        }
+      } catch (error) {
+        console.error("Erro ao exportar a lista:", error);
+        toast.error(error.message);
+      }
+    };
+
+
+    const generatePDF = () => {
+      const doc = new jsPDF();
+      
+      
+      if (clubInfo.data.pictureBase64) {
+        doc.addImage(clubInfo.data.pictureBase64, 'PNG', 10, 0, 50, 50);
+      } else {
+        console.error("A imagem base64 está null.");
+      }
+      
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const teamName = clubInfo.data.teamName || "Equipe"; 
+      const teamNameXPosition = (pageWidth / 2);
+      
+      doc.setFontSize(20);
+      doc.text(teamName, teamNameXPosition, 30, 'center');
+      doc.setFontSize(16);
+      doc.text(campeonatoName, teamNameXPosition, 50, 'center');
+      doc.setFontSize(12);
+      doc.text("Data", 195, 20, 'right');
+      doc.text(new Date().toLocaleDateString(), 200, 30, 'right');
+      
+      doc.setFontSize(16);
+      doc.text("Atletas", teamNameXPosition, 75, 'center');
+    
+      const tableColumn = ["Nome", "Documento", "Categoria"];
+      const tableRows = inscricoes.map((atleta) => [
+        atleta.elencoName,
+        atleta.elencoDocumento,
+        `Sub-${atleta.category}`
+      ]);
+      
+      
+      doc.autoTable(tableColumn, tableRows, { startY: 80 }); 
+    
+      
+      doc.save('lista_atletas.pdf');
+    };
+    
+
+    useEffect(() => {
+      const fetchClubInfo = async () => {
+        if (selectedClubeId) {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}users/${selectedClubeId}`);
+            const data = await response.json();
+            setClubInfo(data);
+          } catch (error) {
+            console.error("Erro ao buscar informações do clube:", error);
+            setClubInfo({});
+          }
+        }
+      };
+    
+      fetchClubInfo();
+    }, [selectedClubeId]);
+
+
+    useEffect(() => {
+      const fetchCampeonato = async () => {
+        if (selectedCampeonatoId) {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/${selectedCampeonatoId}`);
+            const data = await response.json();
+            setCampeonatoName(data.data.name); 
+          } catch (error) {
+            console.error("Erro ao buscar dados do campeonato:", error);
+            setCampeonatoName(''); 
+          }
+        } else {
+          setCampeonatoName('');
+        }
+      };
+    
+      fetchCampeonato();
+    }, [selectedCampeonatoId]);
+    
+    
 
     const ControleGrid = [
       {
@@ -127,10 +277,18 @@ const ControleAtletas = () => {
         headerText: 'Atleta', 
         width: '150', 
         textAlign: 'Center',
-        template: (rowData) => (
-          rowData ? <span>{rowData.elencoName}</span> : <span>--</span> 
+        template: (inscricao) => (
+             <a href="#" onClick={(e) => {
+              e.preventDefault();
+              handleAtletaClick(inscricao); 
+            }}>{inscricao.elencoName}</a>
         )
       },
+      { field: 'category', 
+        headerText: 'Categoria', 
+        width: '150', 
+        textAlign: 'Center', 
+        template:(inscricao) => (<a>Sub-{inscricao.category}</a>)},
       {
         field: 'elencoDocumento',
         headerText: 'Documento',
@@ -180,9 +338,34 @@ const ControleAtletas = () => {
           </div>
 
           {themeSettings && <ThemeSettings />}
+
+          <ModalAtletasOpcoesSumulas 
+            isVisible={showAtletasOpcoes} 
+            atleta={selectedAtletaData}
+            currentColor={currentColor}
+            campeonatoId = {selectedCampeonatoId}            
+            teamId={selectedClubeId}
+            onClose={() => {
+              setShowAtletasOpcoes(false);
+            }} 
+          />
+
+          {!showAtletasOpcoes && (
             <div className='m-2 md:m-10 mt-24 p-2 
             md:p-10 bg-white rounded-3xl'>
-              <Header category="Administrador" title="Controle de Atletas" subtitle={`(Valor a ser Pago pela Equipe: R$ ${totalInscricoes})`}/>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Header category="Administrador" title="Controle de Atletas" 
+                  subtitle={`(Valor a ser Pago pela Equipe: R$ ${totalInscricoes})||(Número de Atletas na Súmula: ${inscricoes.length})`}/>
+                  <Button 
+                    color='white'
+                    bgColor={currentColor}
+                    text='Exportar Lista'
+                    borderRadius='10px'
+                    size='md'
+                    onClick={generatePDF}
+                    
+                  />
+              </div>
               <select onChange={handleCampeonatoChange} value={selectedCampeonatoId} className='mb-4'>
                 <option value=''>Selecione um campeonato</option>
                 {campeonatos.map((campeonato) => (
@@ -211,6 +394,7 @@ const ControleAtletas = () => {
                 <Inject services={[Page, Search, Toolbar]}/>
               </GridComponent> 
               </div>
+              )}
             </div>
           </div>
         </div>
