@@ -3,6 +3,7 @@ import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button, ModalPerfil, Mo
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
+import ModalEditName from '../components/ModalEditName '
 import chroma from 'chroma-js';
 
 const MeuPerfil = () => {
@@ -18,7 +19,8 @@ const MeuPerfil = () => {
   console.log('userId: ', userId)
   const endColor = chroma(currentColor).darken(1).css();
   const permissao = localStorage.getItem('permissao') || '';
-  
+  const [showEditNameModal, setShowEditNameModal] = useState(false);
+
   useEffect(() => {
     const imageData = {
       userId: userId,
@@ -162,6 +164,13 @@ const MeuPerfil = () => {
             onClose={() => {
               setShowModal(false);
           }}/>
+          <ModalEditName
+            isVisible={showEditNameModal}
+            onClose={() => setShowEditNameModal(false)}
+            currentColor={currentColor}
+            userId={userId}
+          />
+
 
           <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -202,6 +211,16 @@ const MeuPerfil = () => {
                     <div className="mb-2 text-blueGray-600 mt-10">
                       {userInfo.data?.email || 'Carregando...'}
                     </div>
+                  </div>
+                  <div className="mb-2 text-blueGray-600 mt-10" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+ 
+                    <button
+                      className="mt-4 text-sm text-white py-2 px-4 rounded"
+                      style={{ backgroundColor: currentColor }}
+                      onClick={() => setShowEditNameModal(true)}
+                    >
+                      Editar
+                    </button>
                   </div>
                   <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
                     <div className="flex flex-wrap justify-center">

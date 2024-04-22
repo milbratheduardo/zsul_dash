@@ -1,0 +1,4 @@
+.modal-container {
+
+    z-index: 1000; /* Certifique-se de que o modal esteja acima de outros elementos */
+  }
