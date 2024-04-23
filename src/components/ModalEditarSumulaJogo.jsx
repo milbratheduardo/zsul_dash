@@ -11,13 +11,14 @@ const fields = ModalSumulaJogoFields;
 let fieldsState = {};
 fields.forEach(field => (fieldsState[field.id] = ''));
 
-const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora, jogoId, campeonatoId, nomeTimeCasa, nomeTimeFora }) => {
+const ModalEditarSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora, jogoId, campeonatoId, nomeTimeCasa, nomeTimeFora }) => {
     if (!isVisible) return null;
 
     const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
     const [errorMessage, setErrorMessage] = useState("");
     const [atletasTimeCasa, setAtletasTimeCasa] = useState([]);
     const [atletasTimeFora, setAtletasTimeFora] = useState([]);
+    const [initialData, setInitialData] = useState([]);
     const [selects, setSelects] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
@@ -176,7 +177,7 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
                     X
                 </button>
                 <div className='bg-white p-2 rounded' style={{ maxHeight: '100%', overflowY: 'auto' }}>
-                    <HeaderModal title='Cadastre nova Súmula da Partida' heading='Preencha todos os dados' />
+                    <HeaderModal title='Edite a Súmula da Partida' />
                     <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
                         {errorMessage && (
                             <div 
@@ -324,4 +325,4 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
     );
 };
 
-export default ModalSumulaJogo;
+export default ModalEditarSumulaJogo;

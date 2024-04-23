@@ -45,3 +45,4 @@ export { default as ModalAdicionarPost} from './ModalAdicionarPost';
 export { default as ModalAdicionarFoto} from './ModalAdicionarFoto';
 export { default as CardBlog } from './CardBlog';
 export { default as CardFoto } from './CardFoto';
+export { default as ModalEditarSumulaJogo } from './ModalEditarSumulaJogo';

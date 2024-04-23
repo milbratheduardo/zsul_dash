@@ -102,6 +102,7 @@ const CampeonatoDetalhes = () => {
             try {
               const teamStatsResponse = await fetch(` ${process.env.REACT_APP_API_URL}inscricoes/user/${team.teamId}`);
               const teamStatsData = await teamStatsResponse.json();
+              console.log('teamStats: ', teamStatsData)
               const statsForCampeonato = teamStatsData.data.find(
                 (stats) => stats.campeonatoId === id
               );
@@ -142,7 +143,7 @@ const CampeonatoDetalhes = () => {
     fetchTimeGroupsAndStats();
   }, [selectedGroupId]);
     
-  
+  console.log('Time Groups: ', timeGroups)
 
   const ActionButtonTemplate = (teamId) => (
     <Button
@@ -502,7 +503,10 @@ const CampeonatoDetalhes = () => {
                                 deletarGrupo(group._id);
                             }}
                           />
-                          <Button 
+                          
+                          </>
+                        )}
+                        <Button 
                             color='white'
                             bgColor={endColor}
                             text='Próximo Grupo'
@@ -510,8 +514,6 @@ const CampeonatoDetalhes = () => {
                             size='sm'
                             onClick={goToNextGroup}
                           />
-                          </>
-                        )}
                         
                         </div>                      
                     </SwiperSlide>
@@ -535,6 +537,7 @@ const CampeonatoDetalhes = () => {
                       hora={jogo.hora}
                       currentColor={currentColor}
                       jogoId={jogo._id}
+                      permissao = {permissao}
                     />
                   ))}
                 </div>

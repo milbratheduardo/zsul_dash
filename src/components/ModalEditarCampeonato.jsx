@@ -60,43 +60,82 @@ const ModalEditarCampeonato = ({ isVisible, onClose, currentColor, campeonatoId 
       }
       return acc;
     }, []);
-  
+
     const changesAll = changes.filter(change => change.field !== "" && change.value !== "");
   
     if (changesAll.length === 0) {
-      toast.info('Não houve mudanças!');
-      return;
+        toast.info('Não houve mudanças!');
+        return;
     }
-  
+
     for (const change of changesAll) {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/${campeonatoId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(change)
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/${campeonatoId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(change)
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                toast.success(`Campo ${change.field} editado com sucesso!`, {
+                    position: "top-center",
+                    autoClose: 5000
+                });
+            } else {
+                console.error('Error:', data.msg);
+                toast.error(data.msg || 'Erro desconhecido.');
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            toast.error("Houve um problema ao conectar com o servidor.");
+        }
+    }
+
+    const fileField = document.querySelector("input[type='file']");
+    if (fileField && fileField.files[0]) {
+        await uploadImage(campeonatoId, fileField.files[0]);
+    } else {
+        navigate(`/campeonatos/${campeonatoId}`);
+    }
+};
+
+
+
+  const uploadImage = async (championshipId, file) => {
+    const formData = new FormData();
+    formData.append('userId', championshipId);
+    formData.append('userType', 'campeonato');
+    formData.append('imageField', 'picture');
+    formData.append('file', file);
+
+    try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
+            method: 'POST',
+            body: formData,
         });
 
-  
-        const data = await response.json();
         if (response.ok) {
-          toast.success(`Campo ${change.field} editado com sucesso!`, {
-            position: "top-center",
-            autoClose: 5000
-          });
+            toast.success('Imagem atualizada com sucesso!', {
+                position: "top-center",
+                autoClose: 5000,
+                onClose: () => navigate(`/campeonatos/${championshipId}`)
+            });
         } else {
-          console.error('Error:', data.msg);
-          toast.error(data.msg || 'Erro desconhecido.');
+            const data = await response.json();
+            throw new Error(data.msg || 'Erro ao enviar imagem.');
         }
-      } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        toast.error("Houve um problema ao conectar com o servidor.");
-      }
+    } catch (error) {
+        console.error('Erro ao enviar imagem:', error);
+        toast.error('Erro ao enviar imagem.', {
+            position: "top-center",
+            autoClose: 5000,
+        });
     }
-  
-    navigate(`/campeonatos/${campeonatoId}`);
-  };
+};
+
   
 
   return (
@@ -123,7 +162,7 @@ const ModalEditarCampeonato = ({ isVisible, onClose, currentColor, campeonatoId 
               </div>
             }
             <div className='-space-y-px'>
-              {fields.filter(field => field.type !== 'file').map((field, index) => (
+              {fields.map((field, index) => (
                 <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
                   {field.type === 'dropdown' ? (
                     <div>

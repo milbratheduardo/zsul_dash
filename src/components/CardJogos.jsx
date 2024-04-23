@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import { Button, ModalEditarJogo, ModalSumulaJogo } from '../components';
+import { Button, ModalEditarJogo, ModalSumulaJogo, ModalEditarSumulaJogo } from '../components';
 import chroma from 'chroma-js';
 import { toast } from 'react-toastify';
 
 const CardCompetition = ({ 
-  campeonatoId, userIdCasa, userIdFora, tipo, grupoId, data, local, hora, currentColor,jogoId
+  campeonatoId, userIdCasa, userIdFora, tipo, grupoId, data, local, hora, currentColor,jogoId, permissao
 }) => {
 
   const [imageSrcCasa, setImageSrcCasa] = useState('');
@@ -14,8 +14,10 @@ const CardCompetition = ({
   const [userCasaInfo, setUserCasaInfo] = useState({});
   const [userForaInfo, setUserForaInfo] = useState({});
   const endColor = chroma(currentColor).darken(1).css();
+  const endColor2 = chroma(currentColor).darken(2).css();
   const [showModalEditarJogo, setShowModalEditarJogo] = useState(false);
   const [showModalSumulaJogo, setShowModalSumulaJogo] = useState(false);
+  const [showModalEditarSumulaJogo, setShowModalEditarSumulaJogo] = useState(false);
   const [jogoEstatisticas, setJogoEstatisticas] = useState(null);
   const [campos, setCampos] = useState([]);
 
@@ -248,8 +250,23 @@ const linkMapsUrl = campos && campos.linkMaps
             campeonatoId={campeonatoId} 
             timeCasa={userCasaInfo.data?._id}
             timeFora={userForaInfo.data?._id}
+            nomeTimeCasa={userCasaInfo.data?.teamName}
+            nomeTimeFora={userForaInfo.data?.teamName}
             onClose={() => {
               setShowModalSumulaJogo(false);
+          }}/>
+
+          <ModalEditarSumulaJogo
+            isVisible={showModalEditarSumulaJogo} 
+            currentColor={currentColor} 
+            jogoId = {jogoId}
+            campeonatoId={campeonatoId} 
+            timeCasa={userCasaInfo.data?._id}
+            timeFora={userForaInfo.data?._id}
+            nomeTimeCasa={userCasaInfo.data?.teamName}
+            nomeTimeFora={userForaInfo.data?.teamName}
+            onClose={() => {
+              setShowModalEditarSumulaJogo(false);
           }}/>
         
         <div className="flex justify-center items-center w-full px-6">
@@ -287,61 +304,65 @@ const linkMapsUrl = campos && campos.linkMaps
           </div>
       </div>
 
-        <div className="mt-4 px-6">
-          <p className="text-gray-700 text-sm">
-            Tipo: {tipo}
-          </p>
-          <p className="text-gray-700 text-sm">
-            Grupo: {groups.name}
-          </p>
-          <p className="text-gray-700 text-sm">
-            Data: {data}
-          </p>
-          <a
-            target="_blank" rel="noopener noreferrer"
-            href={linkMapsUrl}
-            className="text-gray-700 text-sm mb-4"
-            style={linkStyle}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-          >
-            Local: {campos.nome}
-          </a>
+      <div className="mt-4 px-6">
+        <p className="text-gray-700 text-sm">Tipo: {tipo}</p>
+        <p className="text-gray-700 text-sm">Grupo: {groups.name}</p>
+        <p className="text-gray-700 text-sm">Data: {data}</p>
+        <a
+          target="_blank" rel="noopener noreferrer"
+          href={linkMapsUrl}
+          className="text-gray-700 text-sm mb-4"
+          style={linkStyle}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        >
+          Local: {campos.nome}
+        </a>
+        <p className="text-gray-700 text-sm mb-4">Hora: {hora}</p>
+        {permissao === 'admin' && (
+          <>
+            <div className="flex justify-between mb-2"> 
+              <Button 
+                color='white'
+                bgColor={currentColor}
+                text='Súmula'
+                borderRadius='10px'
+                size='sm'
+                onClick={() => setShowModalSumulaJogo(true)}
+                style={{ margin: '0 8px 0 0' }}
+              />
+              <Button 
+                color='white'
+                bgColor={endColor2}
+                text='Editar Súmula'
+                borderRadius='10px'
+                size='sm'
+                onClick={() => ''}
+              />
+            </div>
+            <div className="flex justify-between"> 
+              <Button 
+                color='white'
+                bgColor={endColor}
+                text='Editar Jogo'
+                borderRadius='10px'
+                size='sm'
+                onClick={() => setShowModalEditarJogo(true)}
+                style={{ margin: '0 8px 0 0' }} 
+              />
+              <Button 
+                color='white'
+                bgColor='red'
+                text='Excluir Jogo'
+                borderRadius='10px'
+                size='sm'
+                onClick={() => deletarJogo()}
+              />
+            </div>
+          </>
+        )}
+      </div>
 
-          <p className="text-gray-700 text-sm mb-4"> 
-            Hora: {hora}
-          </p>
-          <Button 
-          color='white'
-          bgColor={currentColor}
-          text='Súmula'
-          borderRadius='10px'
-          size='sm'
-          onClick={() => {
-            setShowModalSumulaJogo(true);
-          }} 
-        />
-        <Button 
-          color='white'
-          bgColor={endColor}
-          text='Editar Jogo'
-          borderRadius='10px'
-          size='sm'
-          onClick={() => {
-            setShowModalEditarJogo(true);
-          }} 
-        />
-        <Button 
-          color='white'
-          bgColor='red'
-          text='Excluir Jogo'
-          borderRadius='10px'
-          size='sm'
-          onClick={() => {
-            deletarJogo();
-          }} 
-        />
-        </div>
       </div>
     </div>
 

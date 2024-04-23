@@ -67,7 +67,8 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
                         onClose: () => navigate('/campeonatos')
                     });
                 }
-            } else {
+            }
+             else {
                 throw new Error(responseData.msg || 'Erro ao cadastrar campeonato');
             }
         } catch (error) {
@@ -79,72 +80,40 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
             });
         }
     };
+  
 
-    const compressImage = async (file) => {
-        const options = {
-            maxSizeMB: 0.015, 
-            maxWidthOrHeight: 1920,
-            useWebWorker: true
-        };
-
+    const uploadImage = async (championshipId, file) => {
+        const formData = new FormData();
+        formData.append('userId', championshipId);
+        formData.append('userType', 'campeonato');
+        formData.append('imageField', 'picture');
+        formData.append('file', file);
+    
         try {
-            const compressedFile = await imageCompression(file, options);
-            return compressedFile;
+            const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
+                method: 'POST',
+                body: formData, // No 'Content-Type' header needed; it will be set automatically by the browser when you use FormData
+            });
+    
+            if (response.ok) {
+                toast.success('Campeonato e imagem associada salvos com sucesso!', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    onClose: () => navigate('/campeonatos')
+                });
+            } else {
+                const data = await response.json();
+                throw new Error(data.msg || 'Erro ao enviar imagem.');
+            }
         } catch (error) {
-            console.error(error);
-            return file; 
+            console.error('Erro ao enviar imagem:', error);
+            toast.error('Erro ao enviar imagem.', {
+                position: "top-center",
+                autoClose: 5000,
+            });
         }
     };
-
-    const convertFileToBase64 = (file, callback) => {
-        const reader = new FileReader();
-        reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
-        reader.readAsDataURL(file);
-    };
-
-    const uploadImage = async (campeonatoId, file) => {
-        compressImage(file).then(compressedFile => {
-            convertFileToBase64(compressedFile, async (base64String) => {
-                const jsonData = {
-                    userId: campeonatoId,
-                    file: base64String,
-                    fileType: file.type.split('/')[1],
-                    userType: 'campeonato',
-                    imageField: 'picture',
-                };
-
-                console.log('CampeonatoId: ', campeonatoId)
-                console.log('CampeonatoId: ', jsonData)
-
-                try {
-                    const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(jsonData),
-                    });
-
-                    if (response.ok) {
-                        toast.success('Campeonato e imagem associada salvos com sucesso!', {
-                            position: "top-center",
-                            autoClose: 5000,
-                            onClose: () => navigate('/campeonatos')
-                        });
-                    } else {
-                        const data = await response.json();
-                        throw new Error(data.msg || 'Erro ao enviar imagem.');
-                    }
-                } catch (error) {
-                    console.error('Erro ao enviar imagem:', error);
-                    toast.error('Erro ao enviar imagem.', {
-                        position: "top-center",
-                        autoClose: 5000,
-                    });
-                }
-            });
-        });
-    };
+    
 
     return (
         <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
