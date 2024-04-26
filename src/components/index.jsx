@@ -46,3 +46,4 @@ export { default as ModalAdicionarFoto} from './ModalAdicionarFoto';
 export { default as CardBlog } from './CardBlog';
 export { default as CardFoto } from './CardFoto';
 export { default as ModalEditarSumulaJogo } from './ModalEditarSumulaJogo';
+export { default as ModalEditarPunicao } from './ModalEditarPunicao';

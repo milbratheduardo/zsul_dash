@@ -128,7 +128,28 @@ const CampeonatoDetalhes = () => {
           });
   
           let teamsWithStats = await Promise.all(statsPromises);
-          teamsWithStats.sort((a, b) => b.pontos - a.pontos);
+            teamsWithStats.sort((a, b) => {
+              // Primeiro critério: Pontos
+              if (b.pontos !== a.pontos) {
+                return b.pontos - a.pontos;
+              }
+              // Segundo critério: Vitorias
+              if (b.vitorias !== a.vitorias) {
+                return b.vitorias - a.vitorias;
+              }
+              // Terceiro critério: Saldo de gols
+              if (b.saldoGols !== a.saldoGols) {
+                return b.saldoGols - a.saldoGols;
+              }
+              // Quarto critério: Gols feitos
+              if (b.golsFeitos !== a.golsFeitos) {
+                return b.golsFeitos - a.golsFeitos;
+              }
+              // Quinto critério: Menor gols sofridos
+              const golsSofridosA = a.golsFeitos - a.saldoGols;
+              const golsSofridosB = b.golsFeitos - b.saldoGols;
+              return golsSofridosA - golsSofridosB;
+            });
           teamsWithStats = teamsWithStats.map((team, index) => ({ ...team, P: index + 1 }));
           setTimeGroups(teamsWithStats);
         } else {

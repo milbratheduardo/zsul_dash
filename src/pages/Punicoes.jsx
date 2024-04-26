@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Header, Navbar, Footer, Sidebar, ThemeSettings } from '../components';
+import { Header, Navbar, Footer, Sidebar, ThemeSettings, ModalEditarPunicao } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { FiSettings } from 'react-icons/fi';
@@ -8,6 +8,9 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 const Punicoes = () => {
   const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
   const [punicoes, setPunicoes] = useState([]);
+  const [showEditarPunicao, setShowEditarPunicao] = useState(false);
+  const [selectedAtleta, setSelectedAtleta] = useState(null);
+  const permissao = localStorage.getItem('permissao') || '';
 
   useEffect(() => {
     const fetchPunicoes = async () => {
@@ -16,7 +19,7 @@ const Punicoes = () => {
         const data = await response.json();
 
         const detalhesJogosPromises = data.data.map(async (item) => {
-          if (item.punicao > 0) {
+          if (item.numeroCartoesVermelho > 0) {
             const jogoId = item.jogoId;
             const responseJogo = await fetch(`${process.env.REACT_APP_API_URL}jogos/${jogoId}`);
             const dataJogo = await responseJogo.json();
@@ -42,16 +45,26 @@ const Punicoes = () => {
 
     fetchPunicoes();
   }, []);
-
-
-  console.log('Punicoes: ', punicoes)
   
+  const handleAtletaClick = (atleta) => {
+    console.log('dados: ', atleta);
+    setSelectedAtleta(atleta);
+    setShowEditarPunicao(true);
+  }
   const ControleGrid = [
     {
       field: 'jogadorName',
       headerText: 'Atleta',
       width: '200',
       textAlign: 'Center',
+      template: (atleta) => ( 
+        <a href="#" onClick={(e) => {
+          e.preventDefault(); 
+          if (permissao === 'admin') {
+            handleAtletaClick(atleta); 
+          } 
+        }}>{atleta.jogadorName}</a>
+      )
     },
     {
       field: 'teamName', 
@@ -64,7 +77,7 @@ const Punicoes = () => {
       headerText: 'Punição',
       width: '200',
       textAlign: 'Center',
-      template: (data) => (<a>{data.punicao} Jogos</a>)
+      template: (data) => (<a>{data.punicao}</a>)
     },
     {
       field: 'campeonatoName', 
@@ -94,6 +107,8 @@ const Punicoes = () => {
     }
   ];
   
+
+  console.log('Punicoes: ', punicoes)
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -125,6 +140,16 @@ const Punicoes = () => {
             <Navbar />
           </div>
           {themeSettings && <ThemeSettings />}
+
+          <ModalEditarPunicao
+            isVisible={showEditarPunicao} 
+            atleta={selectedAtleta}
+            currentColor={currentColor}
+            onClose={() => {
+              setShowEditarPunicao(false);
+            }} 
+          />
+
           <div className='m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl'>
             <Header category="Equipe" title="Punições"/>
             <GridComponent

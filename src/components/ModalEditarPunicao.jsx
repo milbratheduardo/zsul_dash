@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { ModalPerfilFields } from '../constants/formFields';
+import { ModalEditarPunicaoFields } from '../constants/formFields';
 import Input from './Input';
 import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import imageCompression from 'browser-image-compression';
-const fields = ModalPerfilFields;
+const fields = ModalEditarPunicaoFields;
 let fieldsState = {};
 fields.forEach((field) => (fieldsState[field.id] = ''));
-const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
+
+const ModalEditarPunicao = ({ isVisible, onClose, currentColor, atleta }) => {
   if (!isVisible) return null;
 
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
@@ -26,7 +26,7 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await fetch(` ${process.env.REACT_APP_API_URL}users/${userId}`);
+        const response = await fetch(` ${process.env.REACT_APP_API_URL}estatistica/jogador/${atleta.jogadorId}`);
         const data = await response.json();
         if (data.status === 200 && data.data) {
           setInitialData(data.data);
@@ -39,7 +39,9 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
       }
     };
     fetchInitialData();
-  }, [userId]);
+  }, [atleta._id]);
+
+  console.log('InitialData: ', initialData)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,12 +66,11 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
     for (const change of changesAll) {
       try {
         const requestBody = {
-          userIdRequesting: "660d5201f5dd731f1bd4c33c",
           field: change.field,
           value: change.value
         };
 
-        const response = await fetch(`${process.env.REACT_APP_API_URL}users/${userId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador/${atleta._id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -81,7 +82,9 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
         if (response.ok) {
           toast.success(`Campo ${change.field} editado com sucesso!`, {
             position: "top-center",
-            autoClose: 5000
+            autoClose: 5000,
+            onClose: (() => navigate('/punicoes'),
+            window.location.reload())
           });
         } else {
           console.error('Error:', data.msg);
@@ -92,46 +95,8 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
         toast.error("Houve um problema ao conectar com o servidor.");
       }
     }
-    const fileField = document.querySelector("input[type='file']");
-    if (fileField && fileField.files[0]) {
-        await uploadImage(userId, fileField.files[0]);
-    } else {
-        navigate('/perfil');
-    }
-  };
-
-
-  const uploadImage = async (userId, file) => {
-    const formData = new FormData();
-    formData.append('userId', userId);
-    formData.append('userType', 'user');
-    formData.append('imageField', 'picture');
-    formData.append('file', file);
-
-    try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (response.ok) {
-            toast.success('Imagem atualizada com sucesso!', {
-                position: "top-center",
-                autoClose: 5000,
-                onClose: () => navigate('/perfil')
-            });
-        } else {
-            const data = await response.json();
-            throw new Error(data.msg || 'Erro ao enviar imagem.');
-        }
-    } catch (error) {
-        console.error('Erro ao enviar imagem:', error);
-        toast.error('Erro ao enviar imagem.', {
-            position: "top-center",
-            autoClose: 5000,
-        });
-    }
-};
+    
+  }; 
 
 
   return (
@@ -141,7 +106,7 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
           X
         </button>
         <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
-          <HeaderModal title='Edite as Informações do Seu Perfil' heading='Preencha todos os dados' />
+          <HeaderModal title='Edite os Dias de Punição do Atleta' heading={`${atleta.jogadorName}`} />
           <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
             {errorMessage && 
                 <div 
@@ -193,7 +158,7 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
                         name={field.name}
                         type={field.type}
                         isRequired={field.isRequired}
-                        placeholder={initialData.teamName}
+                        placeholder={initialData[0]?.punicao || ''}
                       />
                     </div>
                   )}
@@ -208,4 +173,4 @@ const ModalPerfil = ({ isVisible, onClose, currentColor, userId }) => {
   );
 };
 
-export default ModalPerfil;
+export default ModalEditarPunicao;

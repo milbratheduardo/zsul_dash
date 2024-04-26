@@ -47,6 +47,8 @@ const Estatísticas = () => {
       fetchStats();
     }, [selectedCampeonatoId]);
 
+    console.log('Inscricoes: ', inscricoes)
+
     const handleCampeonatoChange = (event) => {
       setSelectedCampeonatoId(event.target.value);
     };

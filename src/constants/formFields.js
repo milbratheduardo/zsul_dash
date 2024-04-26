@@ -512,6 +512,20 @@ const ModalAdicionarJogoFields = [
                 
         },           
     ]
+
+    const ModalEditarPunicaoFields = [
+        {
+            labelText:"Dias de Punição",
+            labelFor:"",
+            id:"punicao",
+            name:"punicao",
+            type:"text",
+            autoComplete:"punicao",
+            isRequired:true,
+            placeholder:"Dias de Punição",
+                
+        },  
+    ]
     const ModalAdmFields=[
         {
             labelText:"Nome",
@@ -724,5 +738,5 @@ export {loginFields,signupFields,ModalAtletaFields,
     ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
     ModalGrupoFields, ModalAdicionarJogoFields, ModalSumulaJogoFields,
     ModalAdmFields, ModalTransferenciaFields, ModalCamposFields, ModalEditarAtletaFields,
-    ModalAdicionarPostFields, ModalAdicionarFotoFields
+    ModalAdicionarPostFields, ModalAdicionarFotoFields, ModalEditarPunicaoFields
     }

@@ -330,17 +330,7 @@ const linkMapsUrl = campos && campos.linkMaps
                 size='sm'
                 onClick={() => setShowModalSumulaJogo(true)}
                 style={{ margin: '0 8px 0 0' }}
-              />
-              <Button 
-                color='white'
-                bgColor={endColor2}
-                text='Editar Súmula'
-                borderRadius='10px'
-                size='sm'
-                onClick={() => ''}
-              />
-            </div>
-            <div className="flex justify-between"> 
+              /> 
               <Button 
                 color='white'
                 bgColor={endColor}

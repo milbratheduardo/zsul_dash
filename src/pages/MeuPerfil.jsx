@@ -164,12 +164,6 @@ const MeuPerfil = () => {
             onClose={() => {
               setShowModal(false);
           }}/>
-          <ModalEditName
-            isVisible={showEditNameModal}
-            onClose={() => setShowEditNameModal(false)}
-            currentColor={currentColor}
-            userId={userId}
-          />
 
 
           <div className='m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl'>
@@ -213,20 +207,11 @@ const MeuPerfil = () => {
                     </div>
                   </div>
                   <div className="mb-2 text-blueGray-600 mt-10" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
- 
-                    <button
-                      className="mt-4 text-sm text-white py-2 px-4 rounded"
-                      style={{ backgroundColor: currentColor }}
-                      onClick={() => setShowEditNameModal(true)}
-                    >
-                      Editar
-                    </button>
                   </div>
                   <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
                     <div className="flex flex-wrap justify-center">
                       <div className="w-full lg:w-9/12 px-4 flex justify-around">
-                        {
-                        /*permissao !== 'TEquipe'*/ 
+                        {permissao == 'TEquipe' && (
                         <div>
                           <h4 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700">
                             Atletas
@@ -235,9 +220,8 @@ const MeuPerfil = () => {
                             {userAtletas?.length ? userAtletas?.length : '0'}
                           </div>
                         </div>
-                        }
-                        {
-                        /*permissao !== 'TEquipe'*/
+                        )}    
+                        {permissao == 'TEquipe' && (                   
                         <div>
                           <h4 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700">
                             Staff
@@ -246,9 +230,9 @@ const MeuPerfil = () => {
                           <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 ">
                             {userStaff.data?.length ? userStaff.data?.length : '0'}
                           </div>
-                          
+                        
                       </div>
-                        }
+                      )}
                        
                     </div>
                   </div>
