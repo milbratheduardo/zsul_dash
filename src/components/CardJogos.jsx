@@ -182,8 +182,8 @@ const CardCompetition = ({
             const response = await fetch(` ${process.env.REACT_APP_API_URL}estatistica/jogo/${jogoId}`);
             const data = await response.json();
             console.log('Data: ', data)
-            if (data?.status === 200 && data?.data.length > 0) {                
-                const estatisticasJogo = data.data[0][0]; 
+            if (data.status === 200 && data.data.length > 0) {                
+                const estatisticasJogo = data.data[0]; 
                 if (estatisticasJogo) {
                     setJogoEstatisticas(estatisticasJogo);
                 } else {
