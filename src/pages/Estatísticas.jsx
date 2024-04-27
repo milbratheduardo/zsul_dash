@@ -35,7 +35,7 @@ const Estatísticas = () => {
       const fetchStats = async () => {
         if (selectedCampeonatoId) {
           try {
-            const response = await fetch(` ${process.env.REACT_APP_API_URL}estatistica/jogador/campeonato/${selectedCampeonatoId}`);
+            const response = await fetch(` ${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/campeonato/${selectedCampeonatoId}`);
             const data = await response.json();
             setInscricoes(data.data);
           } catch (error) {
