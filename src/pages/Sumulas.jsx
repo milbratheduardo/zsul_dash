@@ -15,34 +15,33 @@ const Sumulas = () => {
   useEffect(() => {
     const fetchCampeonatosInscritos = async () => {
       try {
-        const response = await fetch(` ${process.env.REACT_APP_API_URL}inscricoes/user/${teamId}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/user/${teamId}`);
         const data = await response.json();
         console.log('Campeonatos Inscritos: ', data);
-
-        const campeonatoIds = data.data.map(item => item.campeonatoId);
-        console.log('Campeonato IDs: ', campeonatoIds);
-
-      const campeonatoDetailsPromises = campeonatoIds.map(_id =>
-        fetch(` ${process.env.REACT_APP_API_URL}campeonatos/${_id}`)
-        .then(response => response.json())
-      );
-
-      
-      
-        const campeonatosDetails = await Promise.all(campeonatoDetailsPromises);
-        const validCampeonatos = campeonatosDetails.filter(detail => detail.data != null);
-        console.log('Campeonatos válidos: ', validCampeonatos);
-
-        setCampeonatos(validCampeonatos.map(detail => detail.data));
-       
-
+  
+        const campeonato = data.data;
+        const campeonatoId = campeonato.campeonatoId;
+        console.log('Campeonato ID: ', campeonatoId);
+  
+        const campeonatoDetailsResponse = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/${campeonatoId}`);
+        const campeonatoDetails = await campeonatoDetailsResponse.json();
+  
+        if (campeonatoDetails.data != null) {
+          console.log('Campeonato válido: ', campeonatoDetails);
+          setCampeonatos([campeonatoDetails.data]);
+        } else {
+          console.log('Nenhum campeonato válido encontrado.');
+          setCampeonatos([]);
+        }
+  
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
       }
     };
-
+  
     fetchCampeonatosInscritos();
   }, []);
+  
   
 
   return (
@@ -92,7 +91,7 @@ const Sumulas = () => {
                       image={campeonato?.pictureBase64} 
                       title={campeonato?.name}
                       category={campeonato?.categoria}
-                      type={campeonato?.tipo}
+                      type={campeonato?.tipoCompeticao}
                       participants={campeonato?.participantes}
                       vacancies={campeonato?.vagas}
                       date={campeonato?.dataInicio}

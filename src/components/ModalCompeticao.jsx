@@ -92,7 +92,7 @@ const ModalCompeticao = ({ isVisible, onClose, currentColor }) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
                 method: 'POST',
-                body: formData, // No 'Content-Type' header needed; it will be set automatically by the browser when you use FormData
+                body: formData, 
             });
     
             if (response.ok) {

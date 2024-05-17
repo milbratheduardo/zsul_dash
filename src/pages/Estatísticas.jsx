@@ -1,92 +1,108 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
-import { GridComponent, ColumnsDirective, ColumnDirective,
-  Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
+import { GridComponent, ColumnsDirective, ColumnDirective, Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { Navbar, Footer, Sidebar, ThemeSettings } from '../components';
 
-
 const Estatísticas = () => {
-  const { activeMenu, themeSettings, setThemeSettings, 
-    currentColor, currentMode } = useStateContext();
+  const { activeMenu, themeSettings, setThemeSettings, currentColor, currentMode } = useStateContext();
   
-    const [campeonatos, setCampeonatos] = useState([]);
-    const [selectedCampeonatoId, setSelectedCampeonatoId] = useState('');
-    const [inscricoes, setInscricoes] = useState([]);
+  const [campeonatos, setCampeonatos] = useState([]);
+  const [selectedCampeonatoId, setSelectedCampeonatoId] = useState('');
+  const [inscricoes, setInscricoes] = useState([]);
+  const [selectedEstatistica, setSelectedEstatistica] = useState('');
 
-    useEffect(() => {
-      const fetchCampeonatos = async () => {
-        try {
-          const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`);
-          const data = await response.json();
-          console.log('Campeonatos: ', data);
-          setCampeonatos(data.data); 
-        } catch (error) {
-          console.error("Erro ao buscar campeonatos:", error);
-        }
-      };
-  
-      fetchCampeonatos();
-    }, []);
-
-    useEffect(() => {
-      const fetchStats = async () => {
-        if (selectedCampeonatoId) {
-          try {
-            const response = await fetch(` ${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/campeonato/${selectedCampeonatoId}`);
-            const data = await response.json();
-            setInscricoes(data.data);
-          } catch (error) {
-            console.error("Erro ao buscar inscrições:", error);
-          }
-        }
-      };
-  
-      fetchStats();
-    }, [selectedCampeonatoId]);
-
-    console.log('Inscricoes: ', inscricoes)
-
-    const handleCampeonatoChange = (event) => {
-      setSelectedCampeonatoId(event.target.value);
+  useEffect(() => {
+    const fetchCampeonatos = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`);
+        const data = await response.json();
+        console.log('Campeonatos: ', data);
+        setCampeonatos(data.data); 
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
     };
-  
 
-    const ControleGrid = [
-      {
-        field: 'teamName',
-        headerText: 'Time',
-        width: '200',
-        textAlign: 'Center',
-      },
-      {
-        field: 'jogadorName', 
-        headerText: 'Atleta',
-        width: '200',
-        textAlign: 'Center',
-      },
-      {
-        field: 'gols',
-        headerText: 'Gols',
-        width: '200',
-        textAlign: 'Center',
-      },
-      {
-        field: 'numeroCartoesAmarelo', 
-        headerText: 'Cartões Amarelos',
-        width: '150',
-        textAlign: 'Center',
-      },
-      {
-        field: 'numeroCartoesVermelho', 
-        headerText: 'Cartões Vermelhos',
-        width: '150',
-        textAlign: 'Center',
-      },      
-    ];
-    
+    fetchCampeonatos();
+  }, []);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (selectedCampeonatoId) {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/campeonato/${selectedCampeonatoId}`);
+          const data = await response.json();
+          setInscricoes(data.data);
+        } catch (error) {
+          console.error("Erro ao buscar inscrições:", error);
+        }
+      }
+    };
+
+    fetchStats();
+  }, [selectedCampeonatoId]);
+
+  console.log('Estatísticas: ', inscricoes)
+
+  const handleCampeonatoChange = (event) => {
+    setSelectedCampeonatoId(event.target.value);
+    setSelectedEstatistica('');
+    setInscricoes([]); 
+  };
+
+  const handleEstatisticaChange = (event) => {
+    setSelectedEstatistica(event.target.value);
+  };
+
+  
+  const filteredInscricoes = inscricoes.filter(inscricao => {
+    if (selectedEstatistica === 'gols') {
+      return inscricao.gols > 0;
+    } else if (selectedEstatistica === 'cartoes') {
+      return inscricao.numeroCartoesAmarelo > 0 || inscricao.numeroCartoesVermelho > 0;
+    }
+    return false; 
+  });
+
+  const ControleGrid = [
+    {
+      field: 'teamName',
+      headerText: 'Time',
+      width: '200',
+      textAlign: 'Center',
+    },
+    {
+      field: 'jogadorName', 
+      headerText: 'Atleta',
+      width: '200',
+      textAlign: 'Center',
+    },
+    {
+      field: 'gols',
+      headerText: 'Gols',
+      width: '200',
+      textAlign: 'Center',
+      visible: selectedEstatistica === 'gols',
+    },
+    {
+      field: 'numeroCartoesAmarelo', 
+      headerText: 'Cartões Amarelos',
+      width: '150',
+      textAlign: 'Center',
+      visible: selectedEstatistica === 'cartoes',
+    },
+    {
+      field: 'numeroCartoesVermelho', 
+      headerText: 'Cartões Vermelhos',
+      width: '150',
+      textAlign: 'Center',
+      visible: selectedEstatistica === 'cartoes',
+    },      
+  ];
+
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <div className='flex relative dark:bg-main-dark-bg'>
@@ -112,43 +128,48 @@ const Estatísticas = () => {
           </div>
         )}
         <div
-          className={`dark:bg-main-dark-bg bg-main-bg min-h-screen w-full ${
-            activeMenu ? 'md:ml-72' : 'flex-2'
-          }`}
+          className={`dark:bg-main-dark-bg bg-main-bg min-h-screen w-full ${activeMenu ? 'md:ml-72' : 'flex-2'}`}
         >
           <div className='fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full'>
             <Navbar />
           </div>
 
           {themeSettings && <ThemeSettings />}
-            <div className='m-2 md:m-10 mt-24 p-2 
-            md:p-10 bg-white rounded-3xl'>
-              <Header category="Equipe" title="Estatísticas"/>
-              <select onChange={handleCampeonatoChange} value={selectedCampeonatoId} className='mb-4'>
-                <option value=''>Selecione um campeonato</option>
-                {campeonatos.map((campeonato) => (
-                  <option key={campeonato._id} value={campeonato._id}>{campeonato.name}</option>
+          <div className='m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl'>
+            <Header category="Equipe" title="Estatísticas"/>
+            
+            <select onChange={handleCampeonatoChange} value={selectedCampeonatoId} className='mb-4'>
+              <option value=''>Selecione um campeonato</option>
+              {campeonatos.map((campeonato) => (
+                <option key={campeonato._id} value={campeonato._id}>{campeonato.name}</option>
+              ))}
+            </select>
+            
+            <select onChange={handleEstatisticaChange} value={selectedEstatistica} className='mb-4' disabled={!selectedCampeonatoId}>
+              <option value=''>Selecione uma estatística</option>
+              <option value='gols'>Gols</option>
+              <option value='cartoes'>Cartões</option>
+            </select>
+            
+            <GridComponent
+              dataSource={selectedEstatistica ? filteredInscricoes : []}
+              allowPaging
+              allowSorting
+              toolbar={['Search']}
+              width='auto'
+            >
+              <ColumnsDirective>
+                {ControleGrid.filter(item => item.field === 'teamName' || item.field === 'jogadorName' || item.visible).map((item, index) => (
+                  <ColumnDirective key={index} {...item}/>
                 ))}
-              </select>
-              <GridComponent
-                dataSource={inscricoes}
-                allowPaging
-                allowSorting
-                toolbar={['Search']}
-                width='auto'
-              >
-                <ColumnsDirective>
-                  {ControleGrid.map((item, index) => (
-                    <ColumnDirective key={index} {...item}/>
-                  ))}
-                </ColumnsDirective>
-                <Inject services={[Page, Search, Toolbar]}/>
-              </GridComponent> 
-              </div>
-            </div>
+              </ColumnsDirective>
+              <Inject services={[Page, Search, Toolbar]}/>
+            </GridComponent> 
           </div>
         </div>
+      </div>
+    </div>
   )
 }
 
-export default Estatísticas
+export default Estatísticas;

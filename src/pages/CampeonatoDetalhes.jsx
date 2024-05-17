@@ -102,21 +102,18 @@ const CampeonatoDetalhes = () => {
             try {
               const teamStatsResponse = await fetch(` ${process.env.REACT_APP_API_URL}inscricoes/user/${team.teamId}`);
               const teamStatsData = await teamStatsResponse.json();
-              console.log('teamStats: ', teamStatsData)
-              const statsForCampeonato = teamStatsData.data.find(
-                (stats) => stats.campeonatoId === id
-              );
+              console.log('teamStats: ', teamStatsData.data)
   
-              if (statsForCampeonato) {
+              if (teamStatsData.status === 200 && teamStatsData.data.campeonatoId === id) {
                 return {
                   ...team,
-                  numeroJogos: statsForCampeonato.numeroJogos || 0,
-                  vitorias: statsForCampeonato.vitorias || 0,
-                  empates: statsForCampeonato.empates || 0,
-                  derrotas: statsForCampeonato.derrotas || 0,
-                  golsFeitos: statsForCampeonato.golsFeitos || 0,
-                  saldoGols: statsForCampeonato.saldoGols || 0,
-                  pontos: statsForCampeonato.pontos || 0,
+                  numeroJogos: teamStatsData.data.numeroJogos || 0,
+                  vitorias: teamStatsData.data.vitorias || 0,
+                  empates: teamStatsData.data.empates || 0,
+                  derrotas: teamStatsData.data.derrotas || 0,
+                  golsFeitos: teamStatsData.data.golsFeitos || 0,
+                  saldoGols: teamStatsData.data.saldoGols || 0,
+                  pontos: teamStatsData.data.pontos || 0,
                 };
               } else {
                 return team;
