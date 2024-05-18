@@ -94,62 +94,50 @@ const CampeonatoDetalhes = () => {
   useEffect(() => {
     const fetchTimeGroupsAndStats = async () => {
       if (!selectedGroupId) return;
+  
       try {
-        const response = await fetch(` ${process.env.REACT_APP_API_URL}grupos/team/grupo/${selectedGroupId}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}grupos/team/grupo/${selectedGroupId}`);
         const data = await response.json();
+        
+  
         if (data.status === 200 && data.data) {
-          const statsPromises = data.data.map(async (team) => {
-            try {
-              const teamStatsResponse = await fetch(` ${process.env.REACT_APP_API_URL}inscricoes/user/${team.teamId}`);
-              const teamStatsData = await teamStatsResponse.json();
-              console.log('teamStats: ', teamStatsData.data)
+          const teamStatsResponse = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/campeonato/${id}`);
+          const teamStatsData = await teamStatsResponse.json();
+          
   
-              if (teamStatsData.status === 200 && teamStatsData.data.campeonatoId === id) {
-                return {
-                  ...team,
-                  numeroJogos: teamStatsData.data.numeroJogos || 0,
-                  vitorias: teamStatsData.data.vitorias || 0,
-                  empates: teamStatsData.data.empates || 0,
-                  derrotas: teamStatsData.data.derrotas || 0,
-                  golsFeitos: teamStatsData.data.golsFeitos || 0,
-                  saldoGols: teamStatsData.data.saldoGols || 0,
-                  pontos: teamStatsData.data.pontos || 0,
-                };
-              } else {
-                return team;
-              }
-            } catch (error) {
-              console.error('Error fetching team stats:', error);
-              return team;
-            }
-          });
-  
-          let teamsWithStats = await Promise.all(statsPromises);
+          if (teamStatsData.status === 200 && teamStatsData.data) {
+            const teamsWithStats = data.data.map((team) => {
+              const teamStats = teamStatsData.data.find(stats => stats.userId === team.teamId) || {};
+              return {
+                ...team,
+                numeroJogos: teamStats.numeroJogos || 0,
+                vitorias: teamStats.vitorias || 0,
+                empates: teamStats.empates || 0,
+                derrotas: teamStats.derrotas || 0,
+                golsFeitos: teamStats.golsFeitos || 0,
+                saldoGols: teamStats.saldoGols || 0,
+                pontos: teamStats.pontos || 0,
+              };
+            });
             teamsWithStats.sort((a, b) => {
-              // Primeiro critério: Pontos
-              if (b.pontos !== a.pontos) {
-                return b.pontos - a.pontos;
-              }
-              // Segundo critério: Vitorias
-              if (b.vitorias !== a.vitorias) {
-                return b.vitorias - a.vitorias;
-              }
-              // Terceiro critério: Saldo de gols
-              if (b.saldoGols !== a.saldoGols) {
-                return b.saldoGols - a.saldoGols;
-              }
-              // Quarto critério: Gols feitos
-              if (b.golsFeitos !== a.golsFeitos) {
-                return b.golsFeitos - a.golsFeitos;
-              }
-              // Quinto critério: Menor gols sofridos
+              if (b.pontos !== a.pontos) return b.pontos - a.pontos;
+              if (b.vitorias !== a.vitorias) return b.vitorias - a.vitorias;
+              if (b.saldoGols !== a.saldoGols) return b.saldoGols - a.saldoGols;
+              if (b.golsFeitos !== a.golsFeitos) return b.golsFeitos - a.golsFeitos;
               const golsSofridosA = a.golsFeitos - a.saldoGols;
               const golsSofridosB = b.golsFeitos - b.saldoGols;
               return golsSofridosA - golsSofridosB;
             });
-          teamsWithStats = teamsWithStats.map((team, index) => ({ ...team, P: index + 1 }));
-          setTimeGroups(teamsWithStats);
+  
+            // Update team positions
+            const rankedTeamsWithStats = teamsWithStats.map((team, index) => ({ ...team, P: index + 1 }));
+            setTimeGroups(rankedTeamsWithStats);
+          } else {
+            console.error('Failed to fetch team stats, response:', teamStatsData);
+            toast.error('Failed to fetch team stats');
+          }
         } else {
+          console.error('Failed to fetch groups, response:', data);
           toast.error('Failed to fetch groups');
         }
       } catch (error) {
@@ -160,6 +148,9 @@ const CampeonatoDetalhes = () => {
   
     fetchTimeGroupsAndStats();
   }, [selectedGroupId]);
+  
+  
+  
     
   console.log('Time Groups: ', timeGroups)
 

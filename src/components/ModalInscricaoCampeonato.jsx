@@ -21,13 +21,17 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
   useEffect(() => {
     const fetchCampeonatosInscritos = async () => {
       try {
-        const response = await fetch(` ${process.env.REACT_APP_API_URL}inscricoes/user/${teamId}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/user/${teamId}`);
         const data = await response.json();
+        console.log('Campeonatos Inscritos: ', data);
 
-        const campeonatoIds = data.data.map(item => item.campeonatoId);
+        
+        const campeonatosArray = [data.data];
+
+        const campeonatoIds = campeonatosArray.map(item => item.campeonatoId);
 
         const campeonatoDetailsPromises = campeonatoIds.map(_id =>
-          fetch(` ${process.env.REACT_APP_API_URL}campeonatos/${_id}`)
+          fetch(`${process.env.REACT_APP_API_URL}campeonatos/${_id}`)
           .then(response => response.json())
         );
 
@@ -40,20 +44,19 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
       }
     };
 
-    
     fetchCampeonatosInscritos();
     
   }, [teamId]);
   
   const handleSubmit = async (e) => {
     e.preventDefault(); 
-    verificarStatus();
-    inscreverAtleta();
+    await verificarStatus();
+    await inscreverAtleta();
   }
 
   const verificarStatus = async (teamId, selectedCampeonatoId) => {
     try {
-      const response = await fetch(` ${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
       const data = await response.json();
 
       const count = data.data && data.data.reduce ? data.data.reduce((acc, obj) => {
@@ -168,4 +171,3 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
 };
 
 export default ModalInscricaoCampeonato;
-

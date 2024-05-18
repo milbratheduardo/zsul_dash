@@ -5,7 +5,6 @@ import FormAction from './FormAction';
 import HeaderModal from './HeaderModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import imageCompression from 'browser-image-compression'; 
 
 const fields = ModalAtletaFields;
 let fieldsState = {};
@@ -17,8 +16,8 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
   const [modalFieldsState, setModalFieldsState] = useState(fieldsState);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const data = Date() 
-  const ano = data.split(" ")[3]
+  const data = new Date(); 
+  const ano = data.getFullYear();
 
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
@@ -29,145 +28,79 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const requestData = {
-      name: modalFieldsState['name'],
-      dateOfBirth: modalFieldsState['dateOfBirth'],
-      documentNumber: modalFieldsState['documentNumber'],
-      school: modalFieldsState['school'],
-      currentDate: ano
-    };
-
-    adcAtleta(requestData);
-  };
-
-  const adcAtleta = async (data) => {
-    const payload = {
-      ...data,
-      teamId,
-    };
+    const formData1 = new FormData();
+    formData1.append('name', modalFieldsState['name']);
+    formData1.append('dateOfBirth', modalFieldsState['dateOfBirth']);
+    formData1.append('documentNumber', modalFieldsState['documentNumber']);
+    formData1.append('school', modalFieldsState['school']);
+    formData1.append('currentDate', ano);
+    formData1.append('teamId', teamId);
+    console.log('FormData: ', formData1)
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+        body: formData1,
       });
 
       const responseData = await response.json();
-
       if (response.ok && responseData.data._id) {
         const elencoId = responseData.data._id;
-        const imageFields = fields.filter(field => field.type === 'file');
-          let shouldUploadImage = false;
-          for (let field of imageFields) {
-            const fileInput = document.getElementById(field.id);
-            if (fileInput && fileInput.files && fileInput.files[0]) {
-              shouldUploadImage = true;
-              break;
-            }
+
+        const uploadTasks = ['RGFrente', 'RGVerso', 'fotoAtleta'].map(async (field) => {
+          const fileField = document.querySelector(`input[id='${field}']`);
+          if (fileField && fileField.files[0]) {
+            return uploadImage(elencoId, fileField.files[0], field);
           }
-          if (shouldUploadImage && elencoId) {
-            handleImageUpload(elencoId);
-        } else if (!shouldUploadImage) {
-          toast.success(`Atleta cadastrado com sucesso!`, {
-            position: "top-center",
-            autoClose: 5000,
-            onClose: (() => navigate('/elenco'),
-            window.location.reload())
-          });
-        }
+        });
+
+        await Promise.all(uploadTasks);
+        toast.success('Atleta cadastrado e imagens enviadas com sucesso!', {
+          position: 'top-center',
+          autoClose: 5000,
+          onClose: () => {
+            navigate('/elenco');
+            window.location.reload();
+          },
+        });
       } else {
         throw new Error(responseData.msg || 'Erro ao cadastrar atleta');
       }
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
-      setErrorMessage("Houve um problema ao conectar com o servidor.");
+      setErrorMessage('Houve um problema ao conectar com o servidor.');
     }
   };
 
-  const compressImage = async (file) => {
-    const options = {
-      maxSizeMB: 0.015,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-    };
+  const uploadImage = async (elencoId, file, imageField) => {
+    const formData = new FormData();
+    formData.append('userId', elencoId);
+    formData.append('userType', 'elenco');
+    formData.append('imageField', imageField);
+    formData.append('file', file);
 
-    try {
-      const compressedFile = await imageCompression(file, options);
-      return compressedFile;
-    } catch (error) {
-      console.error(error);
-      return file;
-    }
-  };
-
-  const convertFileToBase64 = (file, callback) => {
-    const reader = new FileReader();
-    reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
-    reader.readAsDataURL(file);
-  };
-
-  const handleImageUpload = async (elencoId) => {
-    const imageFields = fields.filter(field => field.type === 'file');
-    
-    for (let field of imageFields) {
-      const fileInput = document.getElementById(field.id);
-      if (fileInput && fileInput.files[0]) {
-        try {
-          const compressedFile = await compressImage(fileInput.files[0]);
-          convertFileToBase64(compressedFile, async (base64String) => {
-            await uploadImage(elencoId, base64String, compressedFile.type.split('/')[1], field.id);
-          });
-        } catch (error) {
-          console.error('Error processing image:', error);
-        }
-      }
-    }
-  };
-  
-  const uploadImage = async (elencoId, base64String, fileType, imageField) => {
-    const jsonData = {
-      userId: elencoId,
-      file: base64String,
-      fileType: fileType,
-      userType: 'elenco',
-      imageField: imageField 
-    };
-  
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
+        body: formData,
       });
-  
-      if (response.ok) {
-        toast.success(`Atleta e ${imageField} enviada com sucesso!`, {
-          position: "top-center",
-          autoClose: 5000,
-          onClose: (() => navigate('/elenco'),
-          window.location.reload())
-        });
-      } else {
+
+      if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.msg || `Atleta Cadastrado e Erro ao enviar ${imageField}.`);
+        throw new Error(data.msg || `Erro ao enviar ${imageField}.`);
       }
     } catch (error) {
-      console.error(`Atleta Cadastrado e Erro ao enviar ${imageField}.`, error);
-      toast.error(`Atleta Cadastrado e Erro ao enviar ${imageField}.`, {
-        position: "top-center",
+      console.error(`Erro ao enviar ${imageField}.`, error);
+      toast.error(`Atleta cadastrado, mas houve um erro ao enviar ${imageField}.`, {
+        position: 'top-center',
         autoClose: 5000,
-        onClose: (() => navigate('/elenco'),
-          window.location.reload())
+        onClose: () => {
+          navigate('/elenco');
+          window.location.reload();
+        },
       });
     }
   };
-  
-  
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -178,7 +111,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
         <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
           <HeaderModal title='Cadastre novo Atleta' heading='Preencha todos os dados' />
           <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
-              {errorMessage && 
+            {errorMessage && (
               <div 
                 style={{
                   backgroundColor: 'red', 
@@ -191,7 +124,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
               >
                 {errorMessage}
               </div>
-            }
+            )}
             <div className='-space-y-px'>
               {fields.map((field, index) => (
                 <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
@@ -234,13 +167,12 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
                       {field.id === 'documentNumber' && (
                         <div>
                           <p className="text-gray-600 text-xs" style={{marginTop: '-10px', marginLeft: '5px', fontSize: '10px'}}>
-                          Caso o atleta NÃO possua RG, colocar CPF.
-                        </p>
-                        <p className="text-gray-600 text-xs" style={{marginTop: '-5px', marginLeft: '5px', fontSize: '10px'}}>
-                          Caso o atleta NÃO possua RG NEM CPF, colocar Certidão de Nascimento.
-                        </p>
+                            Caso o atleta NÃO possua RG, colocar CPF.
+                          </p>
+                          <p className="text-gray-600 text-xs" style={{marginTop: '-5px', marginLeft: '5px', fontSize: '10px'}}>
+                            Caso o atleta NÃO possua RG NEM CPF, colocar Certidão de Nascimento.
+                          </p>
                         </div>
-                        
                       )}
                     </div>
                   )}
@@ -248,7 +180,6 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
               ))}
               <FormAction currentColor={currentColor} text='Cadastrar' />
             </div>
-            
           </form>
         </div>
       </div>
