@@ -27,33 +27,46 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    console.log('modalFieldsState:', modalFieldsState);
+  
+    const requestData = {
+      name: modalFieldsState['name'],
+      dateOfBirth: modalFieldsState['dateOfBirth'],
+      documentNumber: modalFieldsState['documentNumber'],
+      school: modalFieldsState['school'],
+      currentDate: ano
+    };
 
-    const formData1 = new FormData();
-    formData1.append('name', modalFieldsState['name']);
-    formData1.append('dateOfBirth', modalFieldsState['dateOfBirth']);
-    formData1.append('documentNumber', modalFieldsState['documentNumber']);
-    formData1.append('school', modalFieldsState['school']);
-    formData1.append('currentDate', ano);
-    formData1.append('teamId', teamId);
-    console.log('FormData: ', formData1)
+    adcAtleta(requestData);
+  };
 
+  const adcAtleta = async (data) => {
+    const payload = {
+      ...data,
+      teamId,
+    };
+  
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/`, {
         method: 'POST',
-        body: formData1,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
-
+  
       const responseData = await response.json();
       if (response.ok && responseData.data._id) {
         const elencoId = responseData.data._id;
-
+  
         const uploadTasks = ['RGFrente', 'RGVerso', 'fotoAtleta'].map(async (field) => {
           const fileField = document.querySelector(`input[id='${field}']`);
           if (fileField && fileField.files[0]) {
             return uploadImage(elencoId, fileField.files[0], field);
           }
         });
-
+  
         await Promise.all(uploadTasks);
         toast.success('Atleta cadastrado e imagens enviadas com sucesso!', {
           position: 'top-center',
@@ -71,6 +84,7 @@ const ModalAtleta = ({ isVisible, onClose, currentColor, teamId }) => {
       setErrorMessage('Houve um problema ao conectar com o servidor.');
     }
   };
+  
 
   const uploadImage = async (elencoId, file, imageField) => {
     const formData = new FormData();

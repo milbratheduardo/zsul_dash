@@ -22,7 +22,7 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
   };
 
   const handleChange = (e) => setModalFieldsState({ ...modalFieldsState, [e.target.id]: e.target.value });
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -37,96 +37,66 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
         method: 'POST',
         body: formData,
       });
-      
+
       const responseData = await response.json();
       if (response.ok && responseData.data._id) {
         const fileField = document.querySelector("input[type='file']");
         if (fileField && fileField.files[0]) {
-            uploadImage(responseData.data._id, fileField.files[0]);
+          uploadImage(responseData.data._id, fileField.files[0]);
         } else {
-            toast.success('Membro do Staff cadastrado com sucesso!', {
-                position: "top-center",
-                autoClose: 5000,
-                onClose: (() => navigate('/staff'),
-                window.location.reload())
-            });
+          toast.success('Membro do Staff cadastrado com sucesso!', {
+            position: "top-center",
+            autoClose: 5000,
+            onClose: (() => {
+              navigate('/staff');
+              window.location.reload();
+            })
+          });
         }
-    } else {
+      } else {
         throw new Error(responseData.msg || 'Erro ao cadastrar campeonato');
-    }
-  
+      }
+
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   };
 
-  const compressImage = async (file) => {
-    const options = {
-        maxSizeMB: 0.015, 
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-    };
+  const uploadImage = async (staffId, file) => {
+    const formData = new FormData();
+    formData.append('userId', staffId);
+    formData.append('userType', 'staff');
+    formData.append('imageField', 'picture');
+    formData.append('file', file);
 
     try {
-        const compressedFile = await imageCompression(file, options);
-        return compressedFile;
-    } catch (error) {
-        console.error(error);
-        return file; 
-    }
-};
+      const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
+        method: 'POST',
+        body: formData,
+      });
 
-const convertFileToBase64 = (file, callback) => {
-    const reader = new FileReader();
-    reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
-    reader.readAsDataURL(file);
-};
-
-const uploadImage = async (staffId, file) => {
-    compressImage(file).then(compressedFile => {
-        convertFileToBase64(compressedFile, async (base64String) => {
-            const jsonData = {
-                userId: staffId,
-                file: base64String,
-                fileType: file.type.split('/')[1],
-                userType: 'staff',
-                imageField: 'picture',
-            };
-
-            console.log('staffId: ', staffId)
-            console.log('JSON: ', jsonData)
-
-            try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(jsonData),
-                });
-
-                if (response.ok) {
-                    toast.success('Staff e imagem associada salvos com sucesso!', {
-                        position: "top-center",
-                        autoClose: 5000,
-                        onClose: (() => navigate('/staff'),
-                        window.location.reload())
-                    });
-                } else {
-                    const data = await response.json();
-                    throw new Error(data.msg || 'Erro ao enviar imagem.');
-                }
-            } catch (error) {
-                console.error('Erro ao enviar imagem:', error);
-                toast.error('Erro ao enviar imagem.', {
-                    position: "top-center",
-                    autoClose: 5000,
-                });
-            }
+      if (response.ok) {
+        toast.success('Staff e imagem associada salvos com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: (() => {
+            navigate('/staff');
+            window.location.reload();
+          })
         });
-    });
-};
+      } else {
+        const data = await response.json();
+        throw new Error(data.msg || 'Erro ao enviar imagem.');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar imagem:', error);
+      toast.error('Erro ao enviar imagem.', {
+        position: "top-center",
+        autoClose: 5000,
+      });
+    }
+  };
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -134,23 +104,23 @@ const uploadImage = async (staffId, file) => {
         <button className='text-white text-xl place-self-end' onClick={() => onClose()}>
           X
         </button>
-        <div className='bg-white p-2 rounded' style={{maxHeight: '100%', overflowY: 'auto'}}>
+        <div className='bg-white p-2 rounded' style={{ maxHeight: '100%', overflowY: 'auto' }}>
           <HeaderModal title='Cadastre novo Membro do Staff' heading='Preencha todos os dados' />
           <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
-            {errorMessage && 
-                <div 
-                  style={{
-                    backgroundColor: 'red', 
-                    color: 'white',         
-                    padding: '10px',       
-                    borderRadius: '5px',    
-                    textAlign: 'center',    
-                    marginBottom: '10px'    
-                  }}
-                >
-                  {errorMessage}
-                </div>
-              }
+            {errorMessage &&
+              <div
+                style={{
+                  backgroundColor: 'red',
+                  color: 'white',
+                  padding: '10px',
+                  borderRadius: '5px',
+                  textAlign: 'center',
+                  marginBottom: '10px'
+                }}
+              >
+                {errorMessage}
+              </div>
+            }
             <div className='-space-y-px'>
               {fields.map((field, index) => (
                 <div key={field.id} className={`field-margin ${index !== 0 ? 'mt-2' : ''} ${field.type === 'dropdown' ? 'mb-2' : ''}`}>
