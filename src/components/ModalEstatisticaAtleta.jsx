@@ -58,10 +58,10 @@ const ModalEstatisticaAtleta = ({ isVisible, onClose, currentColor, teamId, atle
             ) : (
               <>
                 <img alt="Perfil" src={atletaInfo?.fotoAtletaBase64} className="h-20 w-20 rounded-full object-cover" />
-                <div className="text-center space-y-2">
-                  <div className="text-xl font-semibold">Gols: {atletaInfo.estatisticas?.[0].gols || '0'}</div>
-                  <div className="text-xl font-semibold">Cartões Amarelos: {atletaInfo.estatisticas?.[0].numeroCartoesAmarelo || '0'}</div>
-                  <div className="text-xl font-semibold">Cartões Vermelhos: {atletaInfo.estatisticas?.[0].numeroCartoesVermelho || '0'}</div>
+                <div className="text-center space-y-2 pb-10">
+                  <div className="text-xl font-semibold">Gols: {atletaInfo.estatisticas?.[0]?.gols || '0'}</div>
+                  <div className="text-xl font-semibold">Cartões Amarelos: {atletaInfo.estatisticas?.[0]?.numeroCartoesAmarelo || '0'}</div>
+                  <div className="text-xl font-semibold">Cartões Vermelhos: {atletaInfo.estatisticas?.[0]?.numeroCartoesVermelho || '0'}</div>
                 </div>
               </>
             )}

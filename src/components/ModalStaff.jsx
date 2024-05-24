@@ -67,7 +67,7 @@ const ModalStaff = ({ isVisible, onClose, currentColor, teamId }) => {
     const formData = new FormData();
     formData.append('userId', staffId);
     formData.append('userType', 'staff');
-    formData.append('imageField', 'picture');
+    formData.append('imageField', 'fotoStaff');
     formData.append('file', file);
 
     try {

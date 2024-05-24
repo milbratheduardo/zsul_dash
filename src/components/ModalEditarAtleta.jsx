@@ -46,7 +46,7 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${atletaId}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/${atletaId}`);
         const data = await response.json();
         if (data.status === 200 && data.data[0]) {
           setInitialData(data.data[0]);
@@ -63,85 +63,46 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
 
   console.log('initial: ', initialData)
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const userId = atletaId; 
     if (userId) {
-   
-      await enviarImagem('RGFrente');
-      await enviarImagem('RGVerso');
-      await enviarImagem('fotoAtleta');
-      await editarAtleta();
-  
-   
-      localStorage.removeItem('fotoAtleta');
+      await enviarImagem();
     }
-  }
+  };
 
-  const enviarImagem = async (imageField) => {
+  const enviarImagem = async () => {
     const userId = atletaId;
     if (!userId) {
       console.error('UserID não encontrado.');
       return;
     }
-  
-    const fileInput = document.getElementById(imageField);
-    if (fileInput && fileInput.files[0]) {
-      try {
-        const compressedFile = await compressImage(fileInput.files[0]);
-        convertFileToBase64(compressedFile, async (base64String) => {
-          await uploadImage(userId, base64String, compressedFile.type.split('/')[1], imageField);
-        });
-      } catch (error) {
-        console.error('Error processing image:', error);
+
+    const uploadTasks = ['RGFrente', 'RGVerso', 'fotoAtleta'].map(async (field) => {
+      const fileField = document.querySelector(`input[id='${field}']`);
+      if (fileField && fileField.files[0]) {
+        return uploadImage(userId, fileField.files[0], field);
       }
-    } else {
-      console.error('Nenhum arquivo selecionado para o campo:', imageField);
-    }
+    });
+
+    await Promise.all(uploadTasks);
+    editarAtleta();
   };
 
-  const compressImage = async (file) => {
-    const options = {
-      maxSizeMB: 0.015,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-    };
+  const uploadImage = async (userId, file, imageField) => {
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('userType', 'elenco');
+    formData.append('imageField', imageField);
+    formData.append('file', file);
 
-    try {
-      const compressedFile = await imageCompression(file, options);
-      return compressedFile;
-    } catch (error) {
-      console.error(error);
-      return file;
-    }
-  };
-
-  const convertFileToBase64 = (file, callback) => {
-    const reader = new FileReader();
-    reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
-    reader.readAsDataURL(file);
-  };
-
-  const uploadImage = async (userId, base64String, fileType, imageField) => {
-    const jsonData = {
-      userId: userId,
-      file: base64String,
-      fileType: fileType,
-      userType: 'elenco',
-      imageField: imageField,
-    };
-  
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}image/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
+        body: formData,
       });
-  
+
       if (response.ok) {
         toast.success(`${imageField} enviada com sucesso!`);
       } else {
@@ -153,9 +114,6 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
       toast.error(`Erro ao enviar ${imageField}.`);
     }
   };
-  
-  
-
 
   const editarAtleta = async () => {
     const changes = Object.keys(modalFieldsState).reduce((acc, field) => {
@@ -164,14 +122,14 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
       }
       return acc;
     }, []);
-  
+
     const changesAll = changes.filter(change => change.field !== "" && change.value !== "");
-  
+
     if (changesAll.length === 0) {
       toast.info('Não houve mudanças!');
       return;
     }
-  
+
     for (const change of changesAll) {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/${atletaId}`, {
@@ -181,7 +139,7 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
           },
           body: JSON.stringify(change)
         });
-  
+
         const data = await response.json();
         if (response.ok) {
           toast.success(`Campo ${change.field} editado com sucesso!`, {
@@ -200,7 +158,6 @@ const ModalEditarAtleta = ({ isVisible, onClose, currentColor, teamId, atletaId,
     window.location.reload();
   };
 
-  
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
       <div className='w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex flex-col' style={{ height: '100%', maxHeight: '600px' }}>
