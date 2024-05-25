@@ -57,15 +57,23 @@ const Estatísticas = () => {
     setSelectedEstatistica(event.target.value);
   };
 
-  
-  const filteredInscricoes = inscricoes.filter(inscricao => {
-    if (selectedEstatistica === 'gols') {
-      return inscricao.gols > 0;
-    } else if (selectedEstatistica === 'cartoes') {
-      return inscricao.numeroCartoesAmarelo > 0 || inscricao.numeroCartoesVermelho > 0;
-    }
-    return false; 
-  });
+  const filteredAndSortedInscricoes = inscricoes
+    .filter(inscricao => {
+      if (selectedEstatistica === 'gols') {
+        return inscricao.gols > 0;
+      } else if (selectedEstatistica === 'cartoes') {
+        return inscricao.numeroCartoesAmarelo > 0 || inscricao.numeroCartoesVermelho > 0;
+      }
+      return false; 
+    })
+    .sort((a, b) => {
+      if (selectedEstatistica === 'gols') {
+        return b.gols - a.gols;
+      } else if (selectedEstatistica === 'cartoes') {
+        return b.numeroCartoesAmarelo - a.numeroCartoesAmarelo;
+      }
+      return 0;
+    });
 
   const ControleGrid = [
     {
@@ -152,7 +160,7 @@ const Estatísticas = () => {
             </select>
             
             <GridComponent
-              dataSource={selectedEstatistica ? filteredInscricoes : []}
+              dataSource={selectedEstatistica ? filteredAndSortedInscricoes : []}
               allowPaging
               allowSorting
               toolbar={['Search']}
