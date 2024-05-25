@@ -21,24 +21,23 @@ const ModalInscricaoCampeonato = ({ isVisible, onClose, currentColor, atletaNome
   useEffect(() => {
     const fetchCampeonatosInscritos = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/user/${teamId}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/`);
         const data = await response.json();
-        console.log('Campeonatos Inscritos: ', data);
-
+        console.log('Inscrições: ', data);
         
-        const campeonatosArray = [data.data];
+        // Filtrar as inscrições pelo userId
+        const inscricoes = data.data.filter(inscricao => inscricao.userId === teamId);
+        console.log('Inscrições do Usuário: ', inscricoes);
 
-        const campeonatoIds = campeonatosArray.map(item => item.campeonatoId);
-
-        const campeonatoDetailsPromises = campeonatoIds.map(_id =>
-          fetch(`${process.env.REACT_APP_API_URL}campeonatos/${_id}`)
-          .then(response => response.json())
+        // Buscar detalhes dos campeonatos
+        const campeonatoDetailsPromises = inscricoes.map(inscricao =>
+          fetch(`${process.env.REACT_APP_API_URL}campeonatos/${inscricao.campeonatoId}`).then(res => res.json())
         );
 
         const campeonatosDetails = await Promise.all(campeonatoDetailsPromises);
-        const validCampeonatos = campeonatosDetails.filter(detail => detail.data != null);
+        const validCampeonatos = campeonatosDetails.map(detail => detail.data).filter(detail => detail != null);
 
-        setCampeonatos(validCampeonatos.map(detail => detail.data));
+        setCampeonatos(validCampeonatos);
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
       }
