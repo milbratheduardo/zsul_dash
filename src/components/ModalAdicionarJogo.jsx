@@ -26,6 +26,7 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
   const [campeonato, setCampeonato] = useState([]);
   const [campos, setCampos] = useState([]);
   const [grupos, setGrupos] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const handleClose = (e) => {
     if (e.target.id === 'wrapper') onClose();
@@ -119,6 +120,9 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
 
   const handleSubmit= async (e)=>{
     e.preventDefault();
+    if (isSubmitting) return; // Prevent multiple submissions
+
+    setIsSubmitting(true);
     adcJogo();
   }
 
@@ -154,9 +158,13 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
           window.location.reload()) 
         });
       } else if (data.status === 400 || data.status === 500) {
-        setErrorMessage(data.msg); 
+        setErrorMessage(data.msg);
+        setIsSubmitting(false);
+        return; 
       } else {
         console.log('Error:', data.msg);
+        setIsSubmitting(false);
+        return;
       }
   
     } catch (error) {
@@ -299,7 +307,7 @@ const ModalAdicionarJogo = ({ isVisible, onClose, currentColor, campeonatoId, gr
                       </div>
                     )}
 
-                    <FormAction currentColor={currentColor} text='Cadastrar' />
+                    {!isSubmitting && <FormAction currentColor={currentColor} text='Cadastrar' />}
                   </div>
            </div> 
           </form>
