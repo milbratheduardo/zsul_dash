@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Header, Navbar, Footer, Sidebar, ThemeSettings, ModalEditarPunicao } from '../components';
+import { Header, Navbar, Footer, Sidebar, ThemeSettings, ModalEditarPunicao, Button, ModalPunicao} from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { FiSettings } from 'react-icons/fi';
@@ -10,6 +10,7 @@ const Punicoes = () => {
   const [punicoes, setPunicoes] = useState([]);
   const [showEditarPunicao, setShowEditarPunicao] = useState(false);
   const [selectedAtleta, setSelectedAtleta] = useState(null);
+  const [showModalPunicao, setShowModalPunicao] = useState(false);
   const permissao = localStorage.getItem('permissao') || '';
 
   useEffect(() => {
@@ -150,8 +151,30 @@ const Punicoes = () => {
             }} 
           />
 
+          <ModalPunicao
+            isVisible={showModalPunicao} 
+            currentColor={currentColor}  
+            onClose={() => {
+              setShowModalPunicao(false);
+          }}/>  
+
+        {!showModalPunicao && !showEditarPunicao && (
           <div className='m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl'>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Header category="Equipe" title="Punições"/>
+            {permissao !== 'TEquipe' && (
+            <Button 
+                  color='white'
+                  bgColor={currentColor}
+                  text='Adicionar Punição'
+                  borderRadius='10px'
+                  size='md'
+                  onClick={() => {
+                    setShowModalPunicao(true);
+                  }}
+                />
+            )}
+              </div>  
             <GridComponent
               dataSource={punicoes}
               allowPaging
@@ -167,6 +190,7 @@ const Punicoes = () => {
               <Inject services={[Page, Search, Toolbar]} />
             </GridComponent> 
           </div>
+        )}  
         </div>
       </div>
     </div>
