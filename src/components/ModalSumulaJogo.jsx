@@ -116,24 +116,31 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
   useEffect(() => {
     const fetchTimeFora = async () => {
       try {
-        const url = ` ${process.env.REACT_APP_API_URL}sumula/campeonato/${campeonatoId}`;
+        const url = `${process.env.REACT_APP_API_URL}sumula/campeonato/${campeonatoId}`;
         const response = await fetch(url);
         const data = await response.json();
-
+  
         if (data.status === 200) {
           const filteredData = data.data.filter((item) => item.userId === timeFora);
-
+  
           const atletasDetailsPromises = filteredData.map(async (item) => {
-            const elencoResponse = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${item.elencoId}`);
+            const elencoResponse = await fetch(`${process.env.REACT_APP_API_URL}elenco/${item.elencoId}`);
             const elencoData = await elencoResponse.json();
-
+  
             if (elencoData.status === 200 && elencoData.data) {
-              return { elencoId: item.elencoId, name: elencoData.data[0].name, teamId: timeFora };
+              if (!elencoData.data[0]) {
+                console.log(`Dados faltando para elencoId: ${item.elencoId}`, elencoData.data);
+              }
+              return {
+                elencoId: item.elencoId,
+                name: elencoData.data[0] ? elencoData.data[0].name : 'Nome não encontrado',
+                teamId: timeFora,
+              };
             } else {
               return { elencoId: item.elencoId, name: 'Nome não encontrado', teamId: timeFora };
             }
           });
-
+  
           const atletasDetails = await Promise.all(atletasDetailsPromises);
           setAtletasTimeFora(atletasDetails);
         } else {
@@ -144,9 +151,11 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
         setAtletasTimeFora([]);
       }
     };
-
+  
     fetchTimeFora();
   }, [timeFora, campeonatoId]);
+  
+  
 
   console.log('Atletas Fora: ', atletasTimeFora);
 
