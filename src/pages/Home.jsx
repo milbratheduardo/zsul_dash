@@ -17,10 +17,10 @@ const Home = () => {
     const user = JSON.parse(localStorage.getItem('user')) || {};
     const [userAtletas, setUserAtletas] = useState([]);
     const [userInfo, setUserInfo] = useState({});
-    const [proximasPartidas, setProximasPartidas] = useState([]);
     const [earningData, setEarningData] = useState([]);
     const [elencoStatus, setElencoStatus] = useState([]);
     const [hover, setHover] = useState(false);
+    const [inscricoes, setInscricoes] = useState([]);
 
     const permissao = localStorage.getItem('permissao');
 
@@ -58,75 +58,23 @@ const Home = () => {
       localStorage.setItem('permissao', userInfo.data.permission);
     
     }
+
+
     useEffect(() => {
-      const fetchProximasPartidas = async () => {
-        const userId = user.data.id;
+      const fetchCampeonatosInscritos = async () => {
         try {
-          const response = await fetch(`${process.env.REACT_APP_API_URL}jogos/team/${userId}`);
-    
-          if (response.ok) {
-            const data = await response.json();
-            const partidasComDataParsed = data.data
-              .map(partida => ({
-                ...partida,
-                dataParsed: new Date(partida.data.split('/').reverse().join('-') + 'T' + partida.hora)
-              }))
-              .filter(partida => partida.dataParsed <= new Date()) 
-              .sort((a, b) => b.dataParsed - a.dataParsed) 
-              .slice(0, 3); 
-              
-            const partidasComInfo = await Promise.all(partidasComDataParsed.map(async partida => {
-              return await fetchAdditionalInfo(partida);
-            }));
-    
-            setProximasPartidas(partidasComInfo);
-          } else {
-            console.error('Erro ao buscar próximas partidas');
-          }
+          const response = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/`);
+          const data = await response.json();
+          const inscricoesFiltradas = data.data.filter(inscricao => inscricao.userId === user.data.id);
+          setInscricoes(inscricoesFiltradas);
+          console.log('Inscrições do Usuário: ', inscricoesFiltradas);
         } catch (error) {
-          console.error('Erro na solicitação:', error);
+          console.error("Erro ao buscar campeonatos:", error);
         }
       };
-    
-      if (user.data.id) {
-        fetchProximasPartidas();
-      }
+  
+      fetchCampeonatosInscritos();
     }, [user.data.id]);
-
-    const fetchAdditionalInfo = async (jogo) => {
-      const campeonatoResponse = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/${jogo.campeonatoId}`);
-      const campeonatoData = await campeonatoResponse.json();
-    
-      const userCasaResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${jogo.userIdCasa}`);
-      const userCasaData = await userCasaResponse.json();
-    
-      const userForaResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${jogo.userIdFora}`);
-      const userForaData = await userForaResponse.json();
-    
-
-      const campoResponse = await fetch(`${process.env.REACT_APP_API_URL}campos/${jogo.campoId}`);
-      const campoData = await campoResponse.json();
-
-      console.log('Dados do Campeonato:', campeonatoData);
-      console.log('Dados do Time Casa:', userCasaData);
-      console.log('Dados do Time Fora:', userForaData);
-
-    
-      const campeonatoName = campeonatoData?.data.name || 'Desconhecido';
-      const teamNameCasa = userCasaData?.data.teamName || 'Equipe Casa Desconhecida';
-      const teamNameFora = userForaData?.data.teamName || 'Equipe Fora Desconhecida';
-      const campoNome = campoData?.data.nome || 'Local Desconhecido'; 
-      const campoMaps = campoData?.data.linkMaps || 'Link Desconhecido'; 
-    
-      return {
-        ...jogo,
-        campeonatoName,
-        teamNameCasa,
-        teamNameFora,
-        campoNome,
-        campoMaps
-      };
-    };
     
 
     const generatePDF = () => {
@@ -256,20 +204,24 @@ const Home = () => {
     console.log('USER ATLETAS: ', userAtletas)
 
     useEffect(() => {
-      if (Object.keys(userInfo).length > 0) {
-        setEarningData([ 
+      if (inscricoes.length > 0) {
+        const totalVitorias = inscricoes.reduce((acc, inscricao) => acc + (inscricao.vitorias || 0), 0);
+        const totalEmpates = inscricoes.reduce((acc, inscricao) => acc + (inscricao.empates || 0), 0);
+        const totalDerrotas = inscricoes.reduce((acc, inscricao) => acc + (inscricao.derrotas || 0), 0);
+  
+        setEarningData([
           {
             icon: <FaCircleCheck />,
-            amount: userInfo.data.vitorias ? userInfo.data.vitorias : '0', 
+            amount: totalVitorias,
             subtitle: 'Vitórias',
             title: 'Vitórias',
             iconColor: '#52bf90',
-            iconBg: '#d9ead3', 
+            iconBg: '#d9ead3',
             pcColor: 'red-600',
           },
           {
             icon: <FaHandshakeSimple />,
-            amount: userInfo.data.empates ? userInfo.data.empates : '0', 
+            amount: totalEmpates,
             subtitle: 'Empates',
             title: 'Empates',
             iconColor: 'rgb(255, 244, 229)',
@@ -278,7 +230,7 @@ const Home = () => {
           },
           {
             icon: <IoMdCloseCircle />,
-            amount: userInfo.data.derrotas ? userInfo.data.derrotas : '0', 
+            amount: totalDerrotas,
             subtitle: 'Derrotas',
             title: 'Derrotas',
             iconColor: 'rgb(228, 106, 118)',
@@ -287,7 +239,7 @@ const Home = () => {
           },
         ]);
       }
-    }, [userInfo]);
+    }, [inscricoes]);
 
     const trocarStatus = async () => {
       if (!elencoStatus[0]?._id) return;
