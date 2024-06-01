@@ -83,7 +83,7 @@ const Punicoes = () => {
     {
       field: 'campeonatoName', 
       headerText: 'Campeonato',
-      width: '150',
+      width: '300',
       textAlign: 'Center',
     },
     {
