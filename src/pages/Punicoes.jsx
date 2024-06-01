@@ -18,23 +18,36 @@ const Punicoes = () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador/punidos/`);
         const data = await response.json();
+        console.log('DATA: ', data)
 
         const detalhesJogosPromises = data.data.map(async (item) => {
           if (item.numeroCartoesVermelho > 0) {
             const jogoId = item.jogoId;
             const responseJogo = await fetch(`${process.env.REACT_APP_API_URL}jogos/${jogoId}`);
             const dataJogo = await responseJogo.json();
-
-            return {
-              ...item,
-              campeonatoName: dataJogo.data[0]?.campeonatoName,
-              userCasaName: dataJogo.data[0]?.userCasaName,
-              userForaName: dataJogo.data[0]?.userForaName,
-              data: dataJogo.data[0]?.data,
-            };
+        
+            if (dataJogo.data && dataJogo.data.length > 0) {
+              return {
+                ...item,
+                campeonatoName: dataJogo.data[0].campeonatoName,
+                userCasaName: dataJogo.data[0].userCasaName,
+                userForaName: dataJogo.data[0].userForaName,
+                data: dataJogo.data[0].data,
+              };
+            } else {
+              console.warn(`Nenhum dado encontrado para o jogo com ID: ${jogoId}`);
+              return {
+                ...item,
+                campeonatoName: null,
+                userCasaName: null,
+                userForaName: null,
+                data: null,
+              };
+            }
           }
-          return null; 
+          return null;
         });
+        
 
         const detalhesJogos = await Promise.all(detalhesJogosPromises);
         const filteredDetalhesJogos = detalhesJogos.filter(item => item !== null); 
