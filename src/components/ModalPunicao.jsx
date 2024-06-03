@@ -89,30 +89,18 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const fileField = document.querySelector("input[type='file']");
-
-    const convertFileToBase64 = (file, callback) => {
-      const reader = new FileReader();
-      reader.onloadend = () => callback(reader.result.replace(/^data:.+;base64,/, ''));
-      reader.readAsDataURL(file);
-    };
-
     const jsonData = {
+      field: "punicao",
+      value: modalFieldsState.punicao,
       campeonatoId: selectedCampeonatoId,
-      jogoId: "", 
-      teamId: selectedTimeId,
-      jogadorId: modalFieldsState.atleta,
-      gols: modalFieldsState.gols || "0", 
-      numeroCartoesAmarelo: modalFieldsState.numeroCartoesAmarelo || "0", 
-      numeroCartoesVermelho: modalFieldsState.numeroCartoesVermelho || "0", 
-      punicao: modalFieldsState.punicao
+      jogadorId: modalFieldsState.atleta
     };
 
     console.log("JSON: ", jsonData)
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador`, {
-        method: 'POST',
+      const response = await fetch(`${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/update`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
