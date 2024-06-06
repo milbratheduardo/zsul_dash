@@ -18,8 +18,11 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
   const [campeonatos, setCampeonatos] = useState([]);
   const [times, setTimes] = useState([]);
   const [atletas, setAtletas] = useState([]);
+  const [staff, setStaff] = useState([]); // Estado para o staff
   const [selectedCampeonatoId, setSelectedCampeonatoId] = useState('');
   const [selectedTimeId, setSelectedTimeId] = useState('');
+  const [selectedAtleta, setSelectedAtleta] = useState(''); // Estado para o atleta selecionado
+  const [selectedStaff, setSelectedStaff] = useState(''); // Estado para o staff selecionado
   const navigate = useNavigate();
 
   const handleClose = (e) => {
@@ -32,8 +35,21 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
 
     if (id === 'campeonato') {
       setSelectedCampeonatoId(value);
+      setSelectedTimeId('');
+      setAtletas([]);
+      setStaff([]);
+      setSelectedAtleta('');
+      setSelectedStaff('');
     } else if (id === 'time') {
       setSelectedTimeId(value);
+      setSelectedAtleta('');
+      setSelectedStaff('');
+    } else if (id === 'atleta') {
+      setSelectedAtleta(value);
+      setSelectedStaff('');
+    } else if (id === 'staff') {
+      setSelectedStaff(value);
+      setSelectedAtleta('');
     }
   };
 
@@ -57,9 +73,9 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
         try {
           const response = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/campeonato/${selectedCampeonatoId}`);
           const data = await response.json();
-          console.log('TESTE: ', data)
           setTimes(data.data);
-          setAtletas([]); 
+          setAtletas([]);
+          setStaff([]);
         } catch (error) {
           console.error("Erro ao buscar times:", error);
         }
@@ -82,21 +98,35 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
         }
       };
 
+      const fetchStaff = async () => {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}staff/team/${selectedTimeId}`);
+          const data = await response.json();
+          setStaff(data.data);
+        } catch (error) {
+          console.error("Erro ao buscar staff:", error);
+        }
+      };
+
       fetchAtletas();
+      fetchStaff();
     }
   }, [selectedTimeId, selectedCampeonatoId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const jsonData = {
+    let jsonData = {
       field: "punicao",
-      value: modalFieldsState.punicao,
-      campeonatoId: selectedCampeonatoId,
-      jogadorId: modalFieldsState.atleta
+      value: modalFieldsState.punicao,      
     };
 
-    console.log("JSON: ", jsonData)
+    if (selectedAtleta) {
+      jsonData.jogadorId = selectedAtleta;
+      jsonData.campeonatoId = selectedCampeonatoId
+    } else if (selectedStaff) {
+      jsonData.staffId = selectedStaff;
+    }
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/update`, {
@@ -108,24 +138,23 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
       });
 
       const data = await response.json();
-      console.log('RESPOSTA: ', data);
 
       if (data.status === 200) {
         toast.success(`Punição cadastrada com sucesso!`, {
           position: "top-center",
           autoClose: 5000,
-          onClose: (() => navigate(`/punicoes`))
+          onClose: () => navigate(`/punicoes`)
         });
-      } else if (data.status === 400 || data.status === 500) {
-        setErrorMessage(data.msg);
       } else {
-        console.log('Error:', data.msg);
+        setErrorMessage(data.msg);
       }
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   };
+
+  console.log('STAFF: ', staff)
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>
@@ -163,10 +192,16 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
                   <option key={time.userId} value={time.userId}>{time.userName}</option>
                 ))}
               </select>
-              <select id="atleta" onChange={handleChange} value={modalFieldsState.atleta} className='mb-4' disabled={!selectedTimeId}>
+              <select id="atleta" onChange={handleChange} value={selectedAtleta} className='mb-4' disabled={!selectedTimeId || selectedStaff}>
                 <option value=''>Selecione um atleta</option>
                 {atletas.map((atleta) => (
                   <option key={atleta.elencoId} value={atleta.elencoId}>{atleta.elencoName}</option>
+                ))}
+              </select>
+              <select id="staff" onChange={handleChange} value={selectedStaff} className='mb-4' disabled={!selectedTimeId || selectedAtleta}>
+                <option value=''>Selecione um membro da staff</option>
+                {staff.map((staffMember) => (
+                  <option key={staffMember._id} value={staffMember._id}>{staffMember.name}</option>
                 ))}
               </select>
               {fields.map((field, index) => (
