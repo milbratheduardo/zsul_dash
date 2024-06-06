@@ -18,11 +18,11 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
   const [campeonatos, setCampeonatos] = useState([]);
   const [times, setTimes] = useState([]);
   const [atletas, setAtletas] = useState([]);
-  const [staff, setStaff] = useState([]); // Estado para o staff
+  const [staff, setStaff] = useState([]); 
   const [selectedCampeonatoId, setSelectedCampeonatoId] = useState('');
   const [selectedTimeId, setSelectedTimeId] = useState('');
-  const [selectedAtleta, setSelectedAtleta] = useState(''); // Estado para o atleta selecionado
-  const [selectedStaff, setSelectedStaff] = useState(''); // Estado para o staff selecionado
+  const [selectedAtleta, setSelectedAtleta] = useState(''); 
+  const [selectedStaff, setSelectedStaff] = useState(''); 
   const navigate = useNavigate();
 
   const handleClose = (e) => {
@@ -118,18 +118,20 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
 
     let jsonData = {
       field: "punicao",
-      value: modalFieldsState.punicao,      
+      value: modalFieldsState.punicao,
     };
+
+    let endpoint = `${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/update`;
 
     if (selectedAtleta) {
       jsonData.jogadorId = selectedAtleta;
-      jsonData.campeonatoId = selectedCampeonatoId
+      jsonData.campeonatoId = selectedCampeonatoId;
     } else if (selectedStaff) {
-      jsonData.staffId = selectedStaff;
+      endpoint = `${process.env.REACT_APP_API_URL}staff/${selectedStaff}`;
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/update`, {
+      const response = await fetch(endpoint, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +156,6 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
     }
   };
 
-  console.log('STAFF: ', staff)
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center' id='wrapper' onClick={handleClose}>

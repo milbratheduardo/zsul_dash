@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Header, Navbar, Footer, Sidebar, ThemeSettings, ModalEditarPunicao, Button, ModalPunicao} from '../components';
+import { Header, Navbar, Footer, Sidebar, ThemeSettings, ModalEditarPunicao, Button, ModalPunicao } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Search, Inject, Toolbar } from '@syncfusion/ej2-react-grids';
 import { FiSettings } from 'react-icons/fi';
@@ -16,11 +16,34 @@ const Punicoes = () => {
   useEffect(() => {
     const fetchPunicoes = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador/punidos/`);
-        const data = await response.json();
-        console.log('DATA: ', data)
+        const jogadorResponse = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador/punidos/`);
+        const jogadorData = await jogadorResponse.json();
+        console.log('DATA Jogador: ', jogadorData);
 
-        const detalhesJogosPromises = data.data.map(async (item) => {
+        const staffResponse = await fetch(`${process.env.REACT_APP_API_URL}staff`);
+        const staffData = await staffResponse.json();
+        console.log('DATA Staff: ', staffData);
+
+        const allJogadorData = [...jogadorData.data[0], ...jogadorData.data[1]];
+        const allStaffData = staffData.data.filter(item => item.punicao && item.punicao.length > 0);
+
+        const staffWithTeamNamesPromises = allStaffData.map(async (staff) => {
+          const teamResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${staff.teamId}`);
+          const teamData = await teamResponse.json();
+          return {
+            ...staff,
+            teamName: teamData.data.teamName,
+          };
+        });
+
+        const staffWithTeamNames = await Promise.all(staffWithTeamNamesPromises);
+
+        const filteredJogadorData = allJogadorData.filter(item => 
+          item.numeroCartoesVermelho > 0 || 
+          (item.numeroCartoesVermelho === 0 && item.punicao && item.punicao.length > 2)
+        );
+
+        const detalhesJogosPromises = filteredJogadorData.map(async (item) => {
           if (item.numeroCartoesVermelho > 0) {
             const jogoId = item.jogoId;
             const responseJogo = await fetch(`${process.env.REACT_APP_API_URL}jogos/${jogoId}`);
@@ -45,13 +68,17 @@ const Punicoes = () => {
               };
             }
           }
-          return null;
+          return item;
         });
-        
 
         const detalhesJogos = await Promise.all(detalhesJogosPromises);
-        const filteredDetalhesJogos = detalhesJogos.filter(item => item !== null); 
-        setPunicoes(filteredDetalhesJogos);
+
+        const jogadorDataWithType = detalhesJogos.map(item => ({ ...item, tipo: 'Jogador' }));
+        const staffDataWithType = staffWithTeamNames.map(item => ({ ...item, tipo: 'Staff' }));
+
+        const combinedData = [...jogadorDataWithType, ...staffDataWithType];
+
+        setPunicoes(combinedData);
       } catch (error) {
         console.error("Erro ao buscar informações:", error);
       }
@@ -59,29 +86,30 @@ const Punicoes = () => {
 
     fetchPunicoes();
   }, []);
-  
+
   const handleAtletaClick = (atleta) => {
     console.log('dados: ', atleta);
     setSelectedAtleta(atleta);
     setShowEditarPunicao(true);
   }
+
   const ControleGrid = [
     {
       field: 'jogadorName',
-      headerText: 'Atleta',
+      headerText: 'Nome',
       width: '200',
       textAlign: 'Center',
-      template: (atleta) => ( 
+      template: (atleta) => (
         <a href="#" onClick={(e) => {
-          e.preventDefault(); 
+          e.preventDefault();
           if (permissao === 'admin') {
-            handleAtletaClick(atleta); 
-          } 
-        }}>{atleta.jogadorName}</a>
+            handleAtletaClick(atleta);
+          }
+        }}>{atleta.jogadorName || atleta.name}</a>
       )
     },
     {
-      field: 'teamName', 
+      field: 'teamName',
       headerText: 'Time',
       width: '200',
       textAlign: 'Center',
@@ -94,33 +122,39 @@ const Punicoes = () => {
       template: (data) => (<a>{data.punicao}</a>)
     },
     {
-      field: 'campeonatoName', 
+      field: 'campeonatoName',
       headerText: 'Campeonato',
       width: '300',
       textAlign: 'Center',
     },
     {
-        field: 'userForaName', 
-        headerText: 'Jogo',
-        width: '150',
-        textAlign: 'Center',
-        template: (data) => {
-          if (data.userForaName === data.teamName) {
-            return (<a>X {data.userCasaName}</a>);
-          } else {
-            return (<a>X {data.userForaName}</a>);
-          }
+      field: 'userForaName',
+      headerText: 'Jogo',
+      width: '150',
+      textAlign: 'Center',
+      template: (data) => {
+        if (data.userForaName === data.teamName) {
+          return (<a>X {data.userCasaName}</a>);
+        } else {
+          return (<a>X {data.userForaName}</a>);
         }
-      },     
+      }
+    },
     {
-      field: 'data', 
+      field: 'data',
       headerText: 'Data do Jogo',
       width: '150',
       textAlign: 'Center',
       template: (data) => (<a>{data.data}</a>)
+    },
+    {
+      field: 'tipo',
+      headerText: 'Tipo',
+      width: '150',
+      textAlign: 'Center',
+      template: (data) => (<a>{data.tipo}</a>)
     }
   ];
-  
 
   console.log('Punicoes: ', punicoes)
   return (
@@ -156,54 +190,54 @@ const Punicoes = () => {
           {themeSettings && <ThemeSettings />}
 
           <ModalEditarPunicao
-            isVisible={showEditarPunicao} 
+            isVisible={showEditarPunicao}
             atleta={selectedAtleta}
             currentColor={currentColor}
             onClose={() => {
               setShowEditarPunicao(false);
-            }} 
+            }}
           />
 
           <ModalPunicao
-            isVisible={showModalPunicao} 
-            currentColor={currentColor}  
+            isVisible={showModalPunicao}
+            currentColor={currentColor}
             onClose={() => {
               setShowModalPunicao(false);
-          }}/>  
+            }} />
 
-        {!showModalPunicao && !showEditarPunicao && (
-          <div className='m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl'>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Header category="Equipe" title="Punições"/>
-            {permissao !== 'TEquipe' && (
-            <Button 
-                  color='white'
-                  bgColor={currentColor}
-                  text='Adicionar Punição'
-                  borderRadius='10px'
-                  size='md'
-                  onClick={() => {
-                    setShowModalPunicao(true);
-                  }}
-                />
-            )}
-              </div>  
-            <GridComponent
-              dataSource={punicoes}
-              allowPaging
-              allowSorting
-              toolbar={['Search']}
-              width='auto'
-            >
-              <ColumnsDirective>
-                {ControleGrid.map((item, index) => (
-                  <ColumnDirective key={index} {...item} />
-                ))}
-              </ColumnsDirective>
-              <Inject services={[Page, Search, Toolbar]} />
-            </GridComponent> 
-          </div>
-        )}  
+          {!showModalPunicao && !showEditarPunicao && (
+            <div className='m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl'>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Header category="Equipe" title="Punições" />
+                {permissao !== 'TEquipe' && (
+                  <Button
+                    color='white'
+                    bgColor={currentColor}
+                    text='Adicionar Punição'
+                    borderRadius='10px'
+                    size='md'
+                    onClick={() => {
+                      setShowModalPunicao(true);
+                    }}
+                  />
+                )}
+              </div>
+              <GridComponent
+                dataSource={punicoes}
+                allowPaging
+                allowSorting
+                toolbar={['Search']}
+                width='auto'
+              >
+                <ColumnsDirective>
+                  {ControleGrid.map((item, index) => (
+                    <ColumnDirective key={index} {...item} />
+                  ))}
+                </ColumnsDirective>
+                <Inject services={[Page, Search, Toolbar]} />
+              </GridComponent>
+            </div>
+          )}
         </div>
       </div>
     </div>
