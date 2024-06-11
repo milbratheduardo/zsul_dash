@@ -117,26 +117,32 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
     e.preventDefault();
 
     let jsonData = {
-      field: "punicao",
-      value: modalFieldsState.punicao,
+      teamId: selectedTimeId,
+      campeonatoId: selectedCampeonatoId,
+      punicao: modalFieldsState.punicao,
     };
 
-    let endpoint = `${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/update`;
+    let endpoint = '';
+    let method = 'PATCH';
 
     if (selectedAtleta) {
-      jsonData.jogadorId = selectedAtleta;
-      jsonData.campeonatoId = selectedCampeonatoId;
+      jsonData.elencoId = selectedAtleta;
+      jsonData.descricao = "";
+      endpoint = `${process.env.REACT_APP_API_URL}elenco/punicao`;
+      method = 'POST';
     } else if (selectedStaff) {
       endpoint = `${process.env.REACT_APP_API_URL}staff/${selectedStaff}`;
     }
 
+    console.log("Json: ", jsonData)
+
     try {
       const response = await fetch(endpoint, {
-        method: 'PATCH',
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(jsonData),
+        body: JSON.stringify(jsonData)
       });
 
       const data = await response.json();

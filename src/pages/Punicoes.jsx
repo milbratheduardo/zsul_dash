@@ -19,14 +19,19 @@ const Punicoes = () => {
         const jogadorResponse = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador/punidos/`);
         const jogadorData = await jogadorResponse.json();
         console.log('DATA Jogador: ', jogadorData);
-
+  
         const staffResponse = await fetch(`${process.env.REACT_APP_API_URL}staff`);
         const staffData = await staffResponse.json();
         console.log('DATA Staff: ', staffData);
-
-        const allJogadorData = [...jogadorData.data[0], ...jogadorData.data[1]];
+  
+        //const elencoPunicaoResponse = await fetch(`${process.env.REACT_APP_API_URL}elenco/punicao`);
+        //const elencoPunicaoData = await elencoPunicaoResponse.json();
+        //console.log('DATA Elenco Punição: ', elencoPunicaoData);
+  
+        const allJogadorData = jogadorData.data;
         const allStaffData = staffData.data.filter(item => item.punicao && item.punicao.length > 0);
-
+        //const allElencoPunicaoData = elencoPunicaoData.data;
+  
         const staffWithTeamNamesPromises = allStaffData.map(async (staff) => {
           const teamResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${staff.teamId}`);
           const teamData = await teamResponse.json();
@@ -35,16 +40,17 @@ const Punicoes = () => {
             teamName: teamData.data.teamName,
           };
         });
-
+  
         const staffWithTeamNames = await Promise.all(staffWithTeamNamesPromises);
-
+  
+        // Corrigido o filtro
         const filteredJogadorData = allJogadorData.filter(item => 
-          item.numeroCartoesVermelho > 0 || 
-          (item.numeroCartoesVermelho === 0 && item.punicao && item.punicao.length > 2)
+          parseInt(item.numeroCartoesVermelho) > 0 || 
+          (parseInt(item.numeroCartoesVermelho) === 0 && parseInt(item.punicao) > 0)
         );
-
+  
         const detalhesJogosPromises = filteredJogadorData.map(async (item) => {
-          if (item.numeroCartoesVermelho > 0) {
+          if (parseInt(item.numeroCartoesVermelho) > 0) {
             const jogoId = item.jogoId;
             const responseJogo = await fetch(`${process.env.REACT_APP_API_URL}jogos/${jogoId}`);
             const dataJogo = await responseJogo.json();
@@ -70,20 +76,21 @@ const Punicoes = () => {
           }
           return item;
         });
-
+  
         const detalhesJogos = await Promise.all(detalhesJogosPromises);
-
+  
         const jogadorDataWithType = detalhesJogos.map(item => ({ ...item, tipo: 'Jogador' }));
         const staffDataWithType = staffWithTeamNames.map(item => ({ ...item, tipo: 'Staff' }));
-
-        const combinedData = [...jogadorDataWithType, ...staffDataWithType];
-
+        //const elencoPunicaoDataWithType = allElencoPunicaoData.map(item => ({ ...item, tipo: 'Elenco' }));
+  
+        const combinedData = [...jogadorDataWithType, ...staffDataWithType, /*...elencoPunicaoDataWithType*/];
+  
         setPunicoes(combinedData);
       } catch (error) {
         console.error("Erro ao buscar informações:", error);
       }
     };
-
+  
     fetchPunicoes();
   }, []);
 

@@ -161,6 +161,7 @@ const Home = () => {
       const fetchElencoStatus = async () => {
         try {
           const responseElenco = await fetch(` ${process.env.REACT_APP_API_URL}elenco/`);
+          console.log("ELENCO: ", responseElenco)
   
           if (responseElenco.ok) {
             const dataElenco = await responseElenco.json();
