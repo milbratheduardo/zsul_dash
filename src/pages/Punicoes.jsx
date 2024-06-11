@@ -18,19 +18,19 @@ const Punicoes = () => {
       try {
         const jogadorResponse = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador/punidos/`);
         const jogadorData = await jogadorResponse.json();
-        console.log('DATA Jogador: ', jogadorData);
+        console.log('DATA Jogador: ', jogadorData.data[0]);
   
         const staffResponse = await fetch(`${process.env.REACT_APP_API_URL}staff`);
         const staffData = await staffResponse.json();
         console.log('DATA Staff: ', staffData);
   
-        //const elencoPunicaoResponse = await fetch(`${process.env.REACT_APP_API_URL}elenco/punicao`);
-        //const elencoPunicaoData = await elencoPunicaoResponse.json();
-        //console.log('DATA Elenco Punição: ', elencoPunicaoData);
+        const elencoPunicaoResponse = await fetch(`${process.env.REACT_APP_API_URL}elenco/punicao`);
+        const elencoPunicaoData = await elencoPunicaoResponse.json();
+        console.log('DATA Elenco Punição: ', elencoPunicaoData);
   
-        const allJogadorData = jogadorData.data;
-        const allStaffData = staffData.data.filter(item => item.punicao && item.punicao.length > 0);
-        //const allElencoPunicaoData = elencoPunicaoData.data;
+        const allJogadorData = jogadorData.data[0];
+        const allStaffData = staffData.data.filter(item => item.punicao && item.punicao.length > 1);
+        const allElencoPunicaoData = elencoPunicaoData.data;
   
         const staffWithTeamNamesPromises = allStaffData.map(async (staff) => {
           const teamResponse = await fetch(`${process.env.REACT_APP_API_URL}users/${staff.teamId}`);
@@ -81,9 +81,9 @@ const Punicoes = () => {
   
         const jogadorDataWithType = detalhesJogos.map(item => ({ ...item, tipo: 'Jogador' }));
         const staffDataWithType = staffWithTeamNames.map(item => ({ ...item, tipo: 'Staff' }));
-        //const elencoPunicaoDataWithType = allElencoPunicaoData.map(item => ({ ...item, tipo: 'Elenco' }));
+        const elencoPunicaoDataWithType = allElencoPunicaoData.map(item => ({ ...item, tipo: 'Elenco' }));
   
-        const combinedData = [...jogadorDataWithType, ...staffDataWithType, /*...elencoPunicaoDataWithType*/];
+        const combinedData = [...jogadorDataWithType, ...staffDataWithType, ...elencoPunicaoDataWithType];
   
         setPunicoes(combinedData);
       } catch (error) {
@@ -112,7 +112,7 @@ const Punicoes = () => {
           if (permissao === 'admin') {
             handleAtletaClick(atleta);
           }
-        }}>{atleta.jogadorName || atleta.name}</a>
+        }}>{atleta.jogadorName || atleta.name || atleta.elencoName}</a>
       )
     },
     {
@@ -159,7 +159,7 @@ const Punicoes = () => {
       headerText: 'Tipo',
       width: '150',
       textAlign: 'Center',
-      template: (data) => (<a>{data.tipo}</a>)
+      template: (data) => (<a>{data.tipo === 'Elenco' ? 'Jogador' : data.tipo}</a>)
     }
   ];
 

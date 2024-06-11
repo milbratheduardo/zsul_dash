@@ -116,21 +116,25 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let jsonData = {
-      teamId: selectedTimeId,
-      campeonatoId: selectedCampeonatoId,
-      punicao: modalFieldsState.punicao,
-    };
-
+    let jsonData;
     let endpoint = '';
     let method = 'PATCH';
 
     if (selectedAtleta) {
-      jsonData.elencoId = selectedAtleta;
-      jsonData.descricao = "";
+      jsonData = {
+        teamId: selectedTimeId,
+        campeonatoId: selectedCampeonatoId,
+        elencoId: selectedAtleta,
+        punicao: modalFieldsState.punicao,
+        descricao: ""
+      };
       endpoint = `${process.env.REACT_APP_API_URL}elenco/punicao`;
       method = 'POST';
     } else if (selectedStaff) {
+      jsonData = {
+        field: "punicao",
+        value: modalFieldsState.punicao
+      };
       endpoint = `${process.env.REACT_APP_API_URL}staff/${selectedStaff}`;
     }
 
@@ -161,6 +165,7 @@ const ModalAdcPunicao = ({ isVisible, onClose, currentColor }) => {
       setErrorMessage("Houve um problema ao conectar com o servidor.");
     }
   };
+
 
 
   return (
