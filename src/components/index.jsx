@@ -48,3 +48,6 @@ export { default as CardFoto } from './CardFoto';
 export { default as ModalEditarSumulaJogo } from './ModalEditarSumulaJogo';
 export { default as ModalEditarPunicao } from './ModalEditarPunicao';
 export { default as ModalPunicao } from './ModalPunicao';
+export { default as Navbar_lp } from './Navbar_lp';
+export { default as Sidebar_lp } from './Sidebar_lp';
+export { default as CardCompetition_lp } from './CardCompetition_lp';

@@ -20,3 +20,7 @@ export { default as Permissoes } from './Permissoes';
 export { default as Punicoes } from './Punicoes';
 export { default as CamposTecnicos } from './CamposTecnicos';
 export { default as Blog } from './Blog';
+export { default as Campeonatos_lp } from './Campeonatos-lp';
+export { default as CampeonatoDetalhes_lp } from './CampeonatoDetalhes_lp';
+export { default as Estatísticas_lp } from './Estatísticas_lp';
+export { default as Punicoes_lp } from './Punicoes_lp';

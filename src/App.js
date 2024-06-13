@@ -8,7 +8,10 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   Campos,
   ControleAtletas,
   Documentos,
-  Estatísticas, ClubesElenco, Permissoes, Punicoes, CamposTecnicos, Blog} from './pages';
+  Estatísticas, ClubesElenco, Permissoes, Punicoes, CamposTecnicos, Blog, Campeonatos_lp,
+  CampeonatoDetalhes_lp,
+  Estatísticas_lp,
+  Punicoes_lp} from './pages';
 import Recovery from './pages/recovery'
 
 
@@ -48,9 +51,13 @@ const App = () => {
               <Route path='/staff' element={<PrivateRoute component={ComissaoTecnica} />} />
               <Route path='/recuperar' element={<Recovery></Recovery>}></Route>
               <Route path='/campeonatos' element={<Campeonatos />} />
+              <Route path='/campeonatos_lp' element={<Campeonatos_lp />} />
               <Route path="/campeonatos/:id" element={<CampeonatoDetalhes />} />
+              <Route path="/campeonatos_lp/:id" element={<CampeonatoDetalhes_lp />} />
               <Route path="/estatísticas" element={<Estatísticas />} />
+              <Route path="/estatisticas_lp" element={<Estatísticas_lp />} />
               <Route path="/punicoes" element={<Punicoes />} />
+              <Route path="/punicoes_lp" element={<Punicoes_lp />} />
               <Route path="/camposTecnicos" element={<CamposTecnicos />} />
               {/* Administração */}
               <Route path='/calendario' element={<ExternalRedirect to="https://docs.google.com/document/d/1NMkbIosEy2_PvUZT41fafTgEOtKZJSEo_ZME2rXt4Uc/edit?usp=sharing" />} />
