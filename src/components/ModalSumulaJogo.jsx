@@ -159,11 +159,37 @@ const ModalSumulaJogo = ({ isVisible, onClose, currentColor, timeCasa, timeFora,
 
   console.log('Atletas Fora: ', atletasTimeFora);
 
+  const checkIfStatisticExists = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogo/${jogoId}`);
+      const data = await response.json();
+
+      if (data.status === 200) {
+        const gameStats = data.data[0];
+        return (
+          gameStats.userCasaGols === modalFieldsState.userCasaGols &&
+          gameStats.userForaGols === modalFieldsState.userForaGols
+        );
+      }
+      return false;
+    } catch (error) {
+      console.error('Erro ao verificar estatísticas do jogo:', error);
+      return false;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return; // Prevent multiple submissions
 
     setIsSubmitting(true);
+
+    const exists = await checkIfStatisticExists();
+    if (exists) {
+      toast.error('Jogo já existente com os mesmos resultados.');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const resultadoJogo = {
