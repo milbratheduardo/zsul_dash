@@ -5,7 +5,7 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { useStateContext } from '../contexts/ContextProvider';
 import logoZsul from '../img/logo_zsul.png';
 import { PiSoccerBallFill } from 'react-icons/pi';
-import { FaTrophy } from 'react-icons/fa6';
+import { FaTrophy, FaPeopleGroup } from 'react-icons/fa6';
 import { IoIosStats } from "react-icons/io";
 import { ImCross } from "react-icons/im";
 
@@ -25,6 +25,7 @@ const Sidebar_lp = () => {
     {
       title: 'Menu',
       links: [
+        { name: 'atletas_lp', icon: <FaPeopleGroup />, displayName: 'Atletas' },
         { name: 'campeonatos_lp', icon: <FaTrophy />, displayName: 'Campeonatos' },
         { name: 'estatisticas_lp', icon: <IoIosStats />, displayName: 'Estatísticas' },
         { name: 'punicoes_lp', icon: <ImCross />, displayName: 'Punições' }

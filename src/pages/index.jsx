@@ -24,3 +24,4 @@ export { default as Campeonatos_lp } from './Campeonatos-lp';
 export { default as CampeonatoDetalhes_lp } from './CampeonatoDetalhes_lp';
 export { default as Estatísticas_lp } from './Estatísticas_lp';
 export { default as Punicoes_lp } from './Punicoes_lp';
+export { default as Atletas_lp } from './Atletas_lp';

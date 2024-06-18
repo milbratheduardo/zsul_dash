@@ -51,3 +51,5 @@ export { default as ModalPunicao } from './ModalPunicao';
 export { default as Navbar_lp } from './Navbar_lp';
 export { default as Sidebar_lp } from './Sidebar_lp';
 export { default as CardCompetition_lp } from './CardCompetition_lp';
+export { default as ModalAtletasOpcoes_lp } from './ModalAtletasOpcoes_lp';
+export { default as ModalEditarAtleta_lp } from './ModalEditarAtleta_lp';
