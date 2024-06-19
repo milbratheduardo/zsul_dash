@@ -28,7 +28,6 @@ const Sidebar_lp = () => {
         { name: 'atletas_lp', icon: <FaPeopleGroup />, displayName: 'Atletas' },
         { name: 'campeonatos_lp', icon: <FaTrophy />, displayName: 'Campeonatos' },
         { name: 'estatisticas_lp', icon: <IoIosStats />, displayName: 'Estatísticas' },
-        { name: 'punicoes_lp', icon: <ImCross />, displayName: 'Punições' }
       ]
     }
   ];
