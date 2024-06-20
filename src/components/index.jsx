@@ -53,3 +53,4 @@ export { default as Sidebar_lp } from './Sidebar_lp';
 export { default as CardCompetition_lp } from './CardCompetition_lp';
 export { default as ModalAtletasOpcoes_lp } from './ModalAtletasOpcoes_lp';
 export { default as ModalEditarAtleta_lp } from './ModalEditarAtleta_lp';
+export { default as ModalEstatisticas } from './ModalEstatisticas';

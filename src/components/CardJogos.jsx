@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Button, ModalEditarJogo, ModalSumulaJogo, ModalEditarSumulaJogo } from '../components';
+import { Button, ModalEditarJogo, ModalSumulaJogo, ModalEditarSumulaJogo, ModalEstatisticas } from '../components';
 import chroma from 'chroma-js';
 import { toast } from 'react-toastify';
 
@@ -18,6 +18,7 @@ const CardCompetition = ({
   const [showModalEditarJogo, setShowModalEditarJogo] = useState(false);
   const [showModalSumulaJogo, setShowModalSumulaJogo] = useState(false);
   const [showModalEditarSumulaJogo, setShowModalEditarSumulaJogo] = useState(false);
+  const [showModalEstatisticas, setShowModalEstatisticas] = useState(false);
   const [jogoEstatisticas, setJogoEstatisticas] = useState(null);
   const [campos, setCampos] = useState([]);
 
@@ -269,9 +270,23 @@ const linkMapsUrl = campos && campos.linkMaps
             onClose={() => {
               setShowModalEditarSumulaJogo(false);
           }}/>
+
+          <ModalEstatisticas
+            isVisible={showModalEstatisticas} 
+            currentColor={currentColor} 
+            jogoId = {jogoId}
+            campeonatoId={campeonatoId} 
+            timeCasa={userCasaInfo.data?._id}
+            timeFora={userForaInfo.data?._id}
+            logoTimeCasa = {userCasaInfo.data?.pictureBase64}
+            logoTimeFora = {userForaInfo.data?.pictureBase64}
+            nomeTimeCasa={userCasaInfo.data?.teamName}
+            nomeTimeFora={userForaInfo.data?.teamName}
+            onClose={() => {
+              setShowModalEstatisticas(false);
+          }}/>
         
         <div className="flex justify-center items-center w-full px-6">
-          {/* Container para o time de casa */}
           <div className="flex flex-col items-center">
               <img alt="Home Team Logo" src={userCasaInfo.data?.pictureBase64} className="h-16 w-16 object-cover" />
               <p className="text-gray-700 text-base mt-2">
@@ -279,24 +294,21 @@ const linkMapsUrl = campos && campos.linkMaps
               </p>
           </div>
           
-          {/* Container para os gols */}
           <div className="flex items-center mx-2">
-              {/* Exibe gols do time de casa se estiverem disponíveis */}
               {jogoEstatisticas ? (
                   <span className="text-xl font-semibold">{jogoEstatisticas.userCasaGols}</span>
               ) : (
-                  <span className="text-xl font-semibold">-</span> // Substitua "-" por espaço vazio se preferir
+                  <span className="text-xl font-semibold">-</span> 
               )}
               <span className="text-xl font-semibold mx-1">X</span>
-              {/* Exibe gols do time de fora se estiverem disponíveis */}
               {jogoEstatisticas ? (
                   <span className="text-xl font-semibold">{jogoEstatisticas.userForaGols}</span>
               ) : (
-                  <span className="text-xl font-semibold">-</span> // Substitua "-" por espaço vazio se preferir
+                  <span className="text-xl font-semibold">-</span> 
               )}
           </div>
 
-          {/* Container para o time de fora */}
+          
           <div className="flex flex-col items-center">
               <img alt="Away Team Logo" src={userForaInfo.data?.pictureBase64} className="h-16 w-16 object-cover" />
               <p className="text-gray-700 text-base mt-2">
@@ -322,13 +334,13 @@ const linkMapsUrl = campos && campos.linkMaps
         <p className="text-gray-700 text-sm mb-4">Hora: {hora}</p>
         {permissao === 'admin' && (
           <>
-            <div className="flex justify-between mb-2"> 
+            <div className="grid grid-cols-2 gap-2 mb-2">
               <Button 
                 color='white'
                 bgColor={currentColor}
                 text='Súmula'
                 borderRadius='10px'
-                size='sm'
+                size='xs'
                 onClick={() => setShowModalSumulaJogo(true)}
                 style={{ margin: '0 8px 0 0' }}
               /> 
@@ -337,19 +349,28 @@ const linkMapsUrl = campos && campos.linkMaps
                 bgColor={endColor}
                 text='Editar Jogo'
                 borderRadius='10px'
-                size='sm'
+                size='xs'
                 onClick={() => setShowModalEditarJogo(true)}
-                style={{ margin: '0 8px 0 0' }} 
+                style={{ margin: '0 2px 0 0' }} 
               />
               <Button 
                 color='white'
                 bgColor='red'
                 text='Excluir Jogo'
                 borderRadius='10px'
-                size='sm'
+                size='xs'
                 onClick={() => deletarJogo()}
               />
+              <Button 
+                color='white'
+                bgColor={endColor2}
+                text='Estatísticas da Partida'
+                borderRadius='10px'
+                size='xs'
+                onClick={() => setShowModalEstatisticas(true)}
+              />
             </div>
+
           </>
         )}
       </div>
