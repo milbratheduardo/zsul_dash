@@ -85,7 +85,9 @@ const Punicoes = () => {
   
         const combinedData = [...jogadorDataWithType, ...staffDataWithType, ...elencoPunicaoDataWithType];
   
-        setPunicoes(combinedData);
+        const reversedData = combinedData.reverse();
+  
+        setPunicoes(reversedData);
       } catch (error) {
         console.error("Erro ao buscar informações:", error);
       }
