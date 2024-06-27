@@ -373,6 +373,16 @@ const linkMapsUrl = campos && campos.linkMaps
 
           </>
         )}
+        {permissao === 'TEquipe' && (
+              <Button 
+                color='white'
+                bgColor={endColor2}
+                text='Estatísticas da Partida'
+                borderRadius='10px'
+                size='xs'
+                onClick={() => setShowModalEstatisticas(true)}
+              />
+        )}
       </div>
 
       </div>
