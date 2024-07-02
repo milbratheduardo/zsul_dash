@@ -8,6 +8,32 @@ const CardCompetition = ({
 }) => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+
+
+  const deletarPost = async () => {
+    try {
+      const response = await fetch(` ${process.env.REACT_APP_API_URL}blog/${id}`, {
+        method: 'DELETE',
+      });
+      
+      const data = await response.json();
+      if (data.status === 200) {
+        toast.success('Post Deletado com sucesso!', {
+          position: "top-center",
+          autoClose: 5000,
+          onClose: (() => navigate('/blog')) 
+        });
+      } else if (data.status === 400 || data.status === 500) {
+        setErrorMessage(data.msg); 
+      } else {
+        console.log('Error:', data.msg);
+      }
+  
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      setErrorMessage("Houve um problema ao conectar com o servidor.");
+    }
+  }  
   
 
   return (
@@ -25,7 +51,9 @@ const CardCompetition = ({
           text='Excluir'
           borderRadius='10px'
           size='sm'
-          onClick={''} 
+          onClick={() => {
+            deletarPost();
+          }} 
         />
         )}
          
