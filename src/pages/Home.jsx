@@ -385,38 +385,6 @@ const Home = () => {
                 ))}
               </div>
             </div>
-
-            <div className='flex gap-10 flex-wrap justify-center'>
-              <div className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-4 m-3 rounded-2xl md:w-780'>
-                {/*<div className='flex justify-between'>
-                  <p className='font-semibold text-xl'>Próximas Partidas</p>
-                </div>
-                <div className='mt-5 flex flex-row flex-wrap justify-center gap-4'> 
-                  {proximasPartidas.length > 0 ? (
-                    proximasPartidas.map((partida) => (
-                      <div key={partida._id} className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-4 mb-4 rounded-2xl w-1/3'>
-                        <p className='font-semibold'>{partida.teamNameCasa} vs {partida.teamNameFora}</p>
-                        <p>Campeonato: {partida.campeonatoName}</p>
-                        <p>Data: {partida.data}</p>
-                        <a
-                          target="_blank" rel="noopener noreferrer"
-                          href={partida.campoMaps}
-                          className="text-gray-700 text-sm mb-4"
-                          style={linkStyle}
-                          onMouseEnter={() => setHover(true)}
-                          onMouseLeave={() => setHover(false)}
-                        >
-                          Local: {partida.campoNome}
-                        </a>
-                      </div>
-                    ))
-                  ) : (
-                    <p>Nenhuma partida agendada.</p>
-                  )}
-                </div>
-                      */}
-              </div>
-            </div>
             
           </div>
         </div>

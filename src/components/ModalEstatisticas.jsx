@@ -72,16 +72,21 @@ const ModalEstatisticas = ({ isVisible, onClose, currentColor, timeCasa, timeFor
         }
     }, [jogoId]);
 
-    console.log('JogoId: ', jogoId)
+    const renderIcons = (count, icon) => {
+        return Array.from({ length: count }, (_, i) => (
+            <span key={i} className="mr-1">{icon}</span>
+        ));
+    };
 
-    const renderEstatisticas = (tipo, descricao) => {
-        const estatisticasFiltradas = estatisticasJogadores.filter(estatistica => estatistica[tipo] !== '0');
+    const renderEstatisticas = (tipo, descricao, icon) => {
+        const estatisticasFiltradas = estatisticasJogadores.filter(estatistica => parseInt(estatistica[tipo], 10) > 0);
         if (estatisticasFiltradas.length === 0) {
             return <div className="text-lg">Sem {descricao}</div>;
         }
         return estatisticasFiltradas.map(estatistica => (
-            <div key={estatistica.id} className="text-sm">
-                <span className="font-bold">{estatistica[tipo]}x</span> {estatistica.jogadorName} - {estatistica.teamName}
+            <div key={estatistica.id} className="text-sm flex items-center">
+                {renderIcons(parseInt(estatistica[tipo], 10), icon)}
+                <span className="font-bold ml-2">{estatistica.jogadorName} - {estatistica.teamName}</span>
             </div>
         ));
     };
@@ -127,11 +132,11 @@ const ModalEstatisticas = ({ isVisible, onClose, currentColor, timeCasa, timeFor
                         <>
                             <div className="text-center space-y-2 pb-10">
                                 <div className="text-xl font-semibold">Gols:</div>
-                                {renderEstatisticas('gols', 'Gols')}
+                                {renderEstatisticas('gols', 'Gols', '⚽')}
                                 <div className="text-xl font-semibold">Cartões Amarelos:</div>
-                                {renderEstatisticas('numeroCartoesAmarelo', 'Cartões Amarelos')}
+                                {renderEstatisticas('numeroCartoesAmarelo', 'Cartões Amarelos', '🟨')}
                                 <div className="text-xl font-semibold">Cartões Vermelhos:</div>
-                                {renderEstatisticas('numeroCartoesVermelho', 'Cartões Vermelhos')}
+                                {renderEstatisticas('numeroCartoesVermelho', 'Cartões Vermelhos', '🟥')}
                             </div>
                         </>
                     </div>

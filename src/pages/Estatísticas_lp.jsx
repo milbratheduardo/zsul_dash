@@ -31,21 +31,42 @@ const Estatísticas_lp = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      if (selectedCampeonatoId) {
-        try {
-          const response = await fetch(`${process.env.REACT_APP_API_URL}estatisticaJogador/campeonato/campeonato/${selectedCampeonatoId}`);
-          const data = await response.json();
-          setInscricoes(data.data);
-        } catch (error) {
-          console.error("Erro ao buscar inscrições:", error);
-        }
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogador/all`);
+        const data = await response.json();
+
+        const filteredData = data.data.filter(inscricao => inscricao.campeonatoId === selectedCampeonatoId);
+
+        const accumulatedData = filteredData.reduce((acc, curr) => {
+          const { jogadorId, jogadorName, teamName, gols, numeroCartoesAmarelo, numeroCartoesVermelho } = curr;
+          if (!acc[jogadorId]) {
+            acc[jogadorId] = {
+              jogadorId,
+              jogadorName,
+              teamName,
+              gols: 0,
+              numeroCartoesAmarelo: 0,
+              numeroCartoesVermelho: 0,
+            };
+          }
+          acc[jogadorId].gols += parseInt(gols, 10);
+          acc[jogadorId].numeroCartoesAmarelo += parseInt(numeroCartoesAmarelo, 10);
+          acc[jogadorId].numeroCartoesVermelho += parseInt(numeroCartoesVermelho, 10);
+          return acc;
+        }, {});
+
+        setInscricoes(Object.values(accumulatedData));
+      } catch (error) {
+        console.error("Erro ao buscar inscrições:", error);
       }
     };
 
-    fetchStats();
+    if (selectedCampeonatoId) {
+      fetchStats();
+    }
   }, [selectedCampeonatoId]);
 
-  console.log('Estatísticas: ', inscricoes)
+  console.log('Estatísticas: ', inscricoes);
 
   const handleCampeonatoChange = (event) => {
     setSelectedCampeonatoId(event.target.value);

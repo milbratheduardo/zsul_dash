@@ -2,7 +2,7 @@ import React, {useEffect, useState,  useRef } from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Page, Inject } from '@syncfusion/ej2-react-grids';
 import { Header, Button, Sidebar, Navbar, ThemeSettings, ModalGrupo, ModalTimeGrupo, 
   ModalAdicionarJogo, CardJogos, ModalEditarCampeonato, 
-  Sidebar_lp,
+  Sidebar_lp, CardJogos_lp,
   Navbar_lp} from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import chroma from 'chroma-js';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
+
 
 
 
@@ -284,7 +285,7 @@ const CampeonatoDetalhes = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {jogos.map((jogo) => (
-                    <CardJogos
+                    <CardJogos_lp
                       key={jogo._id} 
                       campeonatoId={jogo.campeonatoId} 
                       userIdCasa={jogo.userIdCasa}
