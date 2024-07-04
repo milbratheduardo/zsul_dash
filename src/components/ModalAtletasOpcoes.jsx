@@ -199,6 +199,24 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
 
         const documentoExibido = RG === "Nulo" ? CPF : RG;
 
+
+        let novoTeamName = '';
+        let teamNameAntigo = timeInfo.data?.teamName;
+
+        if (teamNameAntigo != null && teamNameAntigo != undefined && teamNameAntigo.length > 14) {
+          const nomeSplit = teamNameAntigo.split(' ');
+
+          if(nomeSplit.length == 1){
+            novoTeamName = nomeSplit[0][0] + nomeSplit[0][1] + nomeSplit[0][2] + '.'
+            return
+          }
+
+          nomeSplit.forEach(nome => {
+            novoTeamName += nome[0]
+          });
+        } else {
+          novoTeamName = teamNameAntigo;
+        }
         
         doc.setTextColor(0, 0, 0); 
         tamanhoFonte = ajustarTamanhoFonte(doc, name.toUpperCase(), larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
@@ -209,7 +227,7 @@ const ModalAtletasOpcoes = ({ isVisible, onClose, atletaNome, currentColor, atle
         doc.text(documentoExibido, textX + 6, textYStart - 3);
         tamanhoFonte = ajustarTamanhoFonte(doc, documentoExibido, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
-        doc.text(capitalize(`${timeInfo.data?.teamName}`), textX + 35, textYStart - 3);
+        doc.text(capitalize(`${novoTeamName}`), textX + 35, textYStart - 3);
         tamanhoFonte = ajustarTamanhoFonte(doc, documentoExibido, larguraCampo, tamanhoFonte, tamanhoFonteMinimo);
         doc.setFontSize(tamanhoFonte);
         doc.text(`${dateOfBirth}`, textX + 6, textYStart + 11);
