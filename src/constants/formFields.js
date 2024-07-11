@@ -691,17 +691,7 @@ const ModalAdicionarJogoFields = [
         }
     ]
 
-    const ModalAdicionarFotoFields = [
-        {
-            labelText:"Título da Foto",
-            labelFor:"titulo",
-            id:"titulo",
-            name:"titulo",
-            type:"text",
-            autoComplete:"titulo",
-            isRequired:true,
-            placeholder:"Título da Foto"   
-        },      
+    const ModalAdicionarFotoFields = [     
         {
             labelText:"Nome do Fotógrafo",
             labelFor:"nome",
@@ -713,14 +703,14 @@ const ModalAdicionarJogoFields = [
             placeholder:"Nome do Fotógrafo" 
         },
         {
-            labelText:"Instagram do Fotógrafo",
+            labelText:"Link do Fotógrafo",
             labelFor:"instagram",
             id:"instagram",
             name:"instagram",
             type:"text",
             autoComplete:"instagram",
             isRequired:true,
-            placeholder:"Instagram do Fotógrafo" 
+            placeholder:"Link do Fotógrafo" 
         },
         {
             labelText:"Imagem",

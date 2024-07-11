@@ -114,7 +114,7 @@ const Blog = () => {
                         <Button 
                             color='white'
                             bgColor={endColor}
-                            text='Adicionar Foto'
+                            text='Adicionar Fotógrafo(a)'
                             borderRadius='10px'
                             size='md'
                             onClick={() => setShowModalAdicionarFoto(true)}

@@ -61,7 +61,7 @@ const ModalAdicionarFoto = ({ isVisible, onClose, currentColor }) => {
         const fileExtension = file.name.split('.').pop();
 
         const postData = {
-            titulo: modalFieldsState.titulo,
+            titulo: 'titulo',
             instagram: modalFieldsState.instagram,
             nome: modalFieldsState.nome,
             foto: '',
@@ -108,7 +108,7 @@ const ModalAdicionarFoto = ({ isVisible, onClose, currentColor }) => {
                     X
                 </button>
                 <div className='bg-white p-2 rounded' style={{ maxHeight: '100%', overflowY: 'auto' }}>
-                    <HeaderModal title='Cadastre nova Foto' heading='Preencha todos os dados' />
+                    <HeaderModal title='Cadastre novo Fotógrafo(a)' heading='Preencha todos os dados' />
                     <form className='mt-4 space-y-4' onSubmit={handleSubmit}>
                         {errorMessage && (
                             <div
