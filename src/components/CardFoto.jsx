@@ -4,7 +4,7 @@ import { Button } from '../components';
 import { toast } from 'react-toastify';
 
 const CardCompetition = ({
-   image, title, descricao, id, currentColor,showViewDetailsButton, instagram
+   image, title, descricao, id, currentColor,showViewDetailsButton, instagram, titulo
 }) => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
@@ -42,7 +42,10 @@ const CardCompetition = ({
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{descricao}</div>
         <p className="text-gray-700 text-base">
-          Link: {instagram}
+          Link Site: {instagram}
+        </p>
+        <p className="text-gray-700 text-base">
+          Instagram: {titulo}
         </p>
         {showViewDetailsButton && (
         <Button 

@@ -144,6 +144,7 @@ const Blog = () => {
                     descricao={fotografo.nome}
                     instagram={fotografo.instagram}
                     currentColor={currentColor}
+                    titulo={fotografo.titulo}
                     id={fotografo._id}
                     showViewDetailsButton={true}
                   />

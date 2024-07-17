@@ -61,7 +61,7 @@ const ModalAdicionarFoto = ({ isVisible, onClose, currentColor }) => {
         const fileExtension = file.name.split('.').pop();
 
         const postData = {
-            titulo: 'titulo',
+            titulo: modalFieldsState.titulo,
             instagram: modalFieldsState.instagram,
             nome: modalFieldsState.nome,
             foto: '',

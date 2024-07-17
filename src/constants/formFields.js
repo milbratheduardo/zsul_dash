@@ -713,6 +713,16 @@ const ModalAdicionarJogoFields = [
             placeholder:"Link do Fotógrafo" 
         },
         {
+            labelText:"Link Instagram",
+            labelFor:"titulo",
+            id:"titulo",
+            name:"titulo",
+            type:"text",
+            autoComplete:"instagram",
+            isRequired:true,
+            placeholder:"Link Instagram" 
+        },
+        {
             labelText:"Imagem",
             labelFor:"foto",
             id:"foto",
@@ -721,7 +731,8 @@ const ModalAdicionarJogoFields = [
             autoComplete:"foto",
             isRequired:true,
             placeholder:"Imagem" 
-        }
+        },
+        
     ]
 
     const ModalAdicionarPunicaoFields = [
