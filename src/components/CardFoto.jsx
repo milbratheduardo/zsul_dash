@@ -45,7 +45,7 @@ const CardCompetition = ({
           Link Site: {instagram}
         </p>
         <p className="text-gray-700 text-base">
-          Instagram: {titulo}
+          Instagram: {titulo || 'Não possui link de Instagram'}
         </p>
         {showViewDetailsButton && (
         <Button 
