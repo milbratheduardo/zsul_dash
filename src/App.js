@@ -11,7 +11,7 @@ import { Calendario, Campeonatos, ComissaoTecnica,
   Estatísticas, ClubesElenco, Permissoes, Punicoes, CamposTecnicos, Blog, Campeonatos_lp,
   CampeonatoDetalhes_lp,
   Estatísticas_lp,
-  Punicoes_lp, Atletas_lp} from './pages';
+  Punicoes_lp, Atletas_lp, ExternalRedirect} from './pages';
 import Recovery from './pages/recovery'
 
 
@@ -21,17 +21,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Cabecalho } from './components';
 import { useNavigate } from 'react-router-dom';
 
-
-const ExternalRedirect = ({ to }) => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    window.open(to, '_blank');
-    navigate(-1); 
-  }, [to, navigate]);
-
-  return null; 
-};
 
 
 const App = () => {  
@@ -61,7 +50,7 @@ const App = () => {
               <Route path="/atletas_lp" element={<Atletas_lp />} />
               <Route path="/camposTecnicos" element={<CamposTecnicos />} />
               {/* Administração */}
-              <Route path='/calendario' element={<ExternalRedirect to="https://docs.google.com/document/d/1NMkbIosEy2_PvUZT41fafTgEOtKZJSEo_ZME2rXt4Uc/edit?usp=sharing" />} />
+              <Route path='/calendario' element={<ExternalRedirect />} />
               <Route path='/sumulas' element={<Sumulas />} />
               <Route path="/sumulas/:id" element={<SumulasDetalhes />} />
               {/* Meu Perfil */}

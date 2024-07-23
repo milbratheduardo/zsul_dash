@@ -745,15 +745,26 @@ const ModalAdicionarJogoFields = [
             autoComplete:"punicao",
             isRequired:true,
             placeholder:"Punição do Atleta" 
-        },
-
-
-        
+        },        
       ]
+
+    const ModalTabelaFields = [
+        {
+            labelText:"Link do Drive",
+            labelFor:"link",
+            id:"link",
+            name:"link",
+            type:"text",
+            autoComplete:"link",
+            isRequired:true,
+            placeholder:"Link do Drive" 
+        },        
+      ]  
 
 export {loginFields,signupFields,ModalAtletaFields,
     ModalStaffFields, ModalCompeticaoFields, ModalPerfilFields,
     ModalGrupoFields, ModalAdicionarJogoFields, ModalSumulaJogoFields,
     ModalAdmFields, ModalTransferenciaFields, ModalCamposFields, ModalEditarAtletaFields,
-    ModalAdicionarPostFields, ModalAdicionarFotoFields, ModalEditarPunicaoFields, ModalAdicionarPunicaoFields
+    ModalAdicionarPostFields, ModalAdicionarFotoFields, ModalEditarPunicaoFields, ModalAdicionarPunicaoFields,
+    ModalTabelaFields
     }

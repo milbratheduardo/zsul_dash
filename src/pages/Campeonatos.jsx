@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useStateContext } from '../contexts/ContextProvider';
 import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button, CardCompetition, ModalCompeticao} from '../components';
-
+import { Header, Navbar, Footer, Sidebar, ThemeSettings, Button, CardCompetition, ModalCompeticao, ModalTabela} from '../components';
+import chroma from 'chroma-js';
 
 
 const Campeonatos = () => {
@@ -11,9 +11,11 @@ const Campeonatos = () => {
     currentColor, currentMode } = useStateContext();
   
   const [showModal, setShowModal] =   useState(false);
+  const [showModalTabela, setShowModalTabela] =   useState(false);
   const [campeonatos, setCampeonatos] = useState([]);
   const [permissao, setPermissao] = useState(localStorage.getItem('permissao'));
   const user = JSON.parse(localStorage.getItem('user')) || {};
+  const endColor = chroma(currentColor).darken(1).css();
 
 
   useEffect(() => {
@@ -72,11 +74,20 @@ const Campeonatos = () => {
               onClose={() => {
                 setShowModal(false);
             }}/>
+
+            <ModalTabela
+              isVisible={showModalTabela} 
+              currentColor={currentColor}  
+              onClose={() => {
+                setShowModalTabela(false);
+            }}/>
             <div className='m-2 md:m-10 p-2 md:p-10
             bg-white rounded-3xl'>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Header category='Clube' title='Campeonatos' />
+                  <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 sm:mt-0'>
                   {permissao !== 'TEquipe' && (
+                    <>
                     <Button 
                       color='white'
                       bgColor={currentColor}
@@ -87,7 +98,19 @@ const Campeonatos = () => {
                         setShowModal(true);
                       }}
                     />
+                    <Button 
+                    color='white'
+                    bgColor={endColor}
+                    text='Tabela de Jogos'
+                    borderRadius='10px'
+                    size='md'
+                    onClick={() => {
+                      setShowModalTabela(true);
+                    }}
+                  />
+                  </>
                   )}
+                 </div> 
                </div> 
                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {campeonatos.map((campeonato) => (

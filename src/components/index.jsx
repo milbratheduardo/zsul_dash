@@ -55,3 +55,4 @@ export { default as ModalAtletasOpcoes_lp } from './ModalAtletasOpcoes_lp';
 export { default as ModalEditarAtleta_lp } from './ModalEditarAtleta_lp';
 export { default as ModalEstatisticas } from './ModalEstatisticas';
 export { default as CardJogos_lp } from './CardJogos_lp';
+export { default as ModalTabela } from './ModalTabela';
