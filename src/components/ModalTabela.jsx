@@ -31,6 +31,7 @@ const ModalTabela = ({ isVisible, onClose, currentColor }) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}link/tabela`);
             const data = await response.json();
+            console.log('TESTE: ', data)
 
             if (data.length === 0) {
                 await fetch(`${process.env.REACT_APP_API_URL}link/tabela`, {
@@ -42,7 +43,7 @@ const ModalTabela = ({ isVisible, onClose, currentColor }) => {
                 });
                 toast.success("Link cadastrado com sucesso!");
             } else {
-                await fetch(`${process.env.REACT_APP_API_URL}link/tabela`, {
+                await fetch(`${process.env.REACT_APP_API_URL}link/tabela/66a263ecdef3d463d04cec45`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',

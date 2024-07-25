@@ -10,11 +10,8 @@ const ExternalRedirect = () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}link/tabela`);
         const data = await response.json();
-        if (data.length > 0 && data[0].link) {
-          setLink(data[0].link);
-        } else {
-          console.error("No link found in the response");
-        }
+        console.log('TABELA: ', data.data[0].link)        
+        setLink(data.data[0].link);
       } catch (error) {
         console.error("Error fetching the link:", error);
       }
