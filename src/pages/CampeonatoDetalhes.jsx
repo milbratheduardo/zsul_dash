@@ -92,52 +92,73 @@ const CampeonatoDetalhes = () => {
   }, [id]);
 
   useEffect(() => {
+    const fetchWithCache = async (key, fetchFunction) => {
+      const cachedData = localStorage.getItem(key);
+      if (cachedData) {
+        return JSON.parse(cachedData);
+      }
+      const data = await fetchFunction();
+      localStorage.setItem(key, JSON.stringify(data));
+      return data;
+    };
+  
     const fetchTimeGroupsAndStats = async () => {
       if (!selectedGroupId) return;
   
       try {
         // Fetch teams for the selected group
-        const response = await fetch(`${process.env.REACT_APP_API_URL}grupos/team/grupo/${selectedGroupId}`);
-        const data = await response.json();
-        console.log('TIMES GRUPO: ', data.data);
-  
-        if (data.status !== 200 || !data.data) {
-          toast.error('Failed to fetch teams for the group');
-          return;
-        }
+        const teamsData = await fetchWithCache(`teams_${selectedGroupId}`, async () => {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}grupos/team/grupo/${selectedGroupId}`);
+          const data = await response.json();
+          if (data.status !== 200 || !data.data) {
+            throw new Error('Failed to fetch teams for the group');
+          }
+          return data.data;
+        });
+        console.log('TIMES GRUPO (cached): ', teamsData);
   
         // Extract groupId and teamIds
         const groupId = selectedGroupId;
-        const teamIds = data.data.map((team) => ({
+        const teamIds = teamsData.map((team) => ({
           teamId: team.teamId,
           teamName: team.teamName,
         }));
   
         // Fetch all games (including inter-group games)
-        const gamesResponse = await fetch(`${process.env.REACT_APP_API_URL}jogos/campeonato/${id}`);
-        const gamesData = await gamesResponse.json();
-        console.log('ALL GAMES: ', gamesData.data);
-  
-        if (gamesData.status !== 200 || !gamesData.data) {
-          toast.error('Failed to fetch games for the championship');
-          return;
-        }
-  
-        // Fetch statistics for each game
-        const gameStats = {};
-        for (const game of gamesData.data) {
-          const statsResponse = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogo/${game._id}`);
-          const statsData = await statsResponse.json();
-  
-          if (statsData.status === 200 && statsData.data) {
-            gameStats[game._id] = statsData.data[0];
+        const gamesData = await fetchWithCache(`games_${id}`, async () => {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}jogos/campeonato/${id}`);
+          const data = await response.json();
+          if (data.status !== 200 || !data.data) {
+            throw new Error('Failed to fetch games for the championship');
           }
-        }
-        console.log('GAME STATISTICS: ', gameStats);
+          return data.data;
+        });
+        console.log('ALL GAMES (cached): ', gamesData);
+  
+        // Fetch statistics for each game using Promise.all
+        const gameIds = gamesData.map((game) => game._id);
+        const gameStatsArray = await Promise.all(
+          gameIds.map(async (gameId) =>
+            fetchWithCache(`gameStats_${gameId}`, async () => {
+              const response = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogo/${gameId}`);
+              const data = await response.json();
+              if (data.status !== 200 || !data.data) {
+                throw new Error(`Failed to fetch stats for game ${gameId}`);
+              }
+              return data.data[0];
+            })
+          )
+        );
+  
+        // Convert gameStatsArray to an object for easier lookup
+        const gameStats = Object.fromEntries(
+          gameStatsArray.map((stats, index) => [gameIds[index], stats])
+        );
+        console.log('GAME STATISTICS (cached): ', gameStats);
   
         // Calculate team statistics considering only games with the current groupId
         const teamStats = teamIds.map((team) => {
-          const teamGames = gamesData.data.filter(
+          const teamGames = gamesData.filter(
             (game) =>
               (game.userIdCasa === team.teamId || game.userIdFora === team.teamId) &&
               (game.grupoId === groupId || game.grupoId.includes(groupId)) // Include inter-group games
@@ -203,16 +224,14 @@ const CampeonatoDetalhes = () => {
         setTimeGroups(rankedTeams);
         console.log('RANKED TEAMS: ', rankedTeams);
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error('Fetch error:', error.message);
         toast.error('An error occurred while fetching statistics');
       }
     };
   
     fetchTimeGroupsAndStats();
   }, [selectedGroupId]);
-  
-  
-  
+
   
   
     
