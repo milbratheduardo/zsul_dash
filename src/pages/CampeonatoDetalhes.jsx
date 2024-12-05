@@ -96,58 +96,122 @@ const CampeonatoDetalhes = () => {
       if (!selectedGroupId) return;
   
       try {
+        // Fetch teams for the selected group
         const response = await fetch(`${process.env.REACT_APP_API_URL}grupos/team/grupo/${selectedGroupId}`);
         const data = await response.json();
-        
+        console.log('TIMES GRUPO: ', data.data);
   
-        if (data.status === 200 && data.data) {
-          const teamStatsResponse = await fetch(`${process.env.REACT_APP_API_URL}inscricoes/campeonato/${id}`);
-          const teamStatsData = await teamStatsResponse.json();
-          
-  
-          if (teamStatsData.status === 200 && teamStatsData.data) {
-            const teamsWithStats = data.data.map((team) => {
-              const teamStats = teamStatsData.data.find(stats => stats.userId === team.teamId) || {};
-              return {
-                ...team,
-                numeroJogos: teamStats.numeroJogos || 0,
-                vitorias: teamStats.vitorias || 0,
-                empates: teamStats.empates || 0,
-                derrotas: teamStats.derrotas || 0,
-                golsFeitos: teamStats.golsFeitos || 0,
-                saldoGols: teamStats.saldoGols || 0,
-                pontos: teamStats.pontos || 0,
-              };
-            });
-            teamsWithStats.sort((a, b) => {
-              if (b.pontos !== a.pontos) return b.pontos - a.pontos;
-              if (b.vitorias !== a.vitorias) return b.vitorias - a.vitorias;
-              if (b.saldoGols !== a.saldoGols) return b.saldoGols - a.saldoGols;
-              if (b.golsFeitos !== a.golsFeitos) return b.golsFeitos - a.golsFeitos;
-              const golsSofridosA = a.golsFeitos - a.saldoGols;
-              const golsSofridosB = b.golsFeitos - b.saldoGols;
-              return golsSofridosA - golsSofridosB;
-            });
-  
-            // Update team positions
-            const rankedTeamsWithStats = teamsWithStats.map((team, index) => ({ ...team, P: index + 1 }));
-            setTimeGroups(rankedTeamsWithStats);
-          } else {
-            console.error('Failed to fetch team stats, response:', teamStatsData);
-            toast.error('Failed to fetch team stats');
-          }
-        } else {
-          console.error('Failed to fetch groups, response:', data);
-          toast.error('Failed to fetch groups');
+        if (data.status !== 200 || !data.data) {
+          toast.error('Failed to fetch teams for the group');
+          return;
         }
+  
+        // Extract groupId and teamIds
+        const groupId = selectedGroupId;
+        const teamIds = data.data.map((team) => ({
+          teamId: team.teamId,
+          teamName: team.teamName,
+        }));
+  
+        // Fetch all games (including inter-group games)
+        const gamesResponse = await fetch(`${process.env.REACT_APP_API_URL}jogos/campeonato/${id}`);
+        const gamesData = await gamesResponse.json();
+        console.log('ALL GAMES: ', gamesData.data);
+  
+        if (gamesData.status !== 200 || !gamesData.data) {
+          toast.error('Failed to fetch games for the championship');
+          return;
+        }
+  
+        // Fetch statistics for each game
+        const gameStats = {};
+        for (const game of gamesData.data) {
+          const statsResponse = await fetch(`${process.env.REACT_APP_API_URL}estatistica/jogo/${game._id}`);
+          const statsData = await statsResponse.json();
+  
+          if (statsData.status === 200 && statsData.data) {
+            gameStats[game._id] = statsData.data[0];
+          }
+        }
+        console.log('GAME STATISTICS: ', gameStats);
+  
+        // Calculate team statistics considering only games with the current groupId
+        const teamStats = teamIds.map((team) => {
+          const teamGames = gamesData.data.filter(
+            (game) =>
+              (game.userIdCasa === team.teamId || game.userIdFora === team.teamId) &&
+              (game.grupoId === groupId || game.grupoId.includes(groupId)) // Include inter-group games
+          );
+  
+          let vitorias = 0;
+          let empates = 0;
+          let derrotas = 0;
+          let golsFeitos = 0;
+          let golsSofridos = 0;
+  
+          for (const game of teamGames) {
+            const stats = gameStats[game._id];
+            if (stats) {
+              const isHome = game.userIdCasa === team.teamId;
+              const isAway = game.userIdFora === team.teamId;
+  
+              // Goals
+              golsFeitos += isHome ? parseInt(stats.userCasaGols) : parseInt(stats.userForaGols);
+              golsSofridos += isHome ? parseInt(stats.userForaGols) : parseInt(stats.userCasaGols);
+  
+              // Results
+              if (stats.vencedor === team.teamId) {
+                vitorias++;
+              } else if (stats.vencedor === 'empate') {
+                empates++;
+              } else {
+                derrotas++;
+              }
+            }
+          }
+  
+          const pontos = vitorias * 3 + empates;
+          const saldoGols = golsFeitos - golsSofridos;
+  
+          return {
+            teamId: team.teamId,
+            teamName: team.teamName,
+            numeroJogos: teamGames.length,
+            vitorias,
+            empates,
+            derrotas,
+            golsFeitos,
+            golsSofridos,
+            saldoGols,
+            pontos,
+          };
+        });
+  
+        // Sort teams
+        teamStats.sort((a, b) => {
+          if (b.pontos !== a.pontos) return b.pontos - a.pontos;
+          if (b.saldoGols !== a.saldoGols) return b.saldoGols - a.saldoGols;
+          return b.golsFeitos - a.golsFeitos;
+        });
+  
+        // Add position
+        const rankedTeams = teamStats.map((team, index) => ({
+          ...team,
+          P: index + 1,
+        }));
+  
+        setTimeGroups(rankedTeams);
+        console.log('RANKED TEAMS: ', rankedTeams);
       } catch (error) {
         console.error('Fetch error:', error);
-        toast.error('An error occurred while fetching groups');
+        toast.error('An error occurred while fetching statistics');
       }
     };
   
     fetchTimeGroupsAndStats();
   }, [selectedGroupId]);
+  
+  
   
   
   
