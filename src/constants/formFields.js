@@ -471,7 +471,8 @@ const ModalAdicionarJogoFields = [
         isRequired: true,
         options: [
         { value: "Grupos", label: "Grupos" },
-        { value: "Eliminacao", label: "Eliminação" }
+        { value: "Eliminacao", label: "Eliminação" },
+        { value: "Segunda Fase", label: "Segunda Fase" }
         ],
         placeholder: "Tipo da Partida",
     },
