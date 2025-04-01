@@ -24,7 +24,7 @@ const Campeonatos = () => {
         const response = await fetch(`${process.env.REACT_APP_API_URL}campeonatos/`);
         const data = await response.json();
         console.log('Dados: ', data);
-        setCampeonatos(data.data); 
+        setCampeonatos(data.data.reverse()); 
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
       }

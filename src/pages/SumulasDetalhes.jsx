@@ -58,21 +58,8 @@ const SumulasDetalhes = () => {
 
   const handleStatusChange = async (atleta, newStatus) => {
     try {
-      const responseGet = await fetch(`${process.env.REACT_APP_API_URL}sumula/elenco/${atleta._id}`);
-      if (!responseGet.ok) {
-        throw new Error('Erro ao obter o ID do atleta');
-      }
-      const dataGet = await responseGet.json();
-      console.log('Response GET:', dataGet);
-      
-      const entry = dataGet?.data?.find(entry => entry.campeonatoId === id);
-      if (!entry) {
-        throw new Error('Nenhuma entrada encontrada com o campeonatoId correspondente');
-      }
-      const idSumula = entry._id;
-      console.log('idSumula:', idSumula);
-
-      
+      const idSumula = atleta._id; // já é o ID correto da entrada na sumula
+  
       const responsePatch = await fetch(`${process.env.REACT_APP_API_URL}sumula/${idSumula}`, {
         method: 'PATCH',
         headers: {
@@ -84,7 +71,7 @@ const SumulasDetalhes = () => {
       if (!responsePatch.ok) {
         throw new Error('Erro ao atualizar o status do atleta');
       }
-
+  
       const updatedAtletas = atletas.map((a) => {
         if (a._id === atleta._id) {
           return { ...a, status: newStatus };
@@ -93,11 +80,12 @@ const SumulasDetalhes = () => {
       });
   
       setAtletas(updatedAtletas);
-      window.location.reload()
+      window.location.reload(); // ou remova isso se não for necessário
     } catch (error) {
       console.error('Erro ao atualizar o status do atleta:', error);
     }
   };
+  
 
   
   console.log("Atleta: ", atletas)
@@ -138,58 +126,23 @@ const SumulasDetalhes = () => {
   }, [user.data.id]); 
 
   useEffect(() => {
-    const fetchAtletasIds = async () => {
-      try {        
-        const response = await fetch(` ${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
+    const fetchAtletasFromSumula = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
         const data = await response.json();
-        console.log('Dados Time: ', data);
+        console.log('Dados Sumula: ', data);
   
         const atletasFiltrados = data.data.filter(atleta => atleta.campeonatoId === id);
-        
-        setAtletasIds(atletasFiltrados); 
+        setAtletas(atletasFiltrados);
       } catch (error) {
-        console.error("Erro ao buscar campeonatos:", error);
+        console.error("Erro ao buscar atletas da súmula:", error);
       }
     };
   
-    fetchAtletasIds();
-  }, [teamId, id]); 
-  
-
-  useEffect(() => {
-    const fetchAtletas = async () => {
-      try {
-        if (atletasIds && atletasIds.length > 0) {
-          let allAtletas = [];
-          for (const elencoId of atletasIds) {
-            const response = await fetch(` ${process.env.REACT_APP_API_URL}elenco/${elencoId.elencoId}`);
-            if (!response.ok) {
-              throw new Error(`Network response was not ok for elencoId ${elencoId.elencoId}`);
-            }
-            const data = await response.json();
-            const atletaComStatus = {
-              ...data.data[0],
-              status: elencoId.status,
-            };
-            
-            if (atletaComStatus.name) {
-              allAtletas.push(atletaComStatus);
-            } else {
-              console.error('Incomplete data:', atletaComStatus);
-            }
-          }
-  
-          
-          setAtletas(allAtletas);
-          console.log('Atletas: ', allAtletas);
-        }
-      } catch (error) {
-        console.error('Fetch error:', error);
-      }
-    };
-  
-    fetchAtletas();
-  }, [atletasIds]);
+    if (teamId && id) {
+      fetchAtletasFromSumula();
+    }
+  }, [teamId, id]);
 
   const formatCPF = (cpf) => {
     if (typeof cpf === 'string') {
@@ -201,30 +154,34 @@ const SumulasDetalhes = () => {
   const atletasGrid = [
     {
       headerText: 'Foto',
-      template: ({ fotoAtletaBase64 }) => (
+      template: () => (
         <div className='text-center'>
-          <img src={fotoAtletaBase64} alt="Foto Atleta" style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+          <img
+            src="https://via.placeholder.com/50x50?text=Sem+Foto"
+            alt="Foto Atleta"
+            style={{ width: '50px', height: '50px', borderRadius: '50%' }}
+          />
         </div>
       ),
       textAlign: 'Center',
       width: '100'
-    },
+    },    
     {
-      field: 'name', headerText: 'Atleta', width: '150', textAlign: 'Center', 
+      field: 'elencoName',
+      headerText: 'Atleta',
+      width: '150',
+      textAlign: 'Center',
       template: (atleta) => (
-        <a href="#" onClick={(e) => {
-          e.preventDefault(); 
-        }}>{atleta.name}</a>
+        <a href="#" onClick={(e) => e.preventDefault()}>{atleta.elencoName}</a>
       )
     },
     {
-      field: 'CPF',
+      field: 'elencoDocumento',
       headerText: 'Documento',
       width: '150',
       textAlign: 'Center',
-      template: (props) => <span>{props.RG || formatCPF(props.CPF) || props.certidaoNascimento}</span>,
+      template: (props) => <span>{formatCPF(props.elencoDocumento)}</span>,
     },
-    { field: 'category', headerText: 'Categoria', width: '150', textAlign: 'Center', template:(atleta) => (<a>Sub-{atleta.category}</a>)},
     {
       field: 'status',
       headerText: 'Status',
@@ -239,7 +196,7 @@ const SumulasDetalhes = () => {
           <option value="banco">{atleta.status === 'banco' ? 'Fora da Súmula' : 'Banco'}</option>
         </select>
       ),
-    },
+    }    
   ];
 
   const generatePDF = () => {

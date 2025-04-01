@@ -31,7 +31,7 @@ const Sumulas = () => {
         
         if (validCampeonatos.length > 0) {
           console.log('Campeonatos válidos: ', validCampeonatos);
-          setCampeonatos(validCampeonatos);
+          setCampeonatos(validCampeonatos.reverse());
         } else {
           console.log('Nenhum campeonato válido encontrado.');
           setCampeonatos([]);
