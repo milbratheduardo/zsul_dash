@@ -2,6 +2,8 @@
   "name": "zsul_dash",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/dash",
+
   "dependencies": {
     "-": "^0.0.1",
     "@babel/plugin-proposal-private-property-in-object": "",

@@ -25,7 +25,7 @@ import { useNavigate } from 'react-router-dom';
 
 const App = () => {  
     return (
-        <BrowserRouter>
+        <BrowserRouter basename="/dash">
          <ToastContainer position="top-center" autoClose={5000} hideProgressBar />
           <Cabecalho />
             <Routes>
