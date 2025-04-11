@@ -116,7 +116,7 @@ const ModalAtletaFields = [
         type:"text",
         autoComplete:"documento",
         isRequired:true,
-        placeholder:"RG",  
+        placeholder:"CPF",  
         //mask: "999.999.999-99"
     },
     {
