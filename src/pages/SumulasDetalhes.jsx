@@ -25,6 +25,7 @@ const SumulasDetalhes = () => {
   const [atletasIds, setAtletasIds] = useState([]);
   const { id } = useParams();
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [isLoading, setIsLoading] = useState(true)
 
 
   const [selectedAtletaData, setSelectedAtletaData] = useState({
@@ -125,24 +126,56 @@ const SumulasDetalhes = () => {
     }
   }, [user.data.id]); 
 
+
   useEffect(() => {
-    const fetchAtletasFromSumula = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
-        const data = await response.json();
-        console.log('Dados Sumula: ', data);
-  
+  const fetchAtletasFromSumula = async () => {
+    setIsLoading(true); 
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
+      const data = await response.json();
+
+      console.log("🚀 Dados recebidos da API (atletas):", data);
+
+      if (data && data.data) {
+        // Filtrar atletas pelo campeonato
         const atletasFiltrados = data.data.filter(atleta => atleta.campeonatoId === id);
-        setAtletas(atletasFiltrados);
-      } catch (error) {
-        console.error("Erro ao buscar atletas da súmula:", error);
+        
+        // Buscar as categorias para cada atleta usando o mesmo método da função 'fetchSumulas'
+        const atletasWithCategory = await Promise.all(atletasFiltrados.map(async (atleta) => {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}elenco/${atleta.elencoId}`);
+            const elencoData = await response.json();
+            if (elencoData.status === 200 && elencoData.data && elencoData.data.length > 0 && elencoData.data[0] !== null) {
+              return {...atleta, category: elencoData.data[0].category};
+            } else {
+              console.error('Categoria não encontrada para elencoId:', atleta.elencoId, elencoData);
+              return {...atleta, category: "Desconhecida"};
+            }
+          } catch (error) {
+            console.error("Erro ao buscar categoria do atleta:", error);
+            return {...atleta, category: "Erro ao obter"};
+          }
+        }));
+
+        setAtletas(atletasWithCategory);
+        console.log("✅ Atletas com categoria carregados:", atletasWithCategory);
+      } else {
+        console.warn("⚠️ Nenhum dado recebido ou formato incorreto:", data);
+        setAtletas([]);
       }
-    };
-  
-    if (teamId && id) {
-      fetchAtletasFromSumula();
+    } catch (error) {
+      console.error("Erro ao buscar atletas da súmula:", error);
+      setAtletas([]);
+    } finally {
+      setIsLoading(false); 
     }
-  }, [teamId, id]);
+  };
+
+  if (teamId && id) {
+    fetchAtletasFromSumula();
+  }
+}, [teamId, id]);
+
 
   const formatCPF = (cpf) => {
     if (typeof cpf === 'string') {
@@ -246,8 +279,8 @@ const SumulasDetalhes = () => {
     
     const tableRows = atletasAtivo.map(atleta => [
       "",
-      atleta.name,
-      atleta.RG || atleta.CPF, 
+      atleta.elencoName,
+      atleta.elencoDocumento, 
       `Sub-${atleta.category}`,
       "",
       "",
