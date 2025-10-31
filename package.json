@@ -2,7 +2,7 @@
   "name": "zsul_dash",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://zsuldash.netlify.app/dash",
+  "homepage": "/dash",
 
   "dependencies": {
     "-": "^0.0.1",
