@@ -36,7 +36,6 @@ const SumulasDetalhes = () => {
   });
 
   const handleAtletaClick = (atleta) => {
-    console.log('Dados do Atleta:', atleta); 
     const atletaDados = {
       Nome: atleta.name,
       DataDeNascimento: atleta.dateOfBirth,
@@ -52,7 +51,6 @@ const SumulasDetalhes = () => {
     });
     setSelectedAtleta(atleta);
     setShowAtletasOpcoesSumulas(true);
-    console.log(atletaDados)
     localStorage.setItem('selectedAtletaId', atleta._id);
     localStorage.setItem('selectedTeamId', teamId); 
   };
@@ -89,13 +87,11 @@ const SumulasDetalhes = () => {
   
 
   
-  console.log("Atleta: ", atletas)
   useEffect(() => {
     const fetchCampeonato = async () => {
       try {
         const response = await fetch(` ${process.env.REACT_APP_API_URL}campeonatos/${id}`);
         const data = await response.json();
-        console.log('Dados: ', data);
         setCampeonato(data.data); 
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
@@ -134,7 +130,6 @@ const SumulasDetalhes = () => {
       const response = await fetch(`${process.env.REACT_APP_API_URL}sumula/team/${teamId}`);
       const data = await response.json();
 
-      console.log("🚀 Dados recebidos da API (atletas):", data);
 
       if (data && data.data) {
         // Filtrar atletas pelo campeonato
@@ -158,7 +153,6 @@ const SumulasDetalhes = () => {
         }));
 
         setAtletas(atletasWithCategory);
-        console.log("✅ Atletas com categoria carregados:", atletasWithCategory);
       } else {
         console.warn("⚠️ Nenhum dado recebido ou formato incorreto:", data);
         setAtletas([]);

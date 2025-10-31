@@ -60,7 +60,6 @@ const CampeonatoDetalhes = () => {
   ];
 
   const goToNextGroup = () => {
-    console.log('Checking swiperRef:', swiperRef.current);
     if (swiperRef.current?.swiper) {
       const swiper = swiperRef.current.swiper;
       const nextSlideIndex = (swiper.activeIndex + 1) % swiper.slides.length;
@@ -169,6 +168,7 @@ const CampeonatoDetalhes = () => {
                     } else {
                         // Exclude Segunda Fase stats for other groups
                         const geralStats = teamStatsData.data.find(stats => stats.userId === team.teamId) || {};
+
                         const segundaFaseTeamStats = segundaFaseStats[team.teamId] || {};
 
                         // Subtract Segunda Fase stats from general stats
@@ -240,10 +240,8 @@ const CampeonatoDetalhes = () => {
       const teamIdFetch = teamId.teamId;
       const groupResponse = await fetch(`${process.env.REACT_APP_API_URL}grupos/team/${teamIdFetch}`);
       const groupData = await groupResponse.json();
-      console.log('teamID: ', groupData);
   
       if (groupData.status === 200 && groupData.data) {
-        console.log("Group data fetched successfully:", groupData.data);
         const grupoId = groupData.data[0].grupoId;
   
         const payload = {
@@ -251,7 +249,6 @@ const CampeonatoDetalhes = () => {
           grupoId: grupoId,
         };
   
-        console.log("Payload for deletion:", payload);
   
         const deleteResponse = await fetch(`${process.env.REACT_APP_API_URL}grupos/grupo`, {
           method: 'DELETE',
@@ -363,7 +360,6 @@ const CampeonatoDetalhes = () => {
       try {
         const response = await fetch(` ${process.env.REACT_APP_API_URL}jogos/campeonato/${id}`);
         const data = await response.json();
-        console.log('Dados Jogos: ', data);
         setJogos(data.data); 
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
@@ -381,7 +377,6 @@ const CampeonatoDetalhes = () => {
       try {
         const response = await fetch(` ${process.env.REACT_APP_API_URL}campeonatos/${id}`);
         const data = await response.json();
-        console.log('Dados: ', data);
         setCampeonato(data.data); 
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);
