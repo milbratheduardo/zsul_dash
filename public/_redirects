@@ -1,4 +1,1 @@
-/dash/*    /dash/index.html   200
-!/dash/static/*
-!/dash/manifest.json
-!/dash/favicon.svg
+/*    /index.html   200
